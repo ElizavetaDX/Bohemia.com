@@ -155,6 +155,12 @@ export default function ImportantPage() {
               </Link>
             </li>
             <li>
+              <Link href="/services" className={linkClass()}>
+                <span>послуги</span>
+                <span className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ${scrolled ? 'bg-white' : 'bg-black'}`} aria-hidden />
+              </Link>
+            </li>
+            <li>
               <Link href="/learn" className={linkClass()}>
                 <span>навчатися</span>
                 <span className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ${scrolled ? 'bg-white' : 'bg-black'}`} aria-hidden />
@@ -186,11 +192,7 @@ export default function ImportantPage() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+        <div
           className="fixed inset-0 z-50 bg-white md:hidden flex flex-col items-center justify-center"
           onClick={() => setMobileMenuOpen(false)}
         >
@@ -207,6 +209,9 @@ export default function ImportantPage() {
             <Link href="/price" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
               прайс
             </Link>
+            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
+              послуги
+            </Link>
             <Link href="/learn" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
               навчатися
             </Link>
@@ -214,7 +219,7 @@ export default function ImportantPage() {
               <SearchIcon />
             </button>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Hero: мелкие надписи + заголовок НАМ ВАЖЛИВО */}

@@ -154,6 +154,12 @@ export default function LearnPage() {
               </Link>
             </li>
             <li>
+              <Link href="/services" className={linkClass()}>
+                <span>послуги</span>
+                <span className={underlineClass()} aria-hidden />
+              </Link>
+            </li>
+            <li>
               <Link href="/learn" className={linkClass(true)}>
                 <span>навчатися</span>
                 <span className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full scale-x-100 origin-left ${scrolled ? 'bg-white' : 'bg-black'}`} aria-hidden />
@@ -185,11 +191,7 @@ export default function LearnPage() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+        <div
           className="fixed inset-0 z-50 bg-white md:hidden flex flex-col items-center justify-center"
           onClick={() => setMobileMenuOpen(false)}
         >
@@ -219,6 +221,13 @@ export default function LearnPage() {
               прайс
             </Link>
             <Link
+              href="/services"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
+            >
+              послуги
+            </Link>
+            <Link
               href="/learn"
               onClick={() => setMobileMenuOpen(false)}
               className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
@@ -233,7 +242,7 @@ export default function LearnPage() {
               <SearchIcon />
             </button>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Hero */}
@@ -247,17 +256,14 @@ export default function LearnPage() {
           </div>
 
           {/* Pixel-art heading */}
-          <motion.h1
+          <h1
             className="font-press-start pixel-hero text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-center tracking-tight mt-2 mb-4 md:mb-6"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: 'easeOut' }}
             style={{ paddingTop: '20px', paddingBottom: '20px' }}
           >
             СТАРТ
             <br />
             СКОРО
-          </motion.h1>
+          </h1>
         </div>
       </section>
 

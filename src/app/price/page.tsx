@@ -150,6 +150,12 @@ export default function PricePage() {
               </Link>
             </li>
             <li>
+              <Link href="/services" className={linkClass()}>
+                <span>послуги</span>
+                <span className={underlineClass(false)} aria-hidden />
+              </Link>
+            </li>
+            <li>
               <Link href="/learn" className={linkClass()}>
                 <span>навчатися</span>
                 <span className={underlineClass(false)} aria-hidden />
@@ -181,11 +187,7 @@ export default function PricePage() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+        <div
           className="fixed inset-0 z-50 bg-white md:hidden flex flex-col items-center justify-center"
           onClick={() => setMobileMenuOpen(false)}
         >
@@ -202,6 +204,9 @@ export default function PricePage() {
             <Link href="/price" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
               прайс
             </Link>
+            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
+              послуги
+            </Link>
             <Link href="/learn" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
               навчатися
             </Link>
@@ -209,7 +214,7 @@ export default function PricePage() {
               <SearchIcon />
             </button>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Top row: 2025 | BOHEMIQA STUDIO | 009 */}
