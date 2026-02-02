@@ -1,0 +1,42 @@
+/* Pixel-art style for hero heading: blocky stepped outline */
+.pixel-hero {
+  font-weight: 800;
+  letter-spacing: 10px;
+  line-height: 1.2;
+  min-height: 1.2em;
+  vertical-align: top;
+  text-rendering: geometricPrecision;
+  /* One-step block outline for pixel look */
+  text-shadow:
+    2px 0 0 currentColor,
+    0 2px 0 currentColor,
+    2px 2px 0 currentColor;
+}
+
+/* Hero section container */
+#hero .max-w-6xl {
+  vertical-align: top;
+}
+
+/* Dot matrix pattern */
+.dot-matrix {
+  background-image: radial-gradient(circle, black 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* Emoticon styling */
+.emoticon-face {
+  line-height: 80px;
+  height: 20px;
+  margin-top: 0;
+}
+
+/* Press Start 2P font */
+.font-press-start {
+  font-family: var(--font-press-start-2p), monospace;
+}
+
+/* Моноширинный шрифт для блока content (Даша, місія) */
+.font-content-mono {
+  font-family: var(--font-content-mono), monospace;
+}

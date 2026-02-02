@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --beige: #F5F1EB;
+  --beige-light: #FAF8F5;
+  --graphite: #2C2C2C;
+  --graphite-muted: #6B6B6B;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--beige-light);
+  color: var(--graphite);
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+::selection {
+  background-color: var(--graphite);
+  color: var(--beige-light);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--beige-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--graphite-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--graphite);
+}
