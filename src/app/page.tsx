@@ -201,6 +201,22 @@ export default function Home() {
             </li>
             <li>
               <Link
+                href="/services"
+                className={`relative group text-xs md:text-sm tracking-[0.2em] uppercase transition-colors ${
+                  scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
+                }`}
+              >
+                <span>послуги</span>
+                <span
+                  className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 ${
+                    scrolled ? 'bg-white' : 'bg-black'
+                  }`}
+                  aria-hidden
+                />
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/important"
                 className={`relative group text-xs md:text-sm tracking-[0.2em] uppercase transition-colors ${
                   scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
@@ -223,22 +239,6 @@ export default function Home() {
                 }`}
               >
                 <span>прайс</span>
-                <span
-                  className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 ${
-                    scrolled ? 'bg-white' : 'bg-black'
-                  }`}
-                  aria-hidden
-                />
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/services"
-                className={`relative group text-xs md:text-sm tracking-[0.2em] uppercase transition-colors ${
-                  scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
-                }`}
-              >
-                <span>послуги</span>
                 <span
                   className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 ${
                     scrolled ? 'bg-white' : 'bg-black'
@@ -312,6 +312,13 @@ export default function Home() {
               головна
             </a>
             <Link
+              href="/services"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
+            >
+              послуги
+            </Link>
+            <Link
               href="/important"
               onClick={() => setMobileMenuOpen(false)}
               className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
@@ -324,13 +331,6 @@ export default function Home() {
               className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
             >
               прайс
-            </Link>
-            <Link
-              href="/services"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
-            >
-              послуги
             </Link>
             <Link
               href="/learn"

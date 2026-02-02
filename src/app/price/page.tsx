@@ -138,6 +138,12 @@ export default function PricePage() {
               </Link>
             </li>
             <li>
+              <Link href="/services" className={linkClass()}>
+                <span>послуги</span>
+                <span className={underlineClass(false)} aria-hidden />
+              </Link>
+            </li>
+            <li>
               <Link href="/important" className={linkClass()}>
                 <span>нам важливо</span>
                 <span className={underlineClass(false)} aria-hidden />
@@ -147,12 +153,6 @@ export default function PricePage() {
               <Link href="/price" className={linkClass(true)}>
                 <span>прайс</span>
                 <span className={underlineClass(true)} aria-hidden />
-              </Link>
-            </li>
-            <li>
-              <Link href="/services" className={linkClass()}>
-                <span>послуги</span>
-                <span className={underlineClass(false)} aria-hidden />
               </Link>
             </li>
             <li>
@@ -198,14 +198,14 @@ export default function PricePage() {
             <Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
               головна
             </Link>
+            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
+              послуги
+            </Link>
             <Link href="/important" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
               нам важливо
             </Link>
             <Link href="/price" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
               прайс
-            </Link>
-            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              послуги
             </Link>
             <Link href="/learn" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
               навчатися

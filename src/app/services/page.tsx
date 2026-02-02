@@ -85,9 +85,9 @@ export default function ServicesPage() {
           </Link>
           <ul className="hidden md:flex items-center gap-5 md:gap-8">
             <li>{navLink('/', 'головна', false)}</li>
+            <li>{navLink('/services', 'послуги', true)}</li>
             <li>{navLink('/important', 'нам важливо', false)}</li>
             <li>{navLink('/price', 'прайс', false)}</li>
-            <li>{navLink('/services', 'послуги', true)}</li>
             <li>
               <Link href="/learn" className={linkClass()}>
                 <span>навчатися</span>
@@ -112,9 +112,9 @@ export default function ServicesPage() {
           <div className="flex flex-col items-center gap-2 px-6" onClick={(e) => e.stopPropagation()}>
             {[
               { href: '/', label: 'головна' },
+              { href: '/services', label: 'послуги' },
               { href: '/important', label: 'нам важливо' },
               { href: '/price', label: 'прайс' },
-              { href: '/services', label: 'послуги' },
               { href: '/learn', label: 'навчатися' },
             ].map(({ href, label }) => (
               <Link key={href} href={href} onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">

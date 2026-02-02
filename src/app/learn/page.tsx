@@ -142,6 +142,12 @@ export default function LearnPage() {
               </Link>
             </li>
             <li>
+              <Link href="/services" className={linkClass()}>
+                <span>послуги</span>
+                <span className={underlineClass()} aria-hidden />
+              </Link>
+            </li>
+            <li>
               <Link href="/important" className={linkClass()}>
                 <span>нам важливо</span>
                 <span className={underlineClass()} aria-hidden />
@@ -150,12 +156,6 @@ export default function LearnPage() {
             <li>
               <Link href="/price" className={linkClass()}>
                 <span>прайс</span>
-                <span className={underlineClass()} aria-hidden />
-              </Link>
-            </li>
-            <li>
-              <Link href="/services" className={linkClass()}>
-                <span>послуги</span>
                 <span className={underlineClass()} aria-hidden />
               </Link>
             </li>
@@ -207,6 +207,13 @@ export default function LearnPage() {
               головна
             </Link>
             <Link
+              href="/services"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
+            >
+              послуги
+            </Link>
+            <Link
               href="/important"
               onClick={() => setMobileMenuOpen(false)}
               className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
@@ -219,13 +226,6 @@ export default function LearnPage() {
               className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
             >
               прайс
-            </Link>
-            <Link
-              href="/services"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
-            >
-              послуги
             </Link>
             <Link
               href="/learn"
