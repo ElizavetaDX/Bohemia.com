@@ -176,7 +176,7 @@ export default function Home() {
   }
 
   const heroButtons: HeroButton[] = [
-    { label: 'перейти до прайсу', href: '#price' },
+    { label: 'перейти до прайсу', href: '/price' },
     { label: 'написати Даші', href: 'https://t.me/dasha_dorsh', external: true },
     { label: 'навчатися', href: '/learn', external: false },
   ]
