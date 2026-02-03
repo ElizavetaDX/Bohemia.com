@@ -17,8 +17,8 @@ const pressStart2P = Press_Start_2P({
 })
 
 export const metadata: Metadata = {
-  title: 'Послуги — Студія анімації Богеміка',
-  description: 'Послуги студії анімації Богеміка.',
+  title: 'Креатив — Студія анімації Богеміка',
+  description: 'Креатив студії анімації Богеміка.',
 }
 
 export default function ServicesLayout({

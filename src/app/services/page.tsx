@@ -66,7 +66,7 @@ export default function ServicesPage() {
   )
 
   return (
-    <main className="min-h-screen bg-white text-black">
+    <main className="min-h-screen bg-white text-black bg-dots-pattern">
       {/* Header */}
       <motion.header
         className={`sticky top-0 z-50 backdrop-blur-sm transition-colors duration-500 ${scrolled ? 'bg-black text-white' : 'bg-transparent text-black'}`}
@@ -85,7 +85,7 @@ export default function ServicesPage() {
           </Link>
           <ul className="hidden md:flex items-center gap-5 md:gap-8">
             <li>{navLink('/', 'головна', false)}</li>
-            <li>{navLink('/services', 'послуги', true)}</li>
+            <li>{navLink('/services', 'креатив', true)}</li>
             <li>{navLink('/important', 'нам важливо', false)}</li>
             <li>{navLink('/price', 'прайс', false)}</li>
             <li>
@@ -112,7 +112,7 @@ export default function ServicesPage() {
           <div className="flex flex-col items-center gap-2 px-6" onClick={(e) => e.stopPropagation()}>
             {[
               { href: '/', label: 'головна' },
-              { href: '/services', label: 'послуги' },
+              { href: '/services', label: 'креатив' },
               { href: '/important', label: 'нам важливо' },
               { href: '/price', label: 'прайс' },
               { href: '/learn', label: 'навчатися' },
@@ -128,16 +128,16 @@ export default function ServicesPage() {
         </div>
       )}
 
-      {/* Hero: ПОСЛУГИ */}
-      <section className="px-6 md:px-12 pt-8 md:pt-12 pb-6 md:pb-8">
+      {/* Hero: КРЕАТИВ */}
+      <section id="hero" className="px-6 md:px-12 pt-2.5 pb-6 md:pb-8">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 gap-4 text-[10px] md:text-xs tracking-[0.25em] uppercase mb-6 md:mb-8">
-            <div className="text-left tracking-tight text-sm md:text-base font-bold text-black/60">2025</div>
-            <div className="text-center">BOHEMIQA STUDIO</div>
-            <div className="text-right tracking-tight text-sm md:text-base font-bold text-black/60">007</div>
+          <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
+            <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
+            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
+            <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">007</div>
           </div>
-          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase text-center tracking-tight leading-tight">
-            ПОСЛУГИ
+          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase text-center tracking-tight leading-tight mt-2 mb-4 md:mb-6">
+            КРЕАТИВ
           </h1>
         </div>
       </section>

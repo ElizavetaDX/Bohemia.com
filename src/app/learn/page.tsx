@@ -98,7 +98,7 @@ export default function LearnPage() {
     }`
 
   return (
-    <main className="min-h-screen bg-white text-black">
+    <main className="min-h-screen bg-white text-black bg-dots-pattern">
       {/* Header */}
       <motion.header
         className={`sticky top-0 z-50 backdrop-blur-sm transition-colors duration-500 ${
@@ -143,7 +143,7 @@ export default function LearnPage() {
             </li>
             <li>
               <Link href="/services" className={linkClass()}>
-                <span>послуги</span>
+                <span>креатив</span>
                 <span className={underlineClass()} aria-hidden />
               </Link>
             </li>
@@ -211,7 +211,7 @@ export default function LearnPage() {
               onClick={() => setMobileMenuOpen(false)}
               className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
             >
-              послуги
+              креатив
             </Link>
             <Link
               href="/important"
@@ -248,16 +248,14 @@ export default function LearnPage() {
       {/* Hero */}
       <section id="hero" className="px-6 md:px-12 pt-2.5">
         <div className="max-w-6xl mx-auto">
-          {/* Small text row */}
-          <div className="grid grid-cols-3 gap-4 text-[10px] md:text-xs tracking-[0.25em] uppercase mb-6 md:mb-8">
-            <div className="text-left tracking-tight text-sm md:text-base font-bold text-black/60">2025</div>
-            <div className="text-center">BOHEMIQA STUDIO</div>
-            <div className="text-right tracking-tight text-sm md:text-base font-bold text-black/60">011</div>
+          <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
+            <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
+            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
+            <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">011</div>
           </div>
 
-          {/* Pixel-art heading */}
           <h1
-            className="font-press-start pixel-hero text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-center tracking-tight mt-2 mb-4 md:mb-6"
+            className="font-press-start pixel-hero text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-center tracking-tight mt-2 mb-4 md:mb-6 w-fit mx-auto"
             style={{ paddingTop: '20px', paddingBottom: '20px' }}
           >
             СТАРТ

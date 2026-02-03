@@ -24,6 +24,37 @@
   background-size: 8px 8px;
 }
 
+/* Background dots pattern for all pages */
+.bg-dots-pattern {
+  position: relative;
+}
+
+.bg-dots-pattern::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.6) 2px, transparent 2px);
+  background-size: 20px 32px;
+  background-position: 0 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (min-width: 768px) {
+  .bg-dots-pattern::before {
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.6) 3px, transparent 3px);
+    background-size: 20px 32px;
+  }
+}
+
+.bg-dots-pattern > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* Emoticon styling */
 .emoticon-face {
   line-height: 80px;

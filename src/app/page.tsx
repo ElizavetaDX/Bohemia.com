@@ -132,7 +132,7 @@ export default function Home() {
 
   const heroButtons: HeroButton[] = [
     { label: 'перейти до прайсу', href: '/price' },
-    { label: 'послуги', href: '/services', external: false },
+    { label: 'креатив', href: '/services', external: false },
     { label: 'написати Даші', href: 'https://t.me/dasha_dorsh', external: true },
     { label: 'навчатися', href: '/learn', external: false },
   ]
@@ -149,7 +149,7 @@ export default function Home() {
   ]
 
   return (
-    <main className="min-h-screen bg-white text-black">
+    <main className="min-h-screen bg-white text-black bg-dots-pattern">
       {/* Header */}
       <motion.header
         className={`sticky top-0 z-50 backdrop-blur-sm transition-colors duration-500 ${
@@ -206,7 +206,7 @@ export default function Home() {
                   scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
                 }`}
               >
-                <span>послуги</span>
+                <span>креатив</span>
                 <span
                   className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 ${
                     scrolled ? 'bg-white' : 'bg-black'
@@ -355,14 +355,11 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
             <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
-            <div className="text-center text-base md:text-lg font-bold text-black/60">BOHEMIQA STUDIO</div>
+            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
             <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">011</div>
           </div>
 
-          <h1
-            className="font-press-start pixel-hero text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-center tracking-tight mt-2 mb-4 md:mb-6"
-            style={{ paddingTop: '20px', paddingBottom: '20px' }}
-          >
+          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase text-center tracking-tight leading-tight mt-2 mb-4 md:mb-6">
             ПРИВІТ
           </h1>
         </div>

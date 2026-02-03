@@ -99,7 +99,7 @@ export default function ImportantPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-white text-black">
+    <main className="min-h-screen bg-white text-black bg-dots-pattern">
       {/* Header */}
       <motion.header
         className={`sticky top-0 z-50 backdrop-blur-sm transition-colors duration-500 ${
@@ -144,7 +144,7 @@ export default function ImportantPage() {
             </li>
             <li>
               <Link href="/services" className={linkClass()}>
-                <span>послуги</span>
+                <span>креатив</span>
                 <span className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ${scrolled ? 'bg-white' : 'bg-black'}`} aria-hidden />
               </Link>
             </li>
@@ -204,7 +204,7 @@ export default function ImportantPage() {
               головна
             </Link>
             <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              послуги
+              креатив
             </Link>
             <Link href="/important" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
               нам важливо
@@ -223,14 +223,14 @@ export default function ImportantPage() {
       )}
 
       {/* Hero: мелкие надписи + заголовок НАМ ВАЖЛИВО */}
-      <section className="px-6 md:px-12 pt-8 md:pt-12 pb-6 md:pb-8">
+      <section id="hero" className="px-6 md:px-12 pt-2.5 pb-6 md:pb-8">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 gap-4 text-[10px] md:text-xs tracking-[0.25em] uppercase mb-6 md:mb-8">
-            <div className="text-left tracking-tight text-sm md:text-base font-bold text-black/60">2025</div>
-            <div className="text-center">BOHEMIQA STUDIO</div>
-            <div className="text-right tracking-tight text-sm md:text-base font-bold text-black/60">011</div>
+          <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
+            <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
+            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
+            <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">011</div>
           </div>
-          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase text-center tracking-tight leading-tight">
+          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl uppercase text-center tracking-tight leading-tight bg-white mt-2 mb-4 md:mb-6">
             НАМ ВАЖЛИВО
           </h1>
         </div>
@@ -240,10 +240,10 @@ export default function ImportantPage() {
       <section className="px-6 md:px-12 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-            <p className="text-sm md:text-base leading-snug tracking-[0.02em] text-black/90 text-justify">
+            <p className="text-sm md:text-base leading-snug tracking-[0.02em] text-black/90 text-justify bg-white">
               кожен наш проєкт — це не просто файна картинка. Це історія, яка народжується з глибини і втілюється через СЕНС, естетику та відповідальність. ми прагнемо, щоб кожен кадр промовляв мовою ваших цінностей і створював простір, в якому хочеться залишитись.
             </p>
-            <p className="text-sm md:text-base leading-snug tracking-[0.02em] text-black/90 text-justify">
+            <p className="text-sm md:text-base leading-snug tracking-[0.02em] text-black/90 text-justify bg-white">
               ми відповідальні — не тільки за дедлайни, а й за відчуття після співпраці. у Богеміки немає конвеєра. Є досвід, естетика і щире бажання зробити продукт, яким хочеться пишатись.
             </p>
           </div>
@@ -253,10 +253,10 @@ export default function ImportantPage() {
       {/* Блок со списком: заголовок + сетка grid-cols-2 */}
       <section className="px-6 md:px-12 pb-12 md:pb-16">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-sm md:text-base font-semibold leading-tight tracking-[0.02em] text-black/90 mb-4">
+          <h2 className="text-sm md:text-base font-semibold leading-tight tracking-[0.02em] text-black/90 mb-4 bg-white">
             саме тому ми:
           </h2>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 text-sm md:text-base leading-tight tracking-[0.02em] text-black/90 list-none">
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 text-sm md:text-base leading-tight tracking-[0.02em] text-black/90 list-none bg-white">
             {listItems.map((item, i) => (
               <li key={i} className="flex gap-3">
                 <span className="flex-shrink-0 w-1.5 h-1.5 mt-1.5 rounded-full bg-black" aria-hidden />
