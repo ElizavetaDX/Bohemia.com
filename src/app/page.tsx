@@ -368,7 +368,7 @@ export default function Home() {
       {/* Content / About */}
       <section
         id="content"
-        className="px-6 md:px-12 py-6 md:py-4 pb-10 md:pb-6 min-h-0 lg:min-h-[360px]"
+        className="px-6 md:px-12 py-6 md:py-4 pb-[10px] min-h-0 lg:min-h-[360px]"
         style={{ marginTop: '10px', marginBottom: '10px' }}
       >
         <div className="max-w-6xl mx-auto relative">
@@ -407,10 +407,10 @@ export default function Home() {
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-4 text-sm leading-relaxed tracking-[0.1em] sm:tracking-[0.16em] max-w-3xl">
-                <p className="break-words text-black">
+                <p className="break-words text-black text-justify">
                   {'Моя місія про любов, любов до своєї справи, любов до краси, любов до всього, що створюють талановиті українці. В Богеміці я зібрала класне ком\'юніті художників та технарів, вони неймовірні!'}
                 </p>
-                <p className="break-words text-black">
+                <p className="break-words text-black text-justify">
                   Для мене немає нічого неможливого і я одержима своєю справою. Давайте створювати щось приголомшливе разом! Якщо у вас є ідея, ми її радо втілимо, а якщо немає, споко, бо маємо їх цілу купу :)
                 </p>
               </div>
@@ -419,19 +419,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Точки под секцией content */}
-      <div className="px-6 md:px-12">
-        <div className="max-w-6xl mx-auto flex justify-start">
-          <div className="grid grid-cols-5 gap-x-5 gap-y-8">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div key={i} className="w-1 h-1 md:w-1.5 md:h-1.5 bg-black/60 rounded-full" />
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Central menu buttons */}
-      <div className="mt-12 md:mt-12 space-y-4 px-6 md:px-12 pt-8 md:pt-[50px] pb-[50px]">
+      <div className="mt-12 md:mt-12 space-y-4 px-6 md:px-12 pt-[10px] md:pt-[10px] pb-[10px]">
         <div className="max-w-6xl mx-auto">
           {heroButtons.map((button) =>
             button.external ? (
@@ -460,12 +449,12 @@ export default function Home() {
       </div>
 
       {/* Section 006: Clients */}
-      <section id="clients" className="px-6 md:px-12 py-16 md:py-10 bg-white">
+      <section id="clients" className="px-6 md:px-12 py-16 md:py-10">
         <div className="max-w-6xl mx-auto">
           <div className="relative mb-10 md:mb-12">
             <div className="flex flex-col md:flex-row items-start justify-between gap-6">
               <div className="flex items-start gap-3 md:gap-4 relative">
-                <div className="border-l-8 border-black pl-4">
+                <div className="border-l-8 border-black pl-4 bg-white py-2 pr-4">
                   <div className="flex items-center gap-4">
                     <h2 className="font-press-start font-normal text-4xl sm:text-5xl md:text-6xl lg:text-[70px] leading-[0.8] tracking-tight">
                       clients
@@ -479,7 +468,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <span className="absolute bottom-0 right-0 text-sm md:text-base tracking-tight uppercase text-black/60 font-bold">
+            <span className="absolute bottom-0 right-0 text-sm md:text-base tracking-tight uppercase text-black/60 font-bold bg-white px-2 py-1">
               (006)
             </span>
           </div>
@@ -487,7 +476,7 @@ export default function Home() {
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="flex items-center justify-center min-h-[80px] border-2 border-black/20 rounded-md text-[10px] md:text-xs tracking-[0.2em] uppercase text-black/50"
+                className="flex items-center justify-center min-h-[80px] border-2 border-black/20 rounded-md text-[10px] md:text-xs tracking-[0.2em] uppercase text-black/50 bg-white"
               >
                 Client {i}
               </div>

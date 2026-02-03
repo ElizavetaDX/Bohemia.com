@@ -40,3 +40,16 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--graphite);
 }
+
+@keyframes carousel-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-carousel {
+  animation: carousel-scroll 40s linear infinite;
+}

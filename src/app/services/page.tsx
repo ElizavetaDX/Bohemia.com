@@ -134,35 +134,33 @@ export default function ServicesPage() {
           <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
             <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
             <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
-            <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">007</div>
+            <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">011</div>
           </div>
-          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase text-center tracking-tight leading-tight mt-2 mb-4 md:mb-6">
+          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase text-center tracking-tight leading-tight mt-5 mb-[5px]">
             КРЕАТИВ
           </h1>
         </div>
       </section>
 
-      {/* Gallery / Price */}
-      <section id="price" className="px-6 md:px-12 pt-[50px] pb-16 md:pb-[50px]">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-12 lg:gap-16">
-            {galleryItems.map((item) => {
-              const label = String(item.id).padStart(2, '0')
-              return (
-                <div key={item.id} className="relative">
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-black/70">{label}</div>
-                  <div className="relative aspect-[3/4] overflow-hidden rounded-md">
-                    <Image src={item.src} alt={item.alt} fill className="object-contain" sizes="(max-width: 768px) 50vw, 25vw" />
-                  </div>
+      {/* Gallery / Price — infinite carousel */}
+      <section id="price" className="px-0 pt-[50px] pb-16 md:pb-[50px] overflow-hidden">
+        <div className="flex w-full animate-carousel">
+          {[...galleryItems, ...galleryItems].map((item, index) => {
+            const label = String(item.id).padStart(2, '0')
+            return (
+              <div key={`${item.id}-${index}`} className="relative flex-shrink-0 w-[180px] md:w-[220px] px-3 md:px-4">
+                <div className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-black/70 z-10">{label}</div>
+                <div className="relative aspect-[3/4] overflow-hidden rounded-md">
+                  <Image src={item.src} alt={item.alt} fill className="object-contain" sizes="180px" />
                 </div>
-              )
-            })}
-          </div>
+              </div>
+            )
+          })}
         </div>
       </section>
 
       {/* Section 002: 360 Rotation */}
-      <section id="rotation-360" className="px-6 md:px-12 py-16 md:py-10 bg-white">
+      <section id="rotation-360" className="px-6 md:px-12 py-[30px]">
         <div className="max-w-6xl mx-auto">
           <div className="relative mb-10 md:mb-12">
             <div className="flex flex-col md:flex-row items-start justify-between gap-6">
@@ -189,7 +187,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Section 003: Animation */}
-      <section id="animation" className="px-6 md:px-12 py-0 bg-white">
+      <section id="animation" className="px-6 md:px-12 py-0">
         <div className="max-w-6xl mx-auto">
           <div className="relative mb-10 md:mb-12">
             <div className="flex flex-col md:flex-row items-start justify-between gap-6 py-10">
@@ -212,7 +210,7 @@ export default function ServicesPage() {
       {/* INSTA REELS grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-6 md:px-12">
         {['https://www.instagram.com/p/DKZf_FYicfL/embed', 'https://www.instagram.com/p/DMSReLatyEZ/embed', 'https://www.instagram.com/p/DK2RPI8tbBr/embed'].map((src, i) => (
-          <div key={i} className="w-full border-4 border-black overflow-hidden bg-black">
+          <div key={i} className="w-full overflow-hidden bg-black">
             <div className="relative w-full" style={{ paddingBottom: '125%' }}>
               <iframe className="absolute top-0 left-0 w-full h-full" src={src} title={`Instagram Reels ${i + 1}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ maxWidth: '100%' }} />
             </div>
@@ -221,7 +219,7 @@ export default function ServicesPage() {
       </div>
 
       {/* Section 004: VFX */}
-      <section id="vfx" className="px-6 md:px-12 py-16 md:py-10 bg-white">
+      <section id="vfx" className="px-6 md:px-12 py-16 md:py-10">
         <div className="max-w-6xl mx-auto">
           <div className="relative mb-10 md:mb-12">
             <div className="flex items-start justify-between gap-6">
@@ -247,7 +245,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Section 005: AI Generation */}
-      <section id="ai-generation" className="px-6 md:px-12 py-16 md:py-10 bg-white">
+      <section id="ai-generation" className="px-6 md:px-12 py-16 md:py-10">
         <div className="max-w-6xl mx-auto">
           <div className="relative mb-10 md:mb-12">
             <div className="flex flex-col md:flex-row items-start justify-between gap-6">
@@ -266,7 +264,7 @@ export default function ServicesPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {[{ src: '/gallery-09.png', alt: 'AI generation 1' }, { src: '/gallery-10.png', alt: 'AI generation 2' }, { src: '/gallery-11.png', alt: 'AI generation 3' }].map((item, index) => (
-              <div key={index} className="relative w-full aspect-[3/4] overflow-hidden rounded-md bg-neutral-100">
+              <div key={index} className="relative w-full aspect-[3/4] overflow-hidden rounded-md">
                 <Image src={item.src} alt={item.alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
               </div>
             ))}

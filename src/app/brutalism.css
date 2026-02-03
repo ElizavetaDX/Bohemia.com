@@ -37,7 +37,7 @@
   right: 0;
   bottom: 0;
   background-image: radial-gradient(circle, rgba(0, 0, 0, 0.6) 2px, transparent 2px);
-  background-size: 20px 32px;
+  background-size: 50px 50px;
   background-position: 0 0;
   pointer-events: none;
   z-index: 0;
@@ -46,7 +46,7 @@
 @media (min-width: 768px) {
   .bg-dots-pattern::before {
     background-image: radial-gradient(circle, rgba(0, 0, 0, 0.6) 3px, transparent 3px);
-    background-size: 20px 32px;
+    background-size: 50px 50px;
   }
 }
 
