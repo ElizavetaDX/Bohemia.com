@@ -105,21 +105,6 @@ const priceItems = [
     alt: 'Product 360',
   },
   {
-    id: 3,
-    name: 'VFX',
-    lines: [
-      priceLine('різновиди анімації — ціна, грн', undefined, true),
-      priceLine(''),
-      priceLine('5-7 сек', '10 000'),
-      priceLine('8-12 сек', '15 000'),
-      priceLine('13-20 сек', '20 000'),
-      priceLine("VFX — це інтеграція 3D об'єктів в реальне відео. відео-вихідник не входить у вартість роботи, але ви можете легко зняти його самостійно на телефон з нашим супроводом онлайн, або ми знайдемо відеографа у будь-якому місті"),
-      priceLine("фізична симуляція — це анімація з імітацією реальних фізичних властивостей об'єктів, при взаємодії з іншими об'єктами чи явищами наприклад: симуляція рідин, диму, вітру, м'яких тіл, тканин і тп. музика, звуки, монтаж, корекція включені в вартість анімації"),
-    ],
-    src: '/gallery-03.png',
-    alt: 'Character Creator',
-  },
-  {
     id: 4,
     name: 'Візуалізація',
     description: 'рівень складності / ціна, грн',
@@ -178,8 +163,6 @@ const priceItems = [
       priceLine('13-20 сек', '23 000'),
     ],
   },
-  { id: 7, name: 'Textural Macro', description: 'Макрозйомка матеріалів: шкіра, метал, рідина.', price: 'від 150$', src: '/gallery-07.png', alt: 'Textural Macro' },
-  { id: 8, name: 'Full Commercial Video', description: 'Повноцінний рекламний ролик під ключ.', price: 'від 1000$', src: '/gallery-08.png', alt: 'Commercial Video' },
 ]
 
 export default function PricePage() {
@@ -332,7 +315,7 @@ export default function PricePage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
             <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
-            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
+            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
             <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">009</div>
           </div>
           <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[0.8] text-black text-center mt-2 mb-4 md:mb-6">
@@ -346,12 +329,8 @@ export default function PricePage() {
         <div className="max-w-6xl mx-auto">
           <ul className="space-y-12 md:space-y-16">
             {priceItems.map((item) => (
-              <li key={item.id} className="flex flex-col sm:flex-row sm:items-start gap-6 md:gap-8 border-b border-black/10 pb-12 md:pb-16 last:border-0">
-                <div className="flex-shrink-0 w-[200px] h-[200px] flex items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={item.src} alt={item.alt} className="block max-w-full max-h-[200px] object-contain" />
-                </div>
-                <div className="flex-1 min-w-0">
+              <li key={item.id} className="border-b border-black/10 pb-12 md:pb-16 last:border-0">
+                <div className="min-w-0">
                   {item.id === 1 ? (
                     <div className="flex items-stretch gap-6 mb-2">
                       <div className="border-l-8 border-black flex-shrink-0 self-stretch min-h-[1em]" aria-hidden />
@@ -359,20 +338,16 @@ export default function PricePage() {
                         <>01 <span className="normal-case">Ш</span><span className="normal-case inline-block text-[1.35em] leading-none align-baseline">і</span></>
                       </h3>
                     </div>
-                  ) : item.id === 2 || item.id === 3 || item.id === 4 ? (
+                  ) : (
                     <div className="flex items-stretch gap-6 mb-2">
                       <div className="border-l-8 border-black flex-shrink-0 self-stretch min-h-[1em]" aria-hidden />
                       <h3 className="font-press-start leading-none uppercase tracking-tight text-black text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px]">
                         {String(item.id).padStart(2, '0')} {item.name}
                       </h3>
                     </div>
-                  ) : (
-                    <h3 className="font-press-start leading-none uppercase tracking-tight text-black mb-2 text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px]">
-                      {String(item.id).padStart(2, '0')} {item.name}
-                    </h3>
                   )}
                   {'lines' in item ? (
-                    <div className={`font-content-mono text-sm md:text-base text-black leading-relaxed mb-4 space-y-1 ${item.id === 3 ? 'mt-0' : ''}`}>
+                    <div className="font-content-mono text-sm md:text-base text-black leading-relaxed mb-4 space-y-1">
                       {(item.lines ?? []).map((line, i) =>
                         !line.text && !line.price ? null : (
                           <div key={i} className="grid grid-cols-[1fr_85px] gap-4 items-baseline ml-5 min-w-0 mt-px pt-px pb-px">

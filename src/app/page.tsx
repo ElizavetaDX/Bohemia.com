@@ -355,7 +355,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
             <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
-            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
+            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
             <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">011</div>
           </div>
 

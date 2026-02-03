@@ -133,7 +133,7 @@ export default function ServicesPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
             <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
-            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
+            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
             <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">011</div>
           </div>
           <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase text-center tracking-tight leading-tight mt-5 mb-[5px]">
@@ -218,32 +218,6 @@ export default function ServicesPage() {
         ))}
       </div>
 
-      {/* Section 004: VFX */}
-      <section id="vfx" className="px-6 md:px-12 py-16 md:py-10">
-        <div className="max-w-6xl mx-auto">
-          <div className="relative mb-10 md:mb-12">
-            <div className="flex items-start justify-between gap-6">
-              <div className="flex items-start gap-3 md:gap-4 relative">
-                <div className="border-l-8 border-black pl-4">
-                  <div className="flex items-center gap-4">
-                    <h2 className="font-press-start text-[70px] leading-[0.8] tracking-tight">vfx</h2>
-                  </div>
-                  <div className="grid grid-cols-8 gap-x-[10px] gap-y-1.5 md:gap-x-[10px] md:gap-y-2 w-fit pt-[5px] pb-[5px]" style={{ paddingTop: '10px', paddingBottom: '10px' }}>
-                    {Array.from({ length: 24 }).map((_, i) => (<div key={i} className="w-1 h-1 md:w-1.5 md:h-1.5 bg-black/60 rounded-full" />))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <span className="absolute bottom-0 right-0 text-sm md:text-base tracking-tight uppercase text-black/60 font-bold">(004)</span>
-          </div>
-          <div className="mx-auto max-w-2xl">
-            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-              <iframe className="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/wSQRaWBq-rI" title="VFX. Доповнена реальність" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Section 005: AI Generation */}
       <section id="ai-generation" className="px-6 md:px-12 py-16 md:py-10">
         <div className="max-w-6xl mx-auto">
@@ -271,17 +245,6 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
-
-      {/* Точки: горизонтально 21 колонка по 4 ряда */}
-      <div className="w-full px-6 md:px-12 py-6 md:py-8">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="grid grid-cols-[repeat(21,minmax(0,1fr))] grid-rows-4 gap-x-5 gap-y-8 w-full">
-            {Array.from({ length: 21 * 4 }).map((_, i) => (
-              <div key={i} className="w-1.5 h-1.5 md:w-[9px] md:h-[9px] bg-black/60 rounded-full" />
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* Footer */}
       <footer className="px-6 md:px-12 py-8 bg-white">
