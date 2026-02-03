@@ -368,7 +368,7 @@ export default function Home() {
       {/* Content / About */}
       <section
         id="content"
-        className="px-6 md:px-12 py-6 md:py-4 pb-10 md:pb-6 bg-white min-h-0 lg:min-h-[360px]"
+        className="px-6 md:px-12 py-6 md:py-4 pb-10 md:pb-6 min-h-0 lg:min-h-[360px]"
         style={{ marginTop: '10px', marginBottom: '10px' }}
       >
         <div className="max-w-6xl mx-auto relative">
@@ -390,13 +390,13 @@ export default function Home() {
             </div>
 
             {/* Right column */}
-            <div className="font-content-mono -ml-[20px] lg:-ml-[40px] min-h-0 flex flex-col justify-end gap-4 md:gap-5 pt-4 lg:pt-0 lg:h-[320px]">
+            <div className="font-content-mono -ml-[20px] lg:-ml-[40px] min-h-0 flex flex-col justify-end gap-4 md:gap-5 pt-4 lg:pt-0 lg:h-[320px] bg-white px-4 py-4 md:px-5 md:py-5">
               <div className="flex flex-row items-center justify-between gap-4">
                 <div>
-                  <p className="text-sm md:text-base leading-relaxed tracking-[0.12em] sm:tracking-[0.18em] uppercase mb-0">
+                  <p className="text-sm md:text-base leading-relaxed tracking-[0.12em] sm:tracking-[0.18em] uppercase mb-0 text-black">
                     мене звати Даша, рада, що ви тут
                   </p>
-                  <p className="text-[24px] md:text-[32px] leading-relaxed tracking-[0.12em] sm:tracking-[0.18em] mt-0 mb-0" style={{ verticalAlign: 'top' }}>
+                  <p className="text-[24px] md:text-[32px] leading-relaxed tracking-[0.12em] sm:tracking-[0.18em] mt-0 mb-0 text-black" style={{ verticalAlign: 'top' }}>
                     ^_^
                   </p>
                 </div>
@@ -407,10 +407,10 @@ export default function Home() {
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-4 text-sm leading-relaxed tracking-[0.1em] sm:tracking-[0.16em] max-w-3xl">
-                <p className="break-words">
+                <p className="break-words text-black">
                   {'Моя місія про любов, любов до своєї справи, любов до краси, любов до всього, що створюють талановиті українці. В Богеміці я зібрала класне ком\'юніті художників та технарів, вони неймовірні!'}
                 </p>
-                <p className="break-words">
+                <p className="break-words text-black">
                   Для мене немає нічого неможливого і я одержима своєю справою. Давайте створювати щось приголомшливе разом! Якщо у вас є ідея, ми її радо втілимо, а якщо немає, споко, бо маємо їх цілу купу :)
                 </p>
               </div>

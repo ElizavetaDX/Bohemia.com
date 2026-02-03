@@ -303,7 +303,7 @@ export default function PricePage() {
                   )}
                   {'lines' in item ? (
                     <div className="font-content-mono text-sm md:text-base text-black leading-relaxed mb-4 space-y-1">
-                      {item.lines.map((line, i) => (
+                      {(item.lines ?? []).map((line, i) => (
                         <div key={i} className={!line.text && !line.price ? 'h-3' : line.price == null && line.text && line.text.length > 50 ? 'w-screen max-w-[100vw] relative left-1/2 -ml-[50vw] px-6 md:px-12 overflow-hidden' : 'grid grid-cols-[1fr_80px] gap-4 items-baseline ml-5 min-w-0'}>
                           {line.text && <span className={(line.price == null && line.text.length > 50 ? 'block w-full max-w-full break-words' : 'min-w-0 bg-white') + (line.gray ? ' text-black/60' : '')}>{line.text}</span>}
                           {line.price != null && (
