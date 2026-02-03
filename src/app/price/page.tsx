@@ -68,6 +68,9 @@ const priceItems = [
       priceLine('етап 1', undefined, true),
       priceLine(''),
       priceLine('реалістичне або концептуальне зображення з вашим продуктом, логотипом або впізнаваними елементами бренду', '2000'),
+      priceLine('додатковий кадр в єдиній концепції', '1000'),
+      priceLine('додатковий кадр ракурс', '500'),
+      priceLine('снепи ai-аватару за ТЗ [макіяж+зачіска+одяг]', '3500'),
       priceLine(''),
       priceLine('етап 2', undefined, true),
       priceLine(''),
@@ -87,12 +90,8 @@ const priceItems = [
     lines: [
       priceLine('різновиди анімації — ціна, грн', undefined, true),
       priceLine(''),
-      priceLine('ai-фото (кадр):'),
       priceLine(''),
       priceLine('обертання 360 градусів', '2 500'),
-      priceLine('додатковий кадр в єдиній концепції', '1000'),
-      priceLine('додатковий кадр ракурс', '500'),
-      priceLine('снепи ai-аватару за ТЗ [макіяж+зачіска+одяг]', '3500'),
       priceLine(''),
       priceLine('етап 2', undefined, true),
       priceLine(''),
@@ -100,15 +99,64 @@ const priceItems = [
       priceLine(''),
       priceLine('оживлення кадру за сценарієм (до 3х кадрів)', '4000'),
       priceLine(''),
-      priceLine('креативи створюються за допомогою нейромереж, проте кожен кадр проходить детальну ручну обробку в Photoshop для досягнення високої якості'),
     ],
     price: 'від 200$',
     src: '/gallery-02.png',
     alt: 'Product 360',
   },
-  { id: 3, name: 'Digital Character Creator', description: 'Створення унікальних аватарів та персонажів.', price: 'від 500$', src: '/gallery-03.png', alt: 'Character Creator' },
-  { id: 4, name: 'Virtual Try-On', description: 'Технологія віртуальної примірки для e-commerce.', price: 'від 400$', src: '/gallery-04.png', alt: 'Virtual Try-On' },
-  { id: 5, name: 'Motion Branding', description: 'Логотипи та айдентика, що рухаються.', price: 'від 150$', src: '/gallery-05.png', alt: 'Motion Branding' },
+  {
+    id: 3,
+    name: 'VFX',
+    lines: [
+      priceLine('різновиди анімації — ціна, грн', undefined, true),
+      priceLine(''),
+      priceLine('5-7 сек', '10 000'),
+      priceLine('8-12 сек', '15 000'),
+      priceLine('13-20 сек', '20 000'),
+      priceLine("VFX — це інтеграція 3D об'єктів в реальне відео. відео-вихідник не входить у вартість роботи, але ви можете легко зняти його самостійно на телефон з нашим супроводом онлайн, або ми знайдемо відеографа у будь-якому місті"),
+      priceLine("фізична симуляція — це анімація з імітацією реальних фізичних властивостей об'єктів, при взаємодії з іншими об'єктами чи явищами наприклад: симуляція рідин, диму, вітру, м'яких тіл, тканин і тп. музика, звуки, монтаж, корекція включені в вартість анімації"),
+    ],
+    src: '/gallery-03.png',
+    alt: 'Character Creator',
+  },
+  {
+    id: 4,
+    name: 'Візуалізація',
+    description: 'рівень складності / ціна, грн',
+    price: 'від 400$',
+    src: '/gallery-04.png',
+    alt: 'Візуалізація',
+    tiers: [
+      { text: '3D лого, пакет, коробка, простий топ, футболка, легінси, трусики, лонгслів', price: '2 500' },
+      { text: 'сукня, спідниця, кобінезон, боді, сорочка, брюки, купальник, білизна без кісточок, джогери, світшот, худі, жилет, обручки, панчохи, перчатки', price: '4 000' },
+      { text: 'флакон, косметика, капелюх, пальто, жакет, косуха, тренч, вечірня сукня, білизна з корсетними кісточками, пуховик, корсет, ремінь, простий посуд, домашній текстиль', price: '6 000' },
+      { text: 'окуляри, проста сумочка, складні принти та текстури, не складні ювелірні вироби, простий анімований персонаж, меблі, їжа, складний посуд', price: '12 000' },
+      { text: "складна сумочка, рюкзак, взуття, хутро, одяг з пір'ям, складні ювелірні вироби, годинник, одяг з оздобленням із каміння/перлин, вишивка, анімований персонаж", price: '20 000+' },
+    ],
+    notes: {
+      title: 'Умови та примітки',
+      items: [
+        'базовий пакет візуалізації включає 10 фото-рендерів в різних ракурсах/кольорах(до 3х)/позах/з різним фоном',
+        'кожен додатковий рендер 50 грн (мінімальне замовлення 5 шт/1 колір)',
+        "3D об'єкт залишається з вами назавжди і може бути використаний в подальшому для креативів та анімацій",
+        'в прайсі вказана орієнтовна середня ціна, кінцева озвучується після знайомства з вашим продуктом по фото/ескізу/референсу',
+      ],
+    },
+  },
+  {
+    id: 5,
+    name: 'Сцена',
+    description: 'Рiвень складностi',
+    price: 'від 150$',
+    src: '/gallery-05.png',
+    alt: 'Сцена',
+    tiers: [
+      { text: 'однотонний фон, фон-картинка, тінь на підлозі, без фону, земля-небо, пуста кімната, простий подіум', price: '0 000' },
+      { text: 'статичні рослини, стандартний аватар в позі, торт, новорічна ялинка, кульки, візок, двері, побутові предмети, телефон, телевізор', price: '2 000' },
+      { text: 'мебльована кімната, місто, галявина, ліс, сад, дощ, вулиця, вогонь, анімовані рослини, рідини, туман, водойми, транспорт (авто, літак і тп), анімований парашут', price: '4 000' },
+      { text: "сцена з великою кількістю об'єктів", price: '10 000+' },
+    ],
+  },
   { id: 6, name: '3D Loop Content', description: 'Зациклені відео для Reels та TikTok.', price: 'від 250$', src: '/gallery-06.png', alt: '3D Loop' },
   { id: 7, name: 'Textural Macro', description: 'Макрозйомка матеріалів: шкіра, метал, рідина.', price: 'від 150$', src: '/gallery-07.png', alt: 'Textural Macro' },
   { id: 8, name: 'Full Commercial Video', description: 'Повноцінний рекламний ролик під ключ.', price: 'від 1000$', src: '/gallery-08.png', alt: 'Commercial Video' },
@@ -117,6 +165,7 @@ const priceItems = [
 export default function PricePage() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [openNotes, setOpenNotes] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)
@@ -283,46 +332,89 @@ export default function PricePage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   {item.id === 1 ? (
-                    <div className="flex items-start gap-6 mb-2">
-                      <div className="border-l-8 border-black h-32 flex-shrink-0" aria-hidden />
-                      <h3 className="font-press-start uppercase tracking-tight text-black text-[60px] leading-none">
+                    <div className="flex items-stretch gap-6 mb-2">
+                      <div className="border-l-8 border-black flex-shrink-0 self-stretch min-h-[1em]" aria-hidden />
+                      <h3 className="font-press-start uppercase tracking-tight text-black leading-none text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px]">
                         <>01 <span className="normal-case">Ш</span><span className="normal-case inline-block text-[1.35em] leading-none align-baseline">і</span></>
                       </h3>
                     </div>
-                  ) : item.id === 2 ? (
-                    <div className="flex items-start gap-6 mb-2">
-                      <div className="border-l-8 border-black h-32 flex-shrink-0" aria-hidden />
-                      <h3 className="font-press-start text-[60px] leading-none uppercase tracking-tight text-black">
+                  ) : item.id === 2 || item.id === 3 || item.id === 4 ? (
+                    <div className="flex items-stretch gap-6 mb-2">
+                      <div className="border-l-8 border-black flex-shrink-0 self-stretch min-h-[1em]" aria-hidden />
+                      <h3 className="font-press-start leading-none uppercase tracking-tight text-black text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px]">
                         {String(item.id).padStart(2, '0')} {item.name}
                       </h3>
                     </div>
                   ) : (
-                    <h3 className="font-press-start text-[60px] leading-none uppercase tracking-tight text-black mb-2">
+                    <h3 className="font-press-start leading-none uppercase tracking-tight text-black mb-2 text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px]">
                       {String(item.id).padStart(2, '0')} {item.name}
                     </h3>
                   )}
                   {'lines' in item ? (
-                    <div className="font-content-mono text-sm md:text-base text-black leading-relaxed mb-4 space-y-1">
-                      {(item.lines ?? []).map((line, i) => (
-                        <div key={i} className={!line.text && !line.price ? 'h-3' : line.price == null && line.text && line.text.length > 50 ? 'w-screen max-w-[100vw] relative left-1/2 -ml-[50vw] px-6 md:px-12 overflow-hidden' : 'grid grid-cols-[1fr_80px] gap-4 items-baseline ml-5 min-w-0'}>
-                          {line.text && <span className={(line.price == null && line.text.length > 50 ? 'block w-full max-w-full break-words' : 'min-w-0 bg-white') + (line.gray ? ' text-black/60' : '')}>{line.text}</span>}
-                          {line.price != null && (
-                            <span className="inline-block w-fit min-w-0 px-2 py-0.5 border border-black font-bold text-black text-sm md:text-base bg-white flex-shrink-0">
-                              {line.price}
-                            </span>
-                          )}
-                        </div>
-                      ))}
+                    <div className={`font-content-mono text-sm md:text-base text-black leading-relaxed mb-4 space-y-1 ${item.id === 3 ? 'mt-0' : ''}`}>
+                      {(item.lines ?? []).map((line, i) =>
+                        !line.text && !line.price ? null : (
+                          <div key={i} className="grid grid-cols-[1fr_85px] gap-4 items-baseline ml-5 min-w-0 mt-px pt-px pb-px">
+                            {line.text && <span className={(line.price == null && line.text.length > 50 ? 'block w-full max-w-full break-words bg-white pt-5 pb-5' : 'min-w-0 bg-white pt-px pb-px') + (line.gray ? ' text-black/60' : '')}>{line.text}</span>}
+                            {line.price != null && (
+                              <span className="inline-block w-fit min-w-0 px-2 py-0.5 font-bold text-black text-sm md:text-base bg-white flex-shrink-0">
+                                {line.price}
+                              </span>
+                            )}
+                          </div>
+                        )
+                      )}
                     </div>
                   ) : (
-                    <p className="text-sm md:text-base text-black/60 leading-relaxed mb-4">
-                      {item.description}
-                    </p>
+                    <>
+                      <p className="text-sm md:text-base text-black/60 leading-relaxed mb-4">
+                        {item.description}
+                      </p>
+                      {'tiers' in item && (item as { tiers?: { text: string; price: string }[] }).tiers && (
+                        <div className="font-content-mono text-sm md:text-base text-black leading-relaxed mb-4 space-y-1">
+                          {(item as { tiers: { text: string; price: string }[] }).tiers.map((tier, i) => (
+                            <div key={i} className="grid grid-cols-[1fr_85px] gap-4 items-baseline ml-5 min-w-0 mt-px pt-px pb-px">
+                              <span className="block w-full max-w-full break-words bg-white pt-5 pb-5">{tier.text}</span>
+                              <span className="inline-block w-fit min-w-0 px-2 py-0.5 font-bold text-black text-sm md:text-base bg-white flex-shrink-0">{tier.price}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
                   )}
                   {!('lines' in item) && (
-                    <span className="inline-block px-2 py-1 border border-black font-bold text-sm md:text-base text-black">
-                      {item.price}
-                    </span>
+                    'notes' in item && (item as { notes?: { title: string; items: string[] } }).notes ? (
+                      <div className="mt-4">
+                        <button
+                          type="button"
+                          onClick={() => setOpenNotes((prev) => {
+                            const next = new Set(prev)
+                            if (next.has(item.id)) next.delete(item.id)
+                            else next.add(item.id)
+                            return next
+                          })}
+                          className="inline-block px-2 py-1 font-bold text-sm md:text-base text-black mb-3 text-left cursor-pointer border-2 border-black transition-colors hover:bg-black hover:text-white"
+                          aria-expanded={openNotes.has(item.id)}
+                        >
+                          {(item as { notes: { title: string; items: string[] } }).notes.title}
+                        </button>
+                        {openNotes.has(item.id) && (
+                          <div className="font-content-mono text-sm md:text-base text-black leading-relaxed mb-4 space-y-1">
+                            {(item as { notes: { title: string; items: string[] } }).notes.items.map((line, i) => (
+                              <span key={i} className="block w-full max-w-full break-words bg-white pt-5 pb-5">
+                                {line}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      !('tiers' in item) && (
+                        <span className="inline-block px-2 py-1 font-bold text-sm md:text-base text-black">
+                          {item.price}
+                        </span>
+                      )
+                    )
                   )}
                 </div>
               </li>
