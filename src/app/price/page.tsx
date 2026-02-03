@@ -157,7 +157,27 @@ const priceItems = [
       { text: "сцена з великою кількістю об'єктів", price: '10 000+' },
     ],
   },
-  { id: 6, name: '3D Loop Content', description: 'Зациклені відео для Reels та TikTok.', price: 'від 250$', src: '/gallery-06.png', alt: '3D Loop' },
+  {
+    id: 6,
+    name: 'Фізична симуляція',
+    description: 'різновиди анімації / ціна, грн',
+    price: 'від 250$',
+    src: '/gallery-06.png',
+    alt: 'Фізична симуляція',
+    lines: [
+      priceLine('різновиди анімації / ціна, грн', undefined, true),
+      priceLine(''),
+      priceLine('CG анімація з фізичною симуляцією:'),
+      priceLine('5-7 сек', '9 600'),
+      priceLine('8-12 сек', '14 400'),
+      priceLine('13-20 сек', '19 200'),
+      priceLine(''),
+      priceLine('VFX з фізичною симуляцією:'),
+      priceLine('5-7 сек', '12 000'),
+      priceLine('8-12 сек', '17 280'),
+      priceLine('13-20 сек', '23 000'),
+    ],
+  },
   { id: 7, name: 'Textural Macro', description: 'Макрозйомка матеріалів: шкіра, метал, рідина.', price: 'від 150$', src: '/gallery-07.png', alt: 'Textural Macro' },
   { id: 8, name: 'Full Commercial Video', description: 'Повноцінний рекламний ролик під ключ.', price: 'від 1000$', src: '/gallery-08.png', alt: 'Commercial Video' },
 ]
@@ -166,6 +186,7 @@ export default function PricePage() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [openNotes, setOpenNotes] = useState<Set<number>>(new Set())
+  const [openImportant, setOpenImportant] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)
@@ -416,6 +437,26 @@ export default function PricePage() {
                       )
                     )
                   )}
+                  <div className="mt-4 flex flex-col items-start">
+                    <button
+                      type="button"
+                      onClick={() => setOpenImportant((prev) => {
+                        const next = new Set(prev)
+                        if (next.has(item.id)) next.delete(item.id)
+                        else next.add(item.id)
+                        return next
+                      })}
+                      className="inline-block px-2 py-1 font-bold text-sm md:text-base text-black mb-3 text-left cursor-pointer border-2 border-black transition-colors hover:bg-black hover:text-white"
+                      aria-expanded={openImportant.has(item.id)}
+                    >
+                      Важливо
+                    </button>
+                    {openImportant.has(item.id) && (
+                      <p className="text-sm md:text-base text-black/80 leading-relaxed max-w-md">
+                        Щоб порахувати вартість проекту з 3D анімацією скористайтеся, будь ласка, формулою: Анімація + Візуалізація + Сцена
+                      </p>
+                    )}
+                  </div>
                 </div>
               </li>
             ))}
