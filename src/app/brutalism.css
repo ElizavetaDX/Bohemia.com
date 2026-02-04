@@ -55,6 +55,32 @@
   z-index: 1;
 }
 
+/* Portfolio: black dots on white */
+.bg-dots-portfolio::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, #000 2px, transparent 2px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-dots-portfolio > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dot pattern on dark background (e.g. screenshot placeholder) */
+.bg-dots-on-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 2px, transparent 2px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
 /* Emoticon styling */
 .emoticon-face {
   line-height: 80px;

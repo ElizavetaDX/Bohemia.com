@@ -35,8 +35,8 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Студія анімації Богеміка — Digital Brutalism',
-  description: 'Студія анімації Богеміка. Місія про любов до краси та талановитих українців.',
+  title: 'Developer Portfolio — I Make Sites That Look Different',
+  description: 'Portfolio: BOHEMIQA STUDIO, Next.js, Tailwind CSS, Cursor AI, Git.',
 }
 
 export default function RootLayout({
