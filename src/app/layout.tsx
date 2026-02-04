@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, DM_Sans, Manrope, Press_Start_2P, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import './brutalism.css'
@@ -35,8 +35,15 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Developer Portfolio — I Make Sites That Look Different',
-  description: 'Portfolio: BOHEMIQA STUDIO, Next.js, Tailwind CSS, Cursor AI, Git.',
+  title: 'Студія анімації Богеміка — Digital Brutalism',
+  description: 'Студія анімації Богеміка. Місія про любов до краси та талановитих українців.',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({

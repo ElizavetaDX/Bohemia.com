@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Wrapper } from '@/components/Wrapper'
+import { MobileMenu } from '@/components/MobileMenu'
 
 function SearchIcon() {
   return (
@@ -193,18 +194,17 @@ export default function PricePage() {
     <Wrapper className="min-h-screen bg-white text-black bg-dots-pattern" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Header */}
       <motion.header
-        className={`relative z-50 backdrop-blur-sm transition-colors duration-500 ${
-          scrolled ? 'bg-black text-white' : 'bg-transparent text-black'
+        className={`sticky top-0 z-50 w-full transition-all duration-500 ${
+          scrolled ? 'bg-black/90 text-white backdrop-blur-md shadow-sm' : 'bg-white/80 text-black backdrop-blur-md md:bg-white/80'
         }`}
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <nav className="w-full flex flex-nowrap items-center justify-between gap-6 px-6 md:px-12 py-4 md:py-5">
-          <Link href="/" className="flex items-center gap-3 md:gap-4">
+        <nav className="w-full flex flex-nowrap items-center justify-between gap-2 sm:gap-4 md:gap-6 px-4 sm:px-6 md:px-12 py-3 sm:py-4 md:py-5">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 flex-1 md:flex-initial">
             <div
-              className="w-9 h-9 md:w-10 md:h-10 rounded-full flex-shrink-0 overflow-hidden transition-colors duration-500"
-              style={{ mixBlendMode: 'lighten' }}
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex-shrink-0 overflow-hidden transition-colors duration-500"
               aria-hidden
             >
               <Image
@@ -216,7 +216,7 @@ export default function PricePage() {
               />
             </div>
             <span
-              className={`text-[10px] md:text-xs tracking-[0.25em] uppercase transition-colors duration-500 ${
+              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap truncate ${
                 scrolled ? 'text-white/80' : 'text-black/80'
               }`}
             >
@@ -269,7 +269,7 @@ export default function PricePage() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`md:hidden p-2 transition-colors ${scrolled ? 'text-white' : 'text-black'}`}
+            className={`md:hidden p-2 min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px] flex items-center justify-center flex-shrink-0 transition-colors ${scrolled ? 'text-white' : 'text-black'}`}
             aria-label="Меню"
             aria-expanded={mobileMenuOpen}
           >
@@ -278,54 +278,24 @@ export default function PricePage() {
         </nav>
       </motion.header>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-white md:hidden flex flex-col items-center justify-center"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          <div
-            className="flex flex-col items-center gap-2 px-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              головна
-            </Link>
-            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              креатив
-            </Link>
-            <Link href="/important" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              нам важливо
-            </Link>
-            <Link href="/price" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              прайс
-            </Link>
-            <Link href="/learn" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              навчатися
-            </Link>
-            <button type="button" className="mt-6 p-3 border-4 border-transparent text-black hover:bg-black hover:text-white transition-colors text-sm uppercase tracking-[0.2em]" aria-label="Пошук">
-              <SearchIcon />
-            </button>
-          </div>
-        </div>
-      )}
+      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
       {/* Top row + Title: 2025 | BOHEMIQA STUDIO | 009 */}
-      <section id="hero" className="px-6 md:px-12 pt-2.5 pb-4">
+      <section id="hero" className="content-above-dots px-4 sm:px-6 md:px-12 pt-2.5 pb-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
             <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
             <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
             <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">009</div>
           </div>
-          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[0.8] text-black text-center mt-2 mb-4 md:mb-6">
+          <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tight leading-[0.8] text-black text-center mt-2 mb-4 md:mb-6">
             ПРАЙС
           </h1>
         </div>
       </section>
 
       {/* Price list */}
-      <section className="px-6 md:px-12 py-12 md:py-10">
+      <section className="content-above-dots px-4 sm:px-6 md:px-12 py-12 md:py-10">
         <div className="max-w-6xl mx-auto">
           <ul className="space-y-12 md:space-y-16">
             {priceItems.map((item) => (
@@ -341,7 +311,7 @@ export default function PricePage() {
                   ) : (
                     <div className="flex items-stretch gap-6 mb-2">
                       <div className="border-l-8 border-black flex-shrink-0 self-stretch min-h-[1em]" aria-hidden />
-                      <h3 className="font-press-start leading-none uppercase tracking-tight text-black text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px]">
+                      <h3 className="font-press-start leading-none uppercase tracking-tight text-black text-2xl sm:text-[32px] md:text-[40px] lg:text-[48px] xl:text-[52px]">
                         {String(item.id).padStart(2, '0')} {item.name}
                       </h3>
                     </div>
@@ -389,7 +359,7 @@ export default function PricePage() {
                             else next.add(item.id)
                             return next
                           })}
-                          className="inline-block px-2 py-1 font-bold text-sm md:text-base text-black mb-3 text-left cursor-pointer border-2 border-black transition-colors hover:bg-black hover:text-white"
+                          className="inline-flex items-center px-2 py-1 min-h-[48px] font-bold text-sm md:text-base text-black mb-3 text-left cursor-pointer border-2 border-black transition-colors hover:bg-black hover:text-white"
                           aria-expanded={openNotes.has(item.id)}
                         >
                           {(item as { notes: { title: string; items: string[] } }).notes.title}
@@ -405,9 +375,9 @@ export default function PricePage() {
                         )}
                       </div>
                     ) : (
-                      !('tiers' in item) && (
+                      !('tiers' in item) && 'price' in item && (
                         <span className="inline-block px-2 py-1 font-bold text-sm md:text-base text-black">
-                          {item.price}
+                          {(item as { price?: string }).price}
                         </span>
                       )
                     )
@@ -421,7 +391,7 @@ export default function PricePage() {
                         else next.add(item.id)
                         return next
                       })}
-                      className="inline-block px-2 py-1 font-bold text-sm md:text-base text-black mb-3 text-left cursor-pointer border-2 border-black transition-colors hover:bg-black hover:text-white"
+                      className="inline-flex items-center px-2 py-1 min-h-[48px] font-bold text-sm md:text-base text-black mb-3 text-left cursor-pointer border-2 border-black transition-colors hover:bg-black hover:text-white"
                       aria-expanded={openImportant.has(item.id)}
                     >
                       Важливо

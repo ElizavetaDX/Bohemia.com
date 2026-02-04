@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { MobileMenu } from '@/components/MobileMenu'
 
 function SearchIcon() {
   return (
@@ -31,6 +32,12 @@ const galleryItems = [
   { id: 6, src: '/gallery-06.png', alt: 'Gallery item 06' },
   { id: 7, src: '/gallery-07.png', alt: 'Gallery item 07' },
   { id: 8, src: '/gallery-08.png', alt: 'Gallery item 08' },
+]
+
+const reelsItems = [
+  'https://www.instagram.com/p/DKZf_FYicfL/embed',
+  'https://www.instagram.com/p/DMSReLatyEZ/embed',
+  'https://www.instagram.com/p/DK2RPI8tbBr/embed',
 ]
 
 export default function ServicesPage() {
@@ -69,17 +76,17 @@ export default function ServicesPage() {
     <main className="min-h-screen bg-white text-black bg-dots-pattern">
       {/* Header */}
       <motion.header
-        className={`sticky top-0 z-50 backdrop-blur-sm transition-colors duration-500 ${scrolled ? 'bg-black text-white' : 'bg-transparent text-black'}`}
+        className={`sticky top-0 z-50 w-full transition-all duration-500 ${scrolled ? 'bg-black/90 text-white backdrop-blur-md shadow-sm' : 'bg-white/80 text-black backdrop-blur-md md:bg-white/80'}`}
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <nav className="w-full flex flex-nowrap items-center justify-between gap-6 px-6 md:px-12 py-4 md:py-5">
-          <Link href="/" className="flex items-center gap-3 md:gap-4">
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full flex-shrink-0 overflow-hidden transition-colors duration-500" style={{ mixBlendMode: 'lighten' }} aria-hidden>
+        <nav className="w-full flex flex-nowrap items-center justify-between gap-2 sm:gap-4 md:gap-6 px-4 sm:px-6 md:px-12 py-3 sm:py-4 md:py-5">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 flex-1 md:flex-initial">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex-shrink-0 overflow-hidden transition-colors duration-500" aria-hidden>
               <Image src="/header-icon.png" alt="" width={40} height={40} className="w-full h-full object-cover" />
             </div>
-            <span className={`text-[10px] md:text-xs tracking-[0.25em] uppercase transition-colors duration-500 ${scrolled ? 'text-white/80' : 'text-black/80'}`}>
+            <span className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap truncate ${scrolled ? 'text-white/80' : 'text-black/80'}`}>
               студія анімації Богеміка
             </span>
           </Link>
@@ -100,50 +107,30 @@ export default function ServicesPage() {
               </button>
             </li>
           </ul>
-          <button type="button" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className={`md:hidden p-2 transition-colors ${scrolled ? 'text-white' : 'text-black'}`} aria-label="Меню" aria-expanded={mobileMenuOpen}>
+          <button type="button" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className={`md:hidden p-2 min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px] flex items-center justify-center flex-shrink-0 transition-colors ${scrolled ? 'text-white' : 'text-black'}`} aria-label="Меню" aria-expanded={mobileMenuOpen}>
             <BurgerIcon isOpen={mobileMenuOpen} />
           </button>
         </nav>
       </motion.header>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-white md:hidden flex flex-col items-center justify-center" onClick={() => setMobileMenuOpen(false)}>
-          <div className="flex flex-col items-center gap-2 px-6" onClick={(e) => e.stopPropagation()}>
-            {[
-              { href: '/', label: 'головна' },
-              { href: '/services', label: 'креатив' },
-              { href: '/important', label: 'нам важливо' },
-              { href: '/price', label: 'прайс' },
-              { href: '/learn', label: 'навчатися' },
-            ].map(({ href, label }) => (
-              <Link key={href} href={href} onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-                {label}
-              </Link>
-            ))}
-            <button type="button" className="mt-6 p-3 border-4 border-transparent text-black hover:bg-black hover:text-white transition-colors text-sm uppercase tracking-[0.2em]" aria-label="Пошук">
-              <SearchIcon />
-            </button>
-          </div>
-        </div>
-      )}
+      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
       {/* Hero: КРЕАТИВ */}
-      <section id="hero" className="px-6 md:px-12 pt-2.5 pb-6 md:pb-8">
+      <section id="hero" className="content-above-dots px-4 sm:px-6 md:px-12 pt-2.5 pb-6 md:pb-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
             <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
             <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
             <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">011</div>
           </div>
-          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase text-center tracking-tight leading-tight mt-5 mb-[5px]">
+          <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl uppercase text-center tracking-tight leading-tight mt-5 mb-[5px]">
             КРЕАТИВ
           </h1>
         </div>
       </section>
 
       {/* Gallery / Price — infinite carousel */}
-      <section id="price" className="px-0 pt-[50px] pb-16 md:pb-[50px] overflow-hidden">
+      <section id="price" className="content-above-dots px-0 pt-[50px] pb-16 md:pb-[50px] overflow-hidden">
         <div className="flex w-full animate-carousel">
           {[...galleryItems, ...galleryItems].map((item, index) => {
             const label = String(item.id).padStart(2, '0')
@@ -160,15 +147,15 @@ export default function ServicesPage() {
       </section>
 
       {/* Section 002: 360 Rotation */}
-      <section id="rotation-360" className="px-6 md:px-12 py-[30px]">
+      <section id="rotation-360" className="content-above-dots px-4 sm:px-6 md:px-12 py-[30px]">
         <div className="max-w-6xl mx-auto">
           <div className="relative mb-10 md:mb-12">
             <div className="flex flex-col md:flex-row items-start justify-between gap-6">
               <div className="flex items-start gap-3 md:gap-4 relative">
                 <div className="border-l-8 border-black pl-4">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 md:gap-4">
-                    <h2 className="font-press-start font-normal text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[70px] leading-[0.8] tracking-tight">обертання<br />градусів</h2>
-                    <span className="font-mono font-normal text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[140px] leading-none tracking-[-0.05em]">360</span>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-stretch gap-2 sm:gap-3 md:gap-4">
+                    <h2 className="font-press-start font-normal text-4xl sm:text-5xl md:text-6xl lg:text-[70px] leading-[0.8] tracking-tight">обертання<br />градусів</h2>
+                    <span className="font-mono font-normal text-4xl sm:text-5xl md:text-6xl lg:text-[70px] leading-[0.8] tracking-[-0.05em] flex items-center">360</span>
                   </div>
                   <div className="grid grid-cols-8 gap-x-[10px] gap-y-1.5 md:gap-x-[10px] md:gap-y-2 w-fit pt-[5px] pb-[5px]">
                     {Array.from({ length: 24 }).map((_, i) => (<div key={i} className="w-1 h-1 md:w-1.5 md:h-1.5 bg-black rounded-full" />))}
@@ -207,19 +194,19 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* INSTA REELS grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-6 md:px-12">
-        {['https://www.instagram.com/p/DKZf_FYicfL/embed', 'https://www.instagram.com/p/DMSReLatyEZ/embed', 'https://www.instagram.com/p/DK2RPI8tbBr/embed'].map((src, i) => (
-          <div key={i} className="w-full overflow-hidden bg-black">
+      {/* Reels — додай посилання в масив reelsItems */}
+      <div className="content-above-dots grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-4 sm:px-6 md:px-12">
+        {reelsItems.map((src, i) => (
+          <div key={i} className="w-full overflow-hidden bg-black rounded-md">
             <div className="relative w-full" style={{ paddingBottom: '125%' }}>
-              <iframe className="absolute top-0 left-0 w-full h-full" src={src} title={`Instagram Reels ${i + 1}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ maxWidth: '100%' }} />
+              <iframe className="absolute top-0 left-0 w-full h-full" src={src} title={`Reels ${i + 1}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
             </div>
           </div>
         ))}
       </div>
 
       {/* Section 005: AI Generation */}
-      <section id="ai-generation" className="px-6 md:px-12 py-16 md:py-10">
+      <section id="ai-generation" className="content-above-dots px-4 sm:px-6 md:px-12 py-16 md:py-10">
         <div className="max-w-6xl mx-auto">
           <div className="relative mb-10 md:mb-12">
             <div className="flex flex-col md:flex-row items-start justify-between gap-6">
@@ -236,7 +223,7 @@ export default function ServicesPage() {
             </div>
             <span className="absolute bottom-0 right-0 text-sm md:text-base tracking-tight uppercase text-black/60 font-bold">(005)</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full">
             {[{ src: '/gallery-09.png', alt: 'AI generation 1' }, { src: '/gallery-10.png', alt: 'AI generation 2' }, { src: '/gallery-11.png', alt: 'AI generation 3' }].map((item, index) => (
               <div key={index} className="relative w-full aspect-[3/4] overflow-hidden rounded-md">
                 <Image src={item.src} alt={item.alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
@@ -247,7 +234,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Footer */}
-      <footer className="px-6 md:px-12 py-8 bg-white">
+      <footer className="px-4 sm:px-6 md:px-12 py-8 bg-white">
         <div className="max-w-6xl mx-auto flex items-center justify-end">
           <span className="text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-black/50">студія анімації Богеміка</span>
         </div>

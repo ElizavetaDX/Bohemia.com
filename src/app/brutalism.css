@@ -55,6 +55,11 @@
   z-index: 1;
 }
 
+.bg-dots-pattern .content-above-dots {
+  position: relative;
+  z-index: 10;
+}
+
 /* Portfolio: black dots on white */
 .bg-dots-portfolio::before {
   content: '';

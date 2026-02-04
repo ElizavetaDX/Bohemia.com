@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { MobileMenu } from '@/components/MobileMenu'
 
 function SearchIcon() {
   return (
@@ -102,21 +103,20 @@ export default function ImportantPage() {
     <main className="min-h-screen bg-white text-black bg-dots-pattern">
       {/* Header */}
       <motion.header
-        className={`sticky top-0 z-50 backdrop-blur-sm transition-colors duration-500 ${
-          scrolled ? 'bg-black text-white' : 'bg-transparent text-black'
+        className={`sticky top-0 z-50 w-full transition-all duration-500 ${
+          scrolled ? 'bg-black/90 text-white backdrop-blur-md shadow-sm' : 'bg-white/80 text-black backdrop-blur-md md:bg-white/80'
         }`}
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <nav className="w-full flex flex-nowrap items-center justify-between gap-6 px-6 md:px-12 py-4 md:py-5">
+        <nav className="w-full flex flex-nowrap items-center justify-between gap-2 sm:gap-4 md:gap-6 px-4 sm:px-6 md:px-12 py-3 sm:py-4 md:py-5">
           <Link
             href="/"
-            className="flex items-center gap-3 md:gap-4"
+            className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 flex-1 md:flex-initial"
           >
             <div
-              className="w-9 h-9 md:w-10 md:h-10 rounded-full flex-shrink-0 overflow-hidden transition-colors duration-500"
-              style={{ mixBlendMode: 'lighten' }}
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex-shrink-0 overflow-hidden transition-colors duration-500"
               aria-hidden
             >
               <Image
@@ -128,7 +128,7 @@ export default function ImportantPage() {
               />
             </div>
             <span
-              className={`text-[10px] md:text-xs tracking-[0.25em] uppercase transition-colors duration-500 ${
+              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap truncate ${
                 scrolled ? 'text-white/80' : 'text-black/80'
               }`}
             >
@@ -181,7 +181,7 @@ export default function ImportantPage() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`md:hidden p-2 transition-colors ${scrolled ? 'text-white' : 'text-black'}`}
+            className={`md:hidden p-2 min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px] flex items-center justify-center flex-shrink-0 transition-colors ${scrolled ? 'text-white' : 'text-black'}`}
             aria-label="Меню"
             aria-expanded={mobileMenuOpen}
           >
@@ -191,53 +191,24 @@ export default function ImportantPage() {
       </motion.header>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-white md:hidden flex flex-col items-center justify-center"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          <div
-            className="flex flex-col items-center gap-2 px-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              головна
-            </Link>
-            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              креатив
-            </Link>
-            <Link href="/important" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              нам важливо
-            </Link>
-            <Link href="/price" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              прайс
-            </Link>
-            <Link href="/learn" onClick={() => setMobileMenuOpen(false)} className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white">
-              навчатися
-            </Link>
-            <button type="button" className="mt-6 p-3 border-4 border-transparent text-black hover:bg-black hover:text-white transition-colors text-sm uppercase tracking-[0.2em]" aria-label="Пошук">
-              <SearchIcon />
-            </button>
-          </div>
-        </div>
-      )}
+      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
       {/* Hero: мелкие надписи + заголовок НАМ ВАЖЛИВО */}
-      <section id="hero" className="px-6 md:px-12 pt-2.5 pb-6 md:pb-8">
+      <section id="hero" className="content-above-dots px-4 sm:px-6 md:px-12 pt-2.5 pb-6 md:pb-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
             <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
             <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
             <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">011</div>
           </div>
-          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl uppercase text-center tracking-tight leading-tight bg-white mt-2 mb-4 md:mb-6">
+          <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase text-center tracking-tight leading-tight bg-white mt-2 mb-4 md:mb-6">
             НАМ ВАЖЛИВО
           </h1>
         </div>
       </section>
 
       {/* Основной контент: две колонки */}
-      <section className="px-6 md:px-12 py-8 md:py-12">
+      <section className="px-4 sm:px-6 md:px-12 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             <p className="text-sm md:text-base leading-snug tracking-[0.02em] text-black/90 text-justify bg-white">
@@ -251,7 +222,7 @@ export default function ImportantPage() {
       </section>
 
       {/* Блок со списком: заголовок + сетка grid-cols-2 */}
-      <section className="px-6 md:px-12 pb-12 md:pb-16">
+      <section className="content-above-dots px-4 sm:px-6 md:px-12 pb-12 md:pb-16">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-sm md:text-base font-semibold leading-tight tracking-[0.02em] text-black/90 mb-4 bg-white">
             саме тому ми:
@@ -268,7 +239,7 @@ export default function ImportantPage() {
       </section>
 
       {/* Точки: горизонтально 21 колонка по 4 ряда, по ширине контента */}
-      <div className="w-full px-6 md:px-12 py-6 md:py-8">
+      <div className="w-full px-4 sm:px-6 md:px-12 py-6 md:py-8">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid grid-cols-[repeat(21,minmax(0,1fr))] grid-rows-4 gap-x-5 gap-y-8 w-full">
             {Array.from({ length: 21 * 4 }).map((_, i) => (
@@ -279,7 +250,7 @@ export default function ImportantPage() {
       </div>
 
       {/* Footer */}
-      <footer className="px-6 md:px-12 py-8 bg-white border-t border-black/10">
+      <footer className="px-4 sm:px-6 md:px-12 py-8 bg-white border-t border-black/10">
         <div className="max-w-6xl mx-auto flex items-center justify-end">
           <span className="text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-black/50">
             студія анімації Богеміка

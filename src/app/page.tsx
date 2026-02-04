@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { MobileMenu } from '@/components/MobileMenu'
 
 function SearchIcon() {
   return (
@@ -152,20 +153,19 @@ export default function Home() {
     <main className="min-h-screen bg-white text-black bg-dots-pattern">
       {/* Header */}
       <motion.header
-        className={`sticky top-0 z-50 backdrop-blur-sm transition-colors duration-500 ${
+        className={`sticky top-0 z-50 w-full transition-all duration-500 ${
           scrolled
-            ? 'bg-black text-white'
-            : 'bg-transparent text-black'
+            ? 'bg-black/90 text-white backdrop-blur-md shadow-sm'
+            : 'bg-white/80 text-black backdrop-blur-md md:bg-white/80'
         }`}
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <nav className="w-full flex flex-nowrap items-center justify-between gap-6 px-6 md:px-12 py-4 md:py-5">
-          <div className="flex items-center gap-3 md:gap-4">
+        <nav className="w-full flex flex-nowrap items-center justify-between gap-2 sm:gap-4 md:gap-6 px-4 sm:px-6 md:px-12 py-3 sm:py-4 md:py-5">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 flex-1 md:flex-initial">
             <div
-              className="w-9 h-9 md:w-10 md:h-10 rounded-full flex-shrink-0 overflow-hidden transition-colors duration-500"
-              style={{ mixBlendMode: 'lighten' }}
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex-shrink-0 overflow-hidden transition-colors duration-500"
               aria-hidden
             >
               <Image
@@ -177,7 +177,7 @@ export default function Home() {
               />
             </div>
             <span
-              className={`text-[10px] md:text-xs tracking-[0.25em] uppercase transition-colors duration-500 ${
+              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap shrink-0 truncate ${
                 scrolled ? 'text-white/80' : 'text-black/80'
               }`}
             >
@@ -279,7 +279,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`md:hidden p-2 transition-colors ${
+            className={`md:hidden p-2 min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px] flex items-center justify-center flex-shrink-0 transition-colors ${
               scrolled ? 'text-white' : 'text-black'
             }`}
             aria-label="Меню"
@@ -290,76 +290,28 @@ export default function Home() {
         </nav>
       </motion.header>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-white md:hidden flex flex-col items-center justify-center"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          <div
-            className="flex flex-col items-center gap-2 px-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault()
-                window.scrollTo(0, 0)
-                setMobileMenuOpen(false)
-              }}
-              className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
-            >
-              головна
-            </a>
-            <Link
-              href="/services"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
-            >
-              послуги
-            </Link>
-            <Link
-              href="/important"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
-            >
-              нам важливо
-            </Link>
-            <Link
-              href="/price"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
-            >
-              прайс
-            </Link>
-            <Link
-              href="/learn"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-3xl uppercase leading-tight tracking-[0.2em] text-black py-2 px-3 -mx-3 transition-colors hover:bg-black hover:text-white active:bg-black active:text-white"
-            >
-              навчатися
-            </Link>
-            <button
-              type="button"
-              className="mt-6 p-3 border-4 border-transparent text-black hover:bg-black hover:text-white transition-colors text-sm uppercase tracking-[0.2em]"
-              aria-label="Пошук"
-            >
-              <SearchIcon />
-            </button>
-          </div>
-        </div>
-      )}
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        onHomeClick={() => window.scrollTo(0, 0)}
+      />
 
       {/* Hero */}
-      <section id="hero" className="px-6 md:px-12 pt-2.5">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
-            <div className="text-left tracking-tight text-base md:text-lg font-bold text-black/60">2025</div>
-            <div className="text-center text-base md:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
-            <div className="text-right tracking-tight text-base md:text-lg font-bold text-black/60">011</div>
+      <section id="hero" className="content-above-dots px-0 pt-2.5 overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-12">
+          <div className="overflow-hidden mb-1 md:mb-2">
+            <div className="flex w-max animate-hero-ticker">
+              {[...Array(2)].map((_, copyIndex) => (
+                <div key={copyIndex} className="flex shrink-0 items-center gap-[20px] text-xs md:text-sm tracking-[0.25em] uppercase">
+                  <span className="tracking-tight text-sm sm:text-base md:text-lg font-bold text-black/60 whitespace-nowrap">2025</span>
+                  <span className="text-sm sm:text-base md:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</span>
+                  <span className="tracking-tight text-sm sm:text-base md:text-lg font-bold text-black/60 whitespace-nowrap">011</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <h1 className="font-press-start pixel-hero text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase text-center tracking-tight leading-tight mt-2 mb-4 md:mb-6">
+          <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl uppercase text-center tracking-tight leading-tight mt-2 mb-4 md:mb-6 relative z-10">
             ПРИВІТ
           </h1>
         </div>
@@ -368,7 +320,7 @@ export default function Home() {
       {/* Content / About */}
       <section
         id="content"
-        className="px-6 md:px-12 py-6 md:py-4 pb-[10px] min-h-0 lg:min-h-[360px]"
+        className="content-above-dots px-4 sm:px-6 md:px-12 py-6 md:py-4 pb-[10px] min-h-0 lg:min-h-[360px]"
         style={{ marginTop: '10px', marginBottom: '10px' }}
       >
         <div className="max-w-6xl mx-auto relative">
@@ -420,7 +372,7 @@ export default function Home() {
       </section>
 
       {/* Central menu buttons */}
-      <div className="mt-12 md:mt-12 space-y-4 px-6 md:px-12 pt-[10px] md:pt-[10px] pb-[10px]">
+      <div className="mt-12 md:mt-12 space-y-4 px-4 sm:px-6 md:px-12 pt-[10px] md:pt-[10px] pb-[10px]">
         <div className="max-w-6xl mx-auto">
           {heroButtons.map((button) =>
             button.external ? (
@@ -429,7 +381,7 @@ export default function Home() {
                 href={button.href}
                 target="_blank"
                 rel="noreferrer"
-                className="block max-w-3xl mx-auto rounded-md bg-black text-white px-6 py-4 md:py-5 text-center text-[10px] md:text-xs tracking-[0.25em] uppercase hover:bg-black/90 transition-colors"
+                className="block w-full max-w-3xl mx-auto rounded-md bg-black text-white px-6 py-4 md:py-5 min-h-[48px] flex items-center justify-center text-center text-[10px] md:text-xs tracking-[0.25em] uppercase hover:bg-black/90 transition-colors"
                 style={{ marginTop: '10px', marginBottom: '10px' }}
               >
                 {button.label}
@@ -437,7 +389,7 @@ export default function Home() {
             ) : (
               <Link key={button.label} href={button.href}>
                 <span
-                  className="block max-w-3xl mx-auto rounded-md bg-black text-white px-6 py-4 md:py-5 text-center text-[10px] md:text-xs tracking-[0.25em] uppercase hover:bg-black/90 transition-colors"
+                  className="block w-full max-w-3xl mx-auto rounded-md bg-black text-white px-6 py-4 md:py-5 min-h-[48px] flex items-center justify-center text-center text-[10px] md:text-xs tracking-[0.25em] uppercase hover:bg-black/90 transition-colors"
                   style={{ marginTop: '10px', marginBottom: '10px' }}
                 >
                   {button.label}
@@ -449,7 +401,7 @@ export default function Home() {
       </div>
 
       {/* Section 006: Clients */}
-      <section id="clients" className="px-6 md:px-12 py-16 md:py-10">
+      <section id="clients" className="content-above-dots px-6 md:px-12 py-16 md:py-10">
         <div className="max-w-6xl mx-auto">
           <div className="relative mb-10 md:mb-12">
             <div className="flex flex-col md:flex-row items-start justify-between gap-6">
@@ -472,7 +424,7 @@ export default function Home() {
               (006)
             </span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
@@ -486,7 +438,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="px-6 md:px-12 py-8 bg-white">
+      <footer className="px-4 sm:px-6 md:px-12 py-8 bg-white">
         <div className="max-w-6xl mx-auto flex items-center justify-end">
           <span className="text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-black/50">
             студія анімації Богеміка
