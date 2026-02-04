@@ -177,7 +177,7 @@ export default function Home() {
               />
             </div>
             <span
-              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap shrink-0 truncate ${
+              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap min-w-0 truncate ${
                 scrolled ? 'text-white/80' : 'text-black/80'
               }`}
             >
@@ -299,16 +299,10 @@ export default function Home() {
       {/* Hero */}
       <section id="hero" className="content-above-dots px-0 pt-2.5 overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-12">
-          <div className="overflow-hidden mb-1 md:mb-2">
-            <div className="flex w-max animate-hero-ticker">
-              {[...Array(2)].map((_, copyIndex) => (
-                <div key={copyIndex} className="flex shrink-0 items-center gap-[20px] text-xs md:text-sm tracking-[0.25em] uppercase">
-                  <span className="tracking-tight text-sm sm:text-base md:text-lg font-bold text-black/60 whitespace-nowrap">2025</span>
-                  <span className="text-sm sm:text-base md:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</span>
-                  <span className="tracking-tight text-sm sm:text-base md:text-lg font-bold text-black/60 whitespace-nowrap">011</span>
-                </div>
-              ))}
-            </div>
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
+            <div className="text-left tracking-tight text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60">2025</div>
+            <div className="text-center w-[220px] text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
+            <div className="text-right tracking-tight text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60">011</div>
           </div>
 
           <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl uppercase text-center tracking-tight leading-tight mt-2 mb-4 md:mb-6 relative z-10">
