@@ -148,8 +148,9 @@ export function PriceCalculator() {
     return lines.join('\n')
   }, [name, telegram, phone, comment, animation, visualization, scene, cg, vfx, staticAi, total])
 
-  const bundleComplete = !animation || (visualization !== null && scene !== null)
-  const showBundleMessage = Boolean(animation && (!visualization || !scene))
+  const hasTrinitySelection = Boolean(animation || visualization || scene)
+  const bundleComplete = !hasTrinitySelection || (Boolean(animation) && visualization !== null && scene !== null)
+  const showBundleMessage = hasTrinitySelection && !bundleComplete
   const canSend =
     total > 0 &&
     name.trim().length > 0 &&
@@ -180,7 +181,8 @@ export function PriceCalculator() {
   return (
     <section id="calculator" className="content-above-dots px-4 sm:px-6 md:px-12 py-4 md:py-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-wrap justify-center items-stretch gap-3 pt-[5px] pb-[5px]">
+        <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-stretch pt-[5px] pb-[5px]">
+          <div aria-hidden />
           <button
             type="button"
             onClick={() => setOpen((prev) => !prev)}
@@ -188,14 +190,16 @@ export function PriceCalculator() {
           >
             Розрахувати вартість проекту
           </button>
-          <button
-            type="button"
-            onClick={() => setShowImportant((prev) => !prev)}
-            className="min-h-[52px] px-6 py-4 bg-red-600 text-white font-bold uppercase tracking-widest rounded-lg border border-black transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
-            aria-expanded={showImportant}
-          >
-            Важливо
-          </button>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() => setShowImportant((prev) => !prev)}
+              className="min-h-[52px] px-6 py-4 bg-red-600 text-white font-bold uppercase tracking-widest rounded-lg border border-black transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+              aria-expanded={showImportant}
+            >
+              Важливо
+            </button>
+          </div>
         </div>
 
         {showImportant && (
@@ -255,8 +259,12 @@ export function PriceCalculator() {
 
             <div className="flex-1 min-h-0 overflow-y-auto px-4 py-6 space-y-8">
               {/* Анімація — клік знімає вибір */}
-              <div>
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Анімація</h3>
+              <div
+                className={`rounded-lg p-3 transition-shadow ${
+                  hasTrinitySelection && !animation ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''
+                }`}
+              >
+                <h3 className={`text-xs font-semibold uppercase tracking-widest mb-3 ${hasTrinitySelection && !animation ? 'text-red-600' : 'text-black/60'}`}>Анімація</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {ANIMATION_OPTIONS.map((opt) => (
                     <button
@@ -272,13 +280,13 @@ export function PriceCalculator() {
                 </div>
               </div>
 
-              {/* Візуалізація — обов'язкова при виборі анімації */}
+              {/* Візуалізація — обов'язкова при виборі з трійці */}
               <div
                 className={`rounded-lg p-3 transition-shadow ${
-                  animation && !visualization ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''
+                  hasTrinitySelection && !visualization ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''
                 }`}
               >
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Візуалізація</h3>
+                <h3 className={`text-xs font-semibold uppercase tracking-widest mb-3 ${hasTrinitySelection && !visualization ? 'text-red-600' : 'text-black/60'}`}>Візуалізація</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {VISUALIZATION_TIERS.map((tier) => (
                     <button
@@ -294,13 +302,13 @@ export function PriceCalculator() {
                 </div>
               </div>
 
-              {/* Сцена — обов'язкова при виборі анімації */}
+              {/* Сцена — обов'язкова при виборі з трійці */}
               <div
                 className={`rounded-lg p-3 transition-shadow ${
-                  animation && !scene ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''
+                  hasTrinitySelection && !scene ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''
                 }`}
               >
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Сцена</h3>
+                <h3 className={`text-xs font-semibold uppercase tracking-widest mb-3 ${hasTrinitySelection && !scene ? 'text-red-600' : 'text-black/60'}`}>Сцена</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {SCENE_OPTIONS.map((opt) => (
                     <button
@@ -427,7 +435,7 @@ export function PriceCalculator() {
             <div className="flex-shrink-0 border-t border-black/20 px-4 py-4 bg-white/90">
               {showBundleMessage && (
                 <p className="text-sm text-red-600 font-medium mb-3" role="alert">
-                  Для розрахунку анімації оберіть також візуалізацію та сцену.
+                  Для цього типу замовлення необхідно обрати Анімацію, Візуалізацію та Сцену.
                 </p>
               )}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
