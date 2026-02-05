@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 
 const ANIMATION_OPTIONS = [
   { id: 'frame_revival', label: 'Оживлення кадру (до 3х кадрів)', price: 4000 },
@@ -66,6 +66,13 @@ export function PriceCalculator() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [showImportant, setShowImportant] = useState(false)
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (open && panelRef.current) {
+      panelRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [open])
 
   const toggleStaticAi = useCallback((id: string) => {
     setStaticAi((prev) => {
@@ -188,6 +195,7 @@ export function PriceCalculator() {
 
         {open && (
           <div
+            ref={panelRef}
             className="mt-6 w-full max-w-2xl mx-auto flex flex-col rounded-xl border border-black/10 bg-white/80 shadow-2xl backdrop-blur-md overflow-hidden max-h-[85vh] min-h-0"
             role="dialog"
             aria-modal="true"
