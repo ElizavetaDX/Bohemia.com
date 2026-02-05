@@ -181,7 +181,7 @@ export function PriceCalculator() {
   return (
     <section id="calculator" className="content-above-dots px-4 sm:px-6 md:px-12 py-4 md:py-6">
       <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-stretch pt-[5px] pb-[5px]">
+        <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-stretch pt-[20px] pb-[20px]">
           <div aria-hidden />
           <button
             type="button"
