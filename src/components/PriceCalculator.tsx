@@ -2,11 +2,32 @@
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 
-const STATIC_AI_OPTIONS = [
-  { id: 'realistic_image', label: 'Концептуальне зображення', price: 2000 },
-  { id: 'extra_frame_concept', label: 'Додатковий кадр концепт', price: 1000 },
-  { id: 'extra_frame_angle', label: 'Додатковий кадр ракурс', price: 500 },
-  { id: 'ai_avatar_snaps', label: 'Снепи ai-аватару', price: 3500 },
+const SHI_STAGE1_OPTIONS = [
+  { id: 'realistic', label: 'Реалістичне або концептуальне зображення', price: 2000 },
+  { id: 'extra_concept', label: 'Додатковий кадр в єдиній концепції', price: 1000 },
+  { id: 'extra_angle', label: 'Додатковий кадр ракурс', price: 500 },
+  { id: 'ai_avatar', label: 'Снепи ai-аватару за ТЗ [макіяж+зачіска+одяг]', price: 3500 },
+] as const
+
+const SHI_STAGE2_OPTIONS = [
+  { id: '1-3', label: '1-3 кадри', price: 4000 },
+  { id: '4-9', label: '4-9 кадрів', price: 7000 },
+  { id: '10-16', label: '10-16 кадрів', price: 10000 },
+] as const
+
+const VISUALIZATION_OPTIONS = [
+  { id: 't1', label: '3D лого, пакет, коробка, простий топ, футболка, легінси, трусики, лонгслів', price: 2500 },
+  { id: 't2', label: 'Сукня, спідниця, комбінезон, боді, сорочка, брюки, купальник, білизна без кісточок, джогери, світшот, худі, жилет, обручки, панчохи, перчатки', price: 4000 },
+  { id: 't3', label: 'Флакон, косметика, капелюх, пальто, жакет, косуха, тренч, вечірня сукня, білизна з корсетними кісточками, пуховик, корсет, ремінь, простий посуд, домашній текстиль', price: 6000 },
+  { id: 't4', label: 'Окуляри, проста сумочка, складні принти та текстури, нескладні ювелірні вироби, простий анімований персонаж, меблі, їжа, складний посуд', price: 12000 },
+  { id: 't5', label: "Складна сумочка, рюкзак, взуття, хутро, одяг з пір'ям, складні ювелірні вироби, годинник, одяг з оздобленням із каміння/перлин, вишивка, анімований персонаж", price: 20000 },
+] as const
+
+const SCENE_OPTIONS = [
+  { id: 's0', label: 'Однотонний фон, фон-картинка, тінь на підлозі, без фону, земля-небо, пуста кімната, простий подіум', price: 0 },
+  { id: 's1', label: 'Статичні рослини, стандартний аватар в позі, торт, новорічна ялинка, кульки, візок, двері, побутові предмети, телефон, телевізор', price: 2000 },
+  { id: 's2', label: 'Мебльована кімната, місто, галявина, ліс, сад, дощ, вулиця, вогонь, анімовані рослини, рідини, туман, водойми, транспорт, анімований парашут', price: 4000 },
+  { id: 's3', label: "Сцена з великою кількістю об'єктів", price: 10000 },
 ] as const
 
 const CG_OPTIONS = [
@@ -21,6 +42,9 @@ const VFX_OPTIONS = [
   { id: '13-20', label: '13–20 сек', price: 23000 },
 ] as const
 
+type ShiStage2Id = (typeof SHI_STAGE2_OPTIONS)[number]['id'] | null
+type VizId = (typeof VISUALIZATION_OPTIONS)[number]['id'] | null
+type SceneId = (typeof SCENE_OPTIONS)[number]['id'] | null
 type CgId = (typeof CG_OPTIONS)[number]['id'] | ''
 type VfxId = (typeof VFX_OPTIONS)[number]['id'] | ''
 
@@ -31,7 +55,10 @@ const cardInactive = 'bg-white text-black hover:bg-black/5'
 export function PriceCalculator() {
   const [open, setOpen] = useState(false)
   const [consultation, setConsultation] = useState(false)
-  const [staticAi, setStaticAi] = useState<Set<string>>(new Set())
+  const [shiStage1, setShiStage1] = useState<Set<string>>(new Set())
+  const [shiStage2, setShiStage2] = useState<ShiStage2Id>(null)
+  const [visualization, setVisualization] = useState<VizId>(null)
+  const [scene, setScene] = useState<SceneId>(null)
   const [cg, setCg] = useState<CgId>('')
   const [vfx, setVfx] = useState<VfxId>('')
   const [name, setName] = useState('')
@@ -56,8 +83,8 @@ export function PriceCalculator() {
     }
   }, [open])
 
-  const toggleStaticAi = useCallback((id: string) => {
-    setStaticAi((prev) => {
+  const toggleShiStage1 = useCallback((id: string) => {
+    setShiStage1((prev) => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
       else next.add(id)
@@ -65,13 +92,31 @@ export function PriceCalculator() {
     })
   }, [])
 
-  const staticAiTotal = useMemo(
-    () => STATIC_AI_OPTIONS.filter((o) => staticAi.has(o.id)).reduce((sum, o) => sum + o.price, 0),
-    [staticAi]
+  const shiStage1Total = useMemo(
+    () => SHI_STAGE1_OPTIONS.filter((o) => shiStage1.has(o.id)).reduce((sum, o) => sum + o.price, 0),
+    [shiStage1]
+  )
+  const shiStage2Price = useMemo(
+    () => (shiStage2 ? SHI_STAGE2_OPTIONS.find((o) => o.id === shiStage2)?.price ?? 0 : 0),
+    [shiStage2]
+  )
+  const vizPrice = useMemo(
+    () => (visualization ? VISUALIZATION_OPTIONS.find((o) => o.id === visualization)?.price ?? 0 : 0),
+    [visualization]
+  )
+  const scenePrice = useMemo(
+    () => (scene ? SCENE_OPTIONS.find((o) => o.id === scene)?.price ?? 0 : 0),
+    [scene]
   )
   const cgPrice = useMemo(() => (cg ? CG_OPTIONS.find((o) => o.id === cg)?.price ?? 0 : 0), [cg])
   const vfxPrice = useMemo(() => (vfx ? VFX_OPTIONS.find((o) => o.id === vfx)?.price ?? 0 : 0), [vfx])
-  const total = staticAiTotal + cgPrice + vfxPrice
+  const total = shiStage1Total + shiStage2Price + vizPrice + scenePrice + cgPrice + vfxPrice
+
+  const hasShiSelection = shiStage1.size > 0 || shiStage2 !== null
+  const shiBundleComplete = !hasShiSelection || (shiStage1.size > 0 && shiStage2 !== null)
+  const showShiWarning = hasShiSelection && !shiBundleComplete
+  const shiNeedStage1 = shiStage2 !== null && shiStage1.size === 0
+  const shiNeedStage2 = shiStage1.size > 0 && shiStage2 === null
 
   const buildMessage = useCallback(() => {
     const lines: string[] = [
@@ -89,6 +134,28 @@ export function PriceCalculator() {
       lines.push('3D Візуалізація — консультація по ціні: Індивідуально')
       lines.push('')
     }
+    if (shiStage1.size > 0) {
+      lines.push('ШІ, етап 1 (аі-фото):')
+      SHI_STAGE1_OPTIONS.filter((o) => shiStage1.has(o.id)).forEach((o) => {
+        lines.push(`${o.label} — ${o.price} грн`)
+      })
+      lines.push('')
+    }
+    if (shiStage2) {
+      const o = SHI_STAGE2_OPTIONS.find((x) => x.id === shiStage2)!
+      lines.push(`ШІ, етап 2: ${o.label} — ${o.price} грн`)
+      lines.push('')
+    }
+    if (visualization) {
+      const o = VISUALIZATION_OPTIONS.find((x) => x.id === visualization)!
+      lines.push(`Візуалізація: ${o.label} — ${o.price} грн`)
+      lines.push('')
+    }
+    if (scene) {
+      const o = SCENE_OPTIONS.find((x) => x.id === scene)!
+      lines.push(`Сцена: ${o.label} — ${o.price} грн`)
+      lines.push('')
+    }
     if (cg) {
       const o = CG_OPTIONS.find((x) => x.id === cg)!
       lines.push(`CG анімація: ${o.label} — ${o.price} грн`)
@@ -97,12 +164,6 @@ export function PriceCalculator() {
       const o = VFX_OPTIONS.find((x) => x.id === vfx)!
       lines.push(`VFX симуляція: ${o.label} — ${o.price} грн`)
     }
-    if (staticAi.size > 0) {
-      lines.push('', '📸 <b>Static & AI:</b>', '')
-      STATIC_AI_OPTIONS.filter((o) => staticAi.has(o.id)).forEach((o) => {
-        lines.push(`${o.label} — ${o.price} грн`)
-      })
-    }
     const totalLine = consultation && total === 0
       ? '<b>РАЗОМ: Індивідуально</b>'
       : consultation && total > 0
@@ -110,12 +171,13 @@ export function PriceCalculator() {
         : `<b>РАЗОМ: ${total.toLocaleString('uk-UA')} грн</b>`
     lines.push('', totalLine)
     return lines.join('\n')
-  }, [name, telegram, phone, comment, consultation, cg, vfx, staticAi, total])
+  }, [name, telegram, phone, comment, consultation, shiStage1, shiStage2, visualization, scene, cg, vfx, total])
 
   const canSend =
     (total > 0 || consultation) &&
     name.trim().length > 0 &&
-    telegram.trim().replace(/^@/, '').length > 0
+    telegram.trim().replace(/^@/, '').length > 0 &&
+    shiBundleComplete
 
   const handleSend = async () => {
     if (!canSend) return
@@ -200,30 +262,101 @@ export function PriceCalculator() {
             </div>
 
             <div className="flex-1 min-h-0 overflow-y-auto px-4 py-6 space-y-8">
-              {/* Static & AI */}
+              {/* ШІ */}
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Static & AI</h3>
+                <div className="pl-3 border-l-4 border-black mb-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60">ШІ</h3>
+                </div>
+                <div
+                  className={`rounded-lg p-3 transition-shadow ${shiNeedStage1 ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''}`}
+                >
+                  <h3 className={`text-xs font-semibold uppercase tracking-widest mb-3 ${shiNeedStage1 ? 'text-red-600' : 'text-black/60'}`}>
+                    Перший етап: аі-фото (кадр)
+                  </h3>
                 <div className="space-y-2">
-                  {STATIC_AI_OPTIONS.map((opt) => (
+                  {SHI_STAGE1_OPTIONS.map((opt) => (
                     <button
                       key={opt.id}
                       type="button"
-                      onClick={() => toggleStaticAi(opt.id)}
-                      className={`w-full ${cardBase} ${staticAi.has(opt.id) ? cardActive : cardInactive}`}
+                      onClick={() => toggleShiStage1(opt.id)}
+                      className={`w-full ${cardBase} ${shiStage1.has(opt.id) ? cardActive : cardInactive}`}
                     >
-                      <span className="font-medium text-sm">{opt.label}</span>
+                      <span className="font-medium text-sm break-words">{opt.label}</span>
                       <span className="text-xs opacity-80 mt-0.5">{opt.price} грн</span>
+                    </button>
+                  ))}
+                </div>
+                </div>
+                <div
+                  className={`rounded-lg p-3 transition-shadow mt-6 ${shiNeedStage2 ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''}`}
+                >
+                  <h3 className={`text-xs font-semibold uppercase tracking-widest mb-3 ${shiNeedStage2 ? 'text-red-600' : 'text-black/60'}`}>
+                    Другий етап: анімація, монтаж та озвучка аі-кадрів
+                  </h3>
+                  <div className="space-y-2">
+                    {SHI_STAGE2_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setShiStage2((prev) => (prev === opt.id ? null : opt.id))}
+                        className={`w-full ${cardBase} ${shiStage2 === opt.id ? cardActive : cardInactive}`}
+                      >
+                        <span className="font-medium text-sm">{opt.label}</span>
+                        <span className="text-xs opacity-80 mt-0.5">{opt.price} грн</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Візуалізація */}
+              <div>
+                <div className="pl-3 border-l-4 border-black mb-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60">Візуалізація</h3>
+                </div>
+                <div className="space-y-2">
+                  {VISUALIZATION_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setVisualization((prev) => (prev === opt.id ? null : opt.id))}
+                      className={`w-full ${cardBase} ${visualization === opt.id ? cardActive : cardInactive}`}
+                    >
+                      <span className="font-medium text-sm break-words">{opt.label}</span>
+                      <span className="text-xs opacity-80 mt-0.5">{opt.id === 't5' ? '20 000+ грн' : `${opt.price} грн`}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* CG та VFX */}
+              {/* Сцена */}
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">CG анімація та VFX</h3>
+                <div className="pl-3 border-l-4 border-black mb-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60">Сцена</h3>
+                </div>
+                <div className="space-y-2">
+                  {SCENE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setScene((prev) => (prev === opt.id ? null : opt.id))}
+                      className={`w-full ${cardBase} ${scene === opt.id ? cardActive : cardInactive}`}
+                    >
+                      <span className="font-medium text-sm break-words">{opt.label}</span>
+                      <span className="text-xs opacity-80 mt-0.5">{opt.price === 0 ? '0 грн' : opt.id === 's3' ? '10 000+ грн' : `${opt.price} грн`}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Фізична симуляція: CG та VFX */}
+              <div>
+                <div className="pl-3 border-l-4 border-black mb-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60">Фізична симуляція</h3>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-black/50 mb-1">CG анімація</p>
+                    <p className="text-xs text-black/50 mb-1">CG анімація з фізичною симуляцією</p>
                     <div className="flex flex-wrap gap-1">
                       {CG_OPTIONS.map((opt) => (
                         <button
@@ -238,7 +371,7 @@ export function PriceCalculator() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs text-black/50 mb-1">VFX симуляція</p>
+                    <p className="text-xs text-black/50 mb-1">VFX з фізичною симуляцією</p>
                     <div className="flex flex-wrap gap-1">
                       {VFX_OPTIONS.map((opt) => (
                         <button
@@ -255,7 +388,7 @@ export function PriceCalculator() {
                 </div>
               </div>
 
-              {/* 3D Візуалізація — консультація по ціні */}
+              {/* 3D анімація — консультація (без змін) */}
               <div>
                 <button
                   type="button"
@@ -324,6 +457,11 @@ export function PriceCalculator() {
 
             {/* Фіксований блок з сумою та кнопкою */}
             <div className="flex-shrink-0 border-t border-black/20 px-4 py-4 bg-white/90">
+              {showShiWarning && (
+                <p className="text-sm text-red-600 font-medium mb-3" role="alert">
+                  Для замовлення ШІ-генерації необхідно обрати і створення кадру (Етап 1), і його анімацію (Етап 2).
+                </p>
+              )}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                 <p className="text-xl font-bold text-black tabular-nums">
                   Разом:{' '}
