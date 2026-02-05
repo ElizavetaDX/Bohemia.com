@@ -51,7 +51,7 @@ body {
 }
 
 .animate-carousel {
-  animation: carousel-scroll 40s linear infinite;
+  animation: carousel-scroll 10s linear infinite;
 }
 
 @keyframes hero-ticker {

@@ -186,7 +186,7 @@ export default function PricePage() {
   }, [mobileMenuOpen])
 
   const linkClass = (active?: boolean) =>
-    'relative group text-[10px] md:text-xs tracking-[0.2em] uppercase transition-colors ' + (active ? (scrolled ? 'text-white' : 'text-black') : (scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'))
+    'relative group text-[9px] md:text-[10px] tracking-[0.15em] uppercase transition-colors whitespace-nowrap ' + (active ? (scrolled ? 'text-white' : 'text-black') : (scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'))
 
   const underlineClass = (visible: boolean) =>
     'pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left transition-transform duration-300 ' + (scrolled ? 'bg-white' : 'bg-black') + ' ' + (visible ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100');
@@ -194,8 +194,8 @@ export default function PricePage() {
     <Wrapper className="min-h-screen bg-white text-black bg-dots-pattern" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Header */}
       <motion.header
-        className={`sticky top-0 z-50 w-full transition-all duration-500 ${
-          scrolled ? 'bg-black/90 text-white backdrop-blur-md shadow-sm' : 'bg-white/80 text-black backdrop-blur-md md:bg-white/80'
+        className={`sticky top-0 z-[50] w-full transition-all duration-300 ease-out ${
+          scrolled ? 'bg-black/80 text-white backdrop-blur-md shadow-sm' : 'bg-white/80 text-black backdrop-blur-md'
         }`}
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -223,7 +223,7 @@ export default function PricePage() {
               студія анімації Богеміка
             </span>
           </Link>
-          <ul className="hidden md:flex items-center gap-5 md:gap-8 ml-4 md:ml-8">
+          <ul className="hidden md:flex items-center gap-3 md:gap-5 ml-4 md:ml-6 flex-shrink-0">
             <li>
               <Link href="/" className={linkClass()}>
                 <span>головна</span>

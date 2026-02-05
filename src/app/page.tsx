@@ -108,7 +108,7 @@ export default function Home() {
   }, [mobileMenuOpen])
 
   const navLinkClass = (id: SectionId) =>
-    `relative group text-[10px] md:text-xs tracking-[0.2em] uppercase transition-colors ${
+    `relative group text-[9px] md:text-[10px] tracking-[0.15em] uppercase transition-colors whitespace-nowrap ${
       activeSection === id
         ? scrolled
           ? 'text-white'
@@ -153,10 +153,10 @@ export default function Home() {
     <main className="min-h-screen bg-white text-black bg-dots-pattern">
       {/* Header */}
       <motion.header
-        className={`sticky top-0 z-50 w-full transition-all duration-500 ${
+        className={`sticky top-0 z-[50] w-full transition-all duration-300 ease-out ${
           scrolled
-            ? 'bg-black/90 text-white backdrop-blur-md shadow-sm'
-            : 'bg-white/80 text-black backdrop-blur-md md:bg-white/80'
+            ? 'bg-black/80 text-white backdrop-blur-md shadow-sm'
+            : 'bg-white/80 text-black backdrop-blur-md'
         }`}
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -185,7 +185,7 @@ export default function Home() {
             </span>
           </div>
           {/* Desktop menu */}
-          <ul className="hidden md:flex items-center gap-5 md:gap-8 ml-4 md:ml-8">
+          <ul className="hidden md:flex items-center gap-3 md:gap-5 ml-4 md:ml-6 flex-shrink-0">
             <li>
               <a
                 href="#"
@@ -202,7 +202,7 @@ export default function Home() {
             <li>
               <Link
                 href="/services"
-                className={`relative group text-[10px] md:text-xs tracking-[0.2em] uppercase transition-colors ${
+                className={`relative group text-[9px] md:text-[10px] tracking-[0.15em] uppercase transition-colors whitespace-nowrap ${
                   scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
                 }`}
               >
@@ -218,7 +218,7 @@ export default function Home() {
             <li>
               <Link
                 href="/important"
-                className={`relative group text-[10px] md:text-xs tracking-[0.2em] uppercase transition-colors ${
+                className={`relative group text-[9px] md:text-[10px] tracking-[0.15em] uppercase transition-colors whitespace-nowrap ${
                   scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
                 }`}
               >
@@ -234,7 +234,7 @@ export default function Home() {
             <li>
               <Link
                 href="/price"
-                className={`relative group text-[10px] md:text-xs tracking-[0.2em] uppercase transition-colors ${
+                className={`relative group text-[9px] md:text-[10px] tracking-[0.15em] uppercase transition-colors whitespace-nowrap ${
                   scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
                 }`}
               >
@@ -250,7 +250,7 @@ export default function Home() {
             <li>
               <Link
                 href="/learn"
-                className={`relative group text-[10px] md:text-xs tracking-[0.2em] uppercase transition-colors ${
+                className={`relative group text-[9px] md:text-[10px] tracking-[0.15em] uppercase transition-colors whitespace-nowrap ${
                   scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
                 }`}
               >
