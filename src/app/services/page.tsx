@@ -40,9 +40,16 @@ const reelsItems = [
   'https://www.instagram.com/p/DK2RPI8tbBr/embed',
 ]
 
+const rotation360Reels = [
+  'https://www.instagram.com/p/C5jT1PqiA9p/embed',
+  'https://www.instagram.com/p/Cr72mqXtnt1/embed',
+  'https://www.instagram.com/p/CfgUMNADQ00/embed',
+]
+
 export default function ServicesPage() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [rotation360Loaded, setRotation360Loaded] = useState<boolean[]>([false, false, false])
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)
@@ -58,7 +65,7 @@ export default function ServicesPage() {
   }, [mobileMenuOpen])
 
   const linkClass = (active?: boolean) =>
-    `relative group text-xs md:text-sm tracking-[0.2em] uppercase transition-colors ${
+    `relative group text-[10px] md:text-xs tracking-[0.2em] uppercase transition-colors ${
       active ? (scrolled ? 'text-white' : 'text-black') : (scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black')
     }`
 
@@ -86,11 +93,11 @@ export default function ServicesPage() {
             <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex-shrink-0 overflow-hidden transition-colors duration-500" aria-hidden>
               <Image src="/header-icon.png" alt="" width={40} height={40} className="w-full h-full object-cover" />
             </div>
-            <span className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap min-w-0 truncate ${scrolled ? 'text-white/80' : 'text-black/80'}`}>
+            <span className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap flex-shrink-0 ${scrolled ? 'text-white/80' : 'text-black/80'}`}>
               студія анімації Богеміка
             </span>
           </Link>
-          <ul className="hidden md:flex items-center gap-5 md:gap-8">
+          <ul className="hidden md:flex items-center gap-5 md:gap-8 ml-4 md:ml-8">
             <li>{navLink('/', 'головна', false)}</li>
             <li>{navLink('/services', 'креатив', true)}</li>
             <li>{navLink('/important', 'нам важливо', false)}</li>
@@ -118,10 +125,10 @@ export default function ServicesPage() {
       {/* Hero: КРЕАТИВ */}
       <section id="hero" className="content-above-dots px-4 sm:px-6 md:px-12 pt-2.5 pb-6 md:pb-8">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
-            <div className="text-left tracking-tight text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60">2025</div>
-            <div className="text-center w-[220px] text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
-            <div className="text-right tracking-tight text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60">011</div>
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
+            <div className="text-left w-[40px] tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">2025</div>
+            <div className="text-center w-[110px] sm:w-[130px] md:w-[280px] text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
+            <div className="text-right tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">011</div>
           </div>
           <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl uppercase text-center tracking-tight leading-tight mt-5 mb-[5px]">
             КРЕАТИВ
@@ -165,10 +172,22 @@ export default function ServicesPage() {
             </div>
             <span className="absolute bottom-0 right-0 text-sm md:text-base tracking-tight uppercase text-black/60 font-bold">(002)</span>
           </div>
-          <div className="mx-auto max-w-2xl">
-            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-              <iframe className="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/fVL7baN1aGI" title="Обертання 360 градусів" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl mx-auto pt-4 pb-6">
+            {rotation360Reels.map((embedUrl, i) => (
+              <div key={i} className="relative w-full h-[320px] md:h-[340px] rounded-lg overflow-hidden bg-neutral-100">
+                {!rotation360Loaded[i] && (
+                  <div className="absolute inset-0 bg-neutral-200 animate-pulse rounded-lg" aria-hidden />
+                )}
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full rounded-lg"
+                  src={embedUrl}
+                  title={`Обертання 360 — Reels ${i + 1}`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  onLoad={() => setRotation360Loaded((prev) => { const n = [...prev]; n[i] = true; return n })}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -195,15 +214,19 @@ export default function ServicesPage() {
       </section>
 
       {/* Reels — додай посилання в масив reelsItems */}
-      <div className="content-above-dots grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-4 sm:px-6 md:px-12">
-        {reelsItems.map((src, i) => (
-          <div key={i} className="w-full overflow-hidden bg-black rounded-md">
-            <div className="relative w-full" style={{ paddingBottom: '125%' }}>
-              <iframe className="absolute top-0 left-0 w-full h-full" src={src} title={`Reels ${i + 1}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-            </div>
+      <section className="content-above-dots px-4 sm:px-6 md:px-12 py-[30px]">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl mx-auto pt-4 pb-6">
+            {reelsItems.map((src, i) => (
+              <div key={i} className="w-full overflow-hidden bg-black rounded-lg">
+                <div className="relative w-full" style={{ paddingBottom: '125%' }}>
+                  <iframe className="absolute top-0 left-0 w-full h-full rounded-lg" src={src} title={`Reels ${i + 1}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      </section>
 
       {/* Section 005: AI Generation */}
       <section id="ai-generation" className="content-above-dots px-4 sm:px-6 md:px-12 py-16 md:py-10">

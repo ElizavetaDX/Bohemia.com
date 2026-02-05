@@ -186,7 +186,7 @@ export default function PricePage() {
   }, [mobileMenuOpen])
 
   const linkClass = (active?: boolean) =>
-    'relative group text-xs md:text-sm tracking-[0.2em] uppercase transition-colors ' + (active ? (scrolled ? 'text-white' : 'text-black') : (scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'))
+    'relative group text-[10px] md:text-xs tracking-[0.2em] uppercase transition-colors ' + (active ? (scrolled ? 'text-white' : 'text-black') : (scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'))
 
   const underlineClass = (visible: boolean) =>
     'pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left transition-transform duration-300 ' + (scrolled ? 'bg-white' : 'bg-black') + ' ' + (visible ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100');
@@ -216,14 +216,14 @@ export default function PricePage() {
               />
             </div>
             <span
-              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap min-w-0 truncate ${
+              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap flex-shrink-0 ${
                 scrolled ? 'text-white/80' : 'text-black/80'
               }`}
             >
               студія анімації Богеміка
             </span>
           </Link>
-          <ul className="hidden md:flex items-center gap-5 md:gap-8">
+          <ul className="hidden md:flex items-center gap-5 md:gap-8 ml-4 md:ml-8">
             <li>
               <Link href="/" className={linkClass()}>
                 <span>головна</span>
@@ -283,10 +283,10 @@ export default function PricePage() {
       {/* Top row + Title: 2025 | BOHEMIQA STUDIO | 009 */}
       <section id="hero" className="content-above-dots px-4 sm:px-6 md:px-12 pt-2.5 pb-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
-            <div className="text-left tracking-tight text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60">2025</div>
-            <div className="text-center w-[220px] text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
-            <div className="text-right tracking-tight text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60">009</div>
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
+            <div className="text-left w-[40px] tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">2025</div>
+            <div className="text-center w-[110px] sm:w-[130px] md:w-[280px] text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
+            <div className="text-right tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">009</div>
           </div>
           <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tight leading-[0.8] text-black text-center mt-2 mb-4 md:mb-6">
             ПРАЙС

@@ -74,7 +74,7 @@ export default function ImportantPage() {
   }, [mobileMenuOpen])
 
   const linkClass = (active?: boolean) =>
-    `relative group text-xs md:text-sm tracking-[0.2em] uppercase transition-colors ${
+    `relative group text-[10px] md:text-xs tracking-[0.2em] uppercase transition-colors ${
       active
         ? scrolled
           ? 'text-white'
@@ -128,14 +128,14 @@ export default function ImportantPage() {
               />
             </div>
             <span
-              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap min-w-0 truncate ${
+              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap flex-shrink-0 ${
                 scrolled ? 'text-white/80' : 'text-black/80'
               }`}
             >
               студія анімації Богеміка
             </span>
           </Link>
-          <ul className="hidden md:flex items-center gap-5 md:gap-8">
+          <ul className="hidden md:flex items-center gap-5 md:gap-8 ml-4 md:ml-8">
             <li>
               <Link href="/" className={linkClass()}>
                 <span>головна</span>
@@ -196,10 +196,10 @@ export default function ImportantPage() {
       {/* Hero: мелкие надписи + заголовок НАМ ВАЖЛИВО */}
       <section id="hero" className="content-above-dots px-4 sm:px-6 md:px-12 pt-2.5 pb-6 md:pb-8">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
-            <div className="text-left tracking-tight text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60">2025</div>
-            <div className="text-center w-[220px] text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
-            <div className="text-right tracking-tight text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60">011</div>
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
+            <div className="text-left w-[40px] tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">2025</div>
+            <div className="text-center w-[110px] sm:w-[130px] md:w-[280px] text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
+            <div className="text-right tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">011</div>
           </div>
           <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase text-center tracking-tight leading-tight bg-white mt-2 mb-4 md:mb-6">
             НАМ ВАЖЛИВО
@@ -237,17 +237,6 @@ export default function ImportantPage() {
           </ul>
         </div>
       </section>
-
-      {/* Точки: горизонтально 21 колонка по 4 ряда, по ширине контента */}
-      <div className="w-full px-4 sm:px-6 md:px-12 py-6 md:py-8">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="grid grid-cols-[repeat(21,minmax(0,1fr))] grid-rows-4 gap-x-5 gap-y-8 w-full">
-            {Array.from({ length: 21 * 4 }).map((_, i) => (
-              <div key={i} className="w-1.5 h-1.5 md:w-[9px] md:h-[9px] bg-black/60 rounded-full" />
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* Footer */}
       <footer className="px-4 sm:px-6 md:px-12 py-8 bg-white border-t border-black/10">

@@ -83,7 +83,7 @@ export default function LearnPage() {
   }, [mobileMenuOpen])
 
   const linkClass = (active?: boolean) =>
-    `relative group text-xs md:text-sm tracking-[0.2em] uppercase transition-colors ${
+    `relative group text-[10px] md:text-xs tracking-[0.2em] uppercase transition-colors ${
       active
         ? scrolled
           ? 'text-white'
@@ -127,14 +127,14 @@ export default function LearnPage() {
               />
             </div>
             <span
-              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap min-w-0 truncate ${
+              className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase transition-colors duration-500 whitespace-nowrap flex-shrink-0 ${
                 scrolled ? 'text-white/80' : 'text-black/80'
               }`}
             >
               студія анімації Богеміка
             </span>
           </Link>
-          <ul className="hidden md:flex items-center gap-5 md:gap-8">
+          <ul className="hidden md:flex items-center gap-5 md:gap-8 ml-4 md:ml-8">
             <li>
               <Link href="/" className={linkClass()}>
                 <span>головна</span>
@@ -195,10 +195,10 @@ export default function LearnPage() {
       {/* Hero */}
       <section id="hero" className="content-above-dots px-4 sm:px-6 md:px-12 pt-2.5">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
-            <div className="text-left tracking-tight text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60">2025</div>
-            <div className="text-center w-[220px] text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
-            <div className="text-right tracking-tight text-xs sm:text-sm md:text-base lg:text-lg font-bold text-black/60">011</div>
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
+            <div className="text-left w-[40px] tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">2025</div>
+            <div className="text-center w-[110px] sm:w-[130px] md:w-[280px] text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
+            <div className="text-right tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">011</div>
           </div>
 
           <h1
