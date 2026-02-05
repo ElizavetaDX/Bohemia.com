@@ -2,26 +2,6 @@
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 
-const ANIMATION_OPTIONS = [
-  { id: 'frame_revival', label: 'Оживлення кадру (до 3х кадрів)', price: 4000 },
-  { id: 'rotation_360', label: 'Обертання 360 градусів', price: 2500 },
-] as const
-
-const VISUALIZATION_TIERS = [
-  { id: 'base', label: 'Базова', price: 2500, items: '3D лого, пакет, коробка, футболка, легінси та ін.' },
-  { id: 'medium', label: 'Середня', price: 4000, items: 'сукня, спідниця, брюки, худі, обручки та ін.' },
-  { id: 'complex', label: 'Складна', price: 6000, items: 'флакон, пальто, косуха, вечерня сукня, корсет та ін.' },
-  { id: 'premium', label: 'Преміум', price: 12000, items: 'окуляри, сумочка, ювелірні вироби, меблі, їжа' },
-  { id: 'exclusive', label: 'Ексклюзив', price: 20000, items: "взуття, хутро, пір'я, складні годинники" },
-] as const
-
-const SCENE_OPTIONS = [
-  { id: 'base', label: 'Базова', price: 0, items: 'однотонний фон, пуста кімната, без фону' },
-  { id: 'standard', label: 'Стандарт', price: 2000, items: 'рослини, аватар, телефон, телевізор' },
-  { id: 'complex', label: 'Складна', price: 4000, items: 'місто, ліс, дощ, вогонь, транспорт, рідини' },
-  { id: 'large', label: 'Масштабна', price: 10000, items: 'сцена з великою кількістю об\'єктів' },
-] as const
-
 const STATIC_AI_OPTIONS = [
   { id: 'realistic_image', label: 'Концептуальне зображення', price: 2000 },
   { id: 'extra_frame_concept', label: 'Додатковий кадр концепт', price: 1000 },
@@ -41,9 +21,6 @@ const VFX_OPTIONS = [
   { id: '13-20', label: '13–20 сек', price: 23000 },
 ] as const
 
-type AnimationId = (typeof ANIMATION_OPTIONS)[number]['id']
-type VizId = (typeof VISUALIZATION_TIERS)[number]['id']
-type SceneId = (typeof SCENE_OPTIONS)[number]['id']
 type CgId = (typeof CG_OPTIONS)[number]['id'] | ''
 type VfxId = (typeof VFX_OPTIONS)[number]['id'] | ''
 
@@ -53,9 +30,7 @@ const cardInactive = 'bg-white text-black hover:bg-black/5'
 
 export function PriceCalculator() {
   const [open, setOpen] = useState(false)
-  const [animation, setAnimation] = useState<AnimationId | null>(null)
-  const [visualization, setVisualization] = useState<VizId | null>(null)
-  const [scene, setScene] = useState<SceneId | null>(null)
+  const [consultation, setConsultation] = useState(false)
   const [staticAi, setStaticAi] = useState<Set<string>>(new Set())
   const [cg, setCg] = useState<CgId>('')
   const [vfx, setVfx] = useState<VfxId>('')
@@ -65,7 +40,6 @@ export function PriceCalculator() {
   const [comment, setComment] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
-  const [showImportant, setShowImportant] = useState(false)
   const [showNotes, setShowNotes] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
 
@@ -91,20 +65,13 @@ export function PriceCalculator() {
     })
   }, [])
 
-  const mainTotal = useMemo(() => {
-    const a = animation ? ANIMATION_OPTIONS.find((o) => o.id === animation)?.price ?? 0 : 0
-    const v = visualization ? VISUALIZATION_TIERS.find((t) => t.id === visualization)?.price ?? 0 : 0
-    const s = scene ? SCENE_OPTIONS.find((o) => o.id === scene)?.price ?? 0 : 0
-    return a + v + s
-  }, [animation, visualization, scene])
-
   const staticAiTotal = useMemo(
     () => STATIC_AI_OPTIONS.filter((o) => staticAi.has(o.id)).reduce((sum, o) => sum + o.price, 0),
     [staticAi]
   )
   const cgPrice = useMemo(() => (cg ? CG_OPTIONS.find((o) => o.id === cg)?.price ?? 0 : 0), [cg])
   const vfxPrice = useMemo(() => (vfx ? VFX_OPTIONS.find((o) => o.id === vfx)?.price ?? 0 : 0), [vfx])
-  const total = mainTotal + staticAiTotal + cgPrice + vfxPrice
+  const total = staticAiTotal + cgPrice + vfxPrice
 
   const buildMessage = useCallback(() => {
     const lines: string[] = [
@@ -115,20 +82,12 @@ export function PriceCalculator() {
       `Номер телефону: ${phone.trim() ? phone.trim() : 'не вказано'}`,
       `Коментар: ${comment.trim() ? comment.trim() : 'не вказано'}`,
       '',
-      '📊 <b>Основні послуги (Анімація / Візуалізація):</b>',
+      '📊 <b>Деталі розрахунку:</b>',
       '',
     ]
-    if (animation) {
-      const o = ANIMATION_OPTIONS.find((x) => x.id === animation)!
-      lines.push(`Анімація: ${o.label} — ${o.price} грн`)
-    }
-    if (visualization) {
-      const t = VISUALIZATION_TIERS.find((x) => x.id === visualization)!
-      lines.push(`Візуалізація: ${t.label} — ${t.price} грн`)
-    }
-    if (scene) {
-      const o = SCENE_OPTIONS.find((x) => x.id === scene)!
-      lines.push(`Сцена: ${o.label} — ${o.price} грн`)
+    if (consultation) {
+      lines.push('3D Візуалізація — консультація по ціні: Індивідуально')
+      lines.push('')
     }
     if (cg) {
       const o = CG_OPTIONS.find((x) => x.id === cg)!
@@ -144,18 +103,19 @@ export function PriceCalculator() {
         lines.push(`${o.label} — ${o.price} грн`)
       })
     }
-    lines.push('', `<b>РАЗОМ: ${total} грн</b>`)
+    const totalLine = consultation && total === 0
+      ? '<b>РАЗОМ: Індивідуально</b>'
+      : consultation && total > 0
+        ? `<b>РАЗОМ: ${total.toLocaleString('uk-UA')} грн + консультація (індивідуально)</b>`
+        : `<b>РАЗОМ: ${total.toLocaleString('uk-UA')} грн</b>`
+    lines.push('', totalLine)
     return lines.join('\n')
-  }, [name, telegram, phone, comment, animation, visualization, scene, cg, vfx, staticAi, total])
+  }, [name, telegram, phone, comment, consultation, cg, vfx, staticAi, total])
 
-  const hasTrinitySelection = Boolean(animation || visualization || scene)
-  const bundleComplete = !hasTrinitySelection || (Boolean(animation) && visualization !== null && scene !== null)
-  const showBundleMessage = hasTrinitySelection && !bundleComplete
   const canSend =
-    total > 0 &&
+    (total > 0 || consultation) &&
     name.trim().length > 0 &&
-    telegram.trim().replace(/^@/, '').length > 0 &&
-    bundleComplete
+    telegram.trim().replace(/^@/, '').length > 0
 
   const handleSend = async () => {
     if (!canSend) return
@@ -190,26 +150,8 @@ export function PriceCalculator() {
           >
             Розрахувати вартість проекту
           </button>
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={() => setShowImportant((prev) => !prev)}
-              className="min-h-[52px] px-6 py-4 bg-red-600 text-white font-bold uppercase tracking-widest rounded-lg border border-black transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
-              aria-expanded={showImportant}
-            >
-              Важливо
-            </button>
-          </div>
+          <div aria-hidden />
         </div>
-
-        {showImportant && (
-          <div className="mt-4 max-w-2xl mx-auto text-center border border-black rounded-lg px-4 py-3 bg-white">
-            <p className="text-sm md:text-base text-black leading-relaxed">
-              Щоб порахувати вартість проекту з 3D анімацією скористайтеся, будь ласка, формулою:{' '}
-              <span className="font-bold underline">Анімація + Візуалізація + Сцена</span>.
-            </p>
-          </div>
-        )}
 
         <div className="mt-4 flex justify-center">
           <button
@@ -258,72 +200,6 @@ export function PriceCalculator() {
             </div>
 
             <div className="flex-1 min-h-0 overflow-y-auto px-4 py-6 space-y-8">
-              {/* Анімація — клік знімає вибір */}
-              <div
-                className={`rounded-lg p-3 transition-shadow ${
-                  hasTrinitySelection && !animation ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''
-                }`}
-              >
-                <h3 className={`text-xs font-semibold uppercase tracking-widest mb-3 ${hasTrinitySelection && !animation ? 'text-red-600' : 'text-black/60'}`}>Анімація</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {ANIMATION_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() => setAnimation((prev) => (prev === opt.id ? null : opt.id))}
-                      className={`${cardBase} ${animation === opt.id ? cardActive : cardInactive}`}
-                    >
-                      <span className="font-medium text-sm">{opt.label}</span>
-                      <span className="text-xs opacity-80 mt-0.5">{opt.price} грн</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Візуалізація — обов'язкова при виборі з трійці */}
-              <div
-                className={`rounded-lg p-3 transition-shadow ${
-                  hasTrinitySelection && !visualization ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''
-                }`}
-              >
-                <h3 className={`text-xs font-semibold uppercase tracking-widest mb-3 ${hasTrinitySelection && !visualization ? 'text-red-600' : 'text-black/60'}`}>Візуалізація</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {VISUALIZATION_TIERS.map((tier) => (
-                    <button
-                      key={tier.id}
-                      type="button"
-                      onClick={() => setVisualization((prev) => (prev === tier.id ? null : tier.id))}
-                      className={`${cardBase} ${visualization === tier.id ? cardActive : cardInactive}`}
-                    >
-                      <span className="font-medium text-sm">{tier.label} — {tier.price} грн</span>
-                      <span className="text-xs opacity-80 mt-0.5 line-clamp-2">{tier.items}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Сцена — обов'язкова при виборі з трійці */}
-              <div
-                className={`rounded-lg p-3 transition-shadow ${
-                  hasTrinitySelection && !scene ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''
-                }`}
-              >
-                <h3 className={`text-xs font-semibold uppercase tracking-widest mb-3 ${hasTrinitySelection && !scene ? 'text-red-600' : 'text-black/60'}`}>Сцена</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {SCENE_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() => setScene((prev) => (prev === opt.id ? null : opt.id))}
-                      className={`${cardBase} ${scene === opt.id ? cardActive : cardInactive}`}
-                    >
-                      <span className="font-medium text-sm">{opt.label} {opt.price > 0 ? `— ${opt.price} грн` : '(0 грн)'}</span>
-                      <span className="text-xs opacity-80 mt-0.5 line-clamp-2">{opt.items}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Static & AI */}
               <div>
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Static & AI</h3>
@@ -377,6 +253,21 @@ export function PriceCalculator() {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* 3D Візуалізація — консультація по ціні */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setConsultation((prev) => !prev)}
+                  className={`w-full ${cardBase} ${consultation ? cardActive : cardInactive}`}
+                >
+                  <span className="font-medium text-sm">3D Візуалізація — консультація по ціні</span>
+                  <span className="text-xs opacity-80 mt-0.5">{consultation ? 'Індивідуально' : 'від 5000 грн'}</span>
+                </button>
+                <p className="mt-2.5 text-xs text-black/60 leading-relaxed max-w-xl">
+                  Вартість залежить від складності об&apos;єктів, кількості ракурсів та деталізації. Оберіть цей пункт, щоб отримати персональний прорахунок від менеджера.
+                </p>
               </div>
 
               {/* Контактні дані */}
@@ -433,14 +324,16 @@ export function PriceCalculator() {
 
             {/* Фіксований блок з сумою та кнопкою */}
             <div className="flex-shrink-0 border-t border-black/20 px-4 py-4 bg-white/90">
-              {showBundleMessage && (
-                <p className="text-sm text-red-600 font-medium mb-3" role="alert">
-                  Для цього типу замовлення необхідно обрати Анімацію, Візуалізацію та Сцену.
-                </p>
-              )}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                 <p className="text-xl font-bold text-black tabular-nums">
-                  Разом: <span className="font-press-start">{total.toLocaleString('uk-UA')} грн</span>
+                  Разом:{' '}
+                  <span className="font-press-start">
+                    {consultation && total === 0
+                      ? 'Індивідуально'
+                      : consultation && total > 0
+                        ? `${total.toLocaleString('uk-UA')} грн + консультація`
+                        : `${total.toLocaleString('uk-UA')} грн`}
+                  </span>
                 </p>
                 <button
                   type="button"
