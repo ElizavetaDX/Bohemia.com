@@ -170,8 +170,6 @@ const priceItems = [
 export default function PricePage() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [openNotes, setOpenNotes] = useState<Set<number>>(new Set())
-  const [openImportant, setOpenImportant] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)
@@ -296,7 +294,7 @@ export default function PricePage() {
             <div className="text-center w-[110px] sm:w-[130px] md:w-[280px] text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60 font-press-start">BOHEMIQA STUDIO</div>
             <div className="text-right tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">009</div>
           </div>
-          <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tight leading-[0.8] text-black text-center mt-2 mb-4 md:mb-6">
+          <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tight leading-[0.8] text-black text-center mt-2 mb-4 md:mb-6 pt-[5px] pb-[5px]">
             ПРАЙС
           </h1>
         </div>
@@ -358,60 +356,11 @@ export default function PricePage() {
                       )}
                     </>
                   )}
-                  {!('lines' in item) && (
-                    'notes' in item && (item as { notes?: { title: string; items: string[] } }).notes ? (
-                      <div className="mt-4">
-                        <button
-                          type="button"
-                          onClick={() => setOpenNotes((prev) => {
-                            const next = new Set(prev)
-                            if (next.has(item.id)) next.delete(item.id)
-                            else next.add(item.id)
-                            return next
-                          })}
-                          className="inline-flex items-center px-2 py-1 min-h-[48px] font-bold text-sm md:text-base text-black mb-3 text-left cursor-pointer border-2 border-black transition-colors hover:bg-black hover:text-white"
-                          aria-expanded={openNotes.has(item.id)}
-                        >
-                          {(item as { notes: { title: string; items: string[] } }).notes.title}
-                        </button>
-                        {openNotes.has(item.id) && (
-                          <div className="font-content-mono text-sm md:text-base text-black leading-relaxed mb-4 space-y-1">
-                            {(item as { notes: { title: string; items: string[] } }).notes.items.map((line, i) => (
-                              <span key={i} className="block w-full max-w-full break-words bg-white pt-5 pb-5">
-                                {line}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      !('tiers' in item) && 'price' in item && (
-                        <span className="inline-block px-2 py-1 font-bold text-sm md:text-base text-black">
-                          {(item as { price?: string }).price}
-                        </span>
-                      )
-                    )
+                  {!('lines' in item) && !('tiers' in item) && 'price' in item && (
+                    <span className="inline-block px-2 py-1 font-bold text-sm md:text-base text-black">
+                      {(item as { price?: string }).price}
+                    </span>
                   )}
-                  <div className="mt-4 flex flex-col items-start">
-                    <button
-                      type="button"
-                      onClick={() => setOpenImportant((prev) => {
-                        const next = new Set(prev)
-                        if (next.has(item.id)) next.delete(item.id)
-                        else next.add(item.id)
-                        return next
-                      })}
-                      className="inline-flex items-center px-2 py-1 min-h-[48px] font-bold text-sm md:text-base text-black mb-3 text-left cursor-pointer border-2 border-black transition-colors hover:bg-black hover:text-white"
-                      aria-expanded={openImportant.has(item.id)}
-                    >
-                      Важливо
-                    </button>
-                    {openImportant.has(item.id) && (
-                      <p className="text-sm md:text-base text-black/80 leading-relaxed max-w-md">
-                        Щоб порахувати вартість проекту з 3D анімацією скористайтеся, будь ласка, формулою: Анімація + Візуалізація + Сцена
-                      </p>
-                    )}
-                  </div>
                 </div>
               </li>
             ))}

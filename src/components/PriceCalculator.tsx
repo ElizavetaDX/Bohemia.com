@@ -66,7 +66,15 @@ export function PriceCalculator() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [showImportant, setShowImportant] = useState(false)
+  const [showNotes, setShowNotes] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
+
+  const notesItems = [
+    'базовий пакет візуалізації включає 10 фото-рендерів в різних ракурсах/кольорах(до 3х)/позах/з різним фоном',
+    'кожен додатковий рендер 50 грн (мінімальне замовлення 5 шт/1 колір)',
+    "3D об'єкт залишається з вами назавжди і може бути використаний в подальшому для креативів та анімацій",
+    'в прайсі вказана орієнтовна середня ціна, кінцева озвучується після знайомства з вашим продуктом по фото/ескізу/референсу',
+  ]
 
   useEffect(() => {
     if (open && panelRef.current) {
@@ -140,7 +148,13 @@ export function PriceCalculator() {
     return lines.join('\n')
   }, [name, telegram, phone, comment, animation, visualization, scene, cg, vfx, staticAi, total])
 
-  const canSend = total > 0 && name.trim().length > 0 && telegram.trim().replace(/^@/, '').length > 0
+  const bundleComplete = !animation || (visualization !== null && scene !== null)
+  const showBundleMessage = Boolean(animation && (!visualization || !scene))
+  const canSend =
+    total > 0 &&
+    name.trim().length > 0 &&
+    telegram.trim().replace(/^@/, '').length > 0 &&
+    bundleComplete
 
   const handleSend = async () => {
     if (!canSend) return
@@ -166,7 +180,7 @@ export function PriceCalculator() {
   return (
     <section id="calculator" className="content-above-dots px-4 sm:px-6 md:px-12 py-4 md:py-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-wrap justify-center items-stretch gap-3">
+        <div className="flex flex-wrap justify-center items-stretch gap-3 pt-[5px] pb-[5px]">
           <button
             type="button"
             onClick={() => setOpen((prev) => !prev)}
@@ -190,6 +204,26 @@ export function PriceCalculator() {
               Щоб порахувати вартість проекту з 3D анімацією скористайтеся, будь ласка, формулою:{' '}
               <span className="font-bold underline">Анімація + Візуалізація + Сцена</span>.
             </p>
+          </div>
+        )}
+
+        <div className="mt-4 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setShowNotes((prev) => !prev)}
+            className="inline-flex items-center px-2 py-1 min-h-[48px] font-bold text-sm md:text-base text-black border-2 border-black transition-colors hover:bg-black hover:text-white rounded focus:outline-none focus:ring-2 focus:ring-black/30"
+            aria-expanded={showNotes}
+          >
+            Умови та примітки
+          </button>
+        </div>
+        {showNotes && (
+          <div className="mt-3 max-w-2xl mx-auto font-content-mono text-sm md:text-base text-black leading-relaxed space-y-1 border border-black rounded-lg px-4 py-3 bg-white">
+            {notesItems.map((line, i) => (
+              <p key={i} className="break-words">
+                {line}
+              </p>
+            ))}
           </div>
         )}
 
@@ -220,7 +254,7 @@ export function PriceCalculator() {
             </div>
 
             <div className="flex-1 min-h-0 overflow-y-auto px-4 py-6 space-y-8">
-              {/* Анімація */}
+              {/* Анімація — клік знімає вибір */}
               <div>
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Анімація</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -228,7 +262,7 @@ export function PriceCalculator() {
                     <button
                       key={opt.id}
                       type="button"
-                      onClick={() => setAnimation(opt.id)}
+                      onClick={() => setAnimation((prev) => (prev === opt.id ? null : opt.id))}
                       className={`${cardBase} ${animation === opt.id ? cardActive : cardInactive}`}
                     >
                       <span className="font-medium text-sm">{opt.label}</span>
@@ -238,15 +272,19 @@ export function PriceCalculator() {
                 </div>
               </div>
 
-              {/* Візуалізація */}
-              <div>
+              {/* Візуалізація — обов'язкова при виборі анімації */}
+              <div
+                className={`rounded-lg p-3 transition-shadow ${
+                  animation && !visualization ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''
+                }`}
+              >
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Візуалізація</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {VISUALIZATION_TIERS.map((tier) => (
                     <button
                       key={tier.id}
                       type="button"
-                      onClick={() => setVisualization(tier.id)}
+                      onClick={() => setVisualization((prev) => (prev === tier.id ? null : tier.id))}
                       className={`${cardBase} ${visualization === tier.id ? cardActive : cardInactive}`}
                     >
                       <span className="font-medium text-sm">{tier.label} — {tier.price} грн</span>
@@ -256,15 +294,19 @@ export function PriceCalculator() {
                 </div>
               </div>
 
-              {/* Сцена */}
-              <div>
+              {/* Сцена — обов'язкова при виборі анімації */}
+              <div
+                className={`rounded-lg p-3 transition-shadow ${
+                  animation && !scene ? 'ring-2 ring-red-400 ring-offset-2 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]' : ''
+                }`}
+              >
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Сцена</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {SCENE_OPTIONS.map((opt) => (
                     <button
                       key={opt.id}
                       type="button"
-                      onClick={() => setScene(opt.id)}
+                      onClick={() => setScene((prev) => (prev === opt.id ? null : opt.id))}
                       className={`${cardBase} ${scene === opt.id ? cardActive : cardInactive}`}
                     >
                       <span className="font-medium text-sm">{opt.label} {opt.price > 0 ? `— ${opt.price} грн` : '(0 грн)'}</span>
@@ -383,6 +425,11 @@ export function PriceCalculator() {
 
             {/* Фіксований блок з сумою та кнопкою */}
             <div className="flex-shrink-0 border-t border-black/20 px-4 py-4 bg-white/90">
+              {showBundleMessage && (
+                <p className="text-sm text-red-600 font-medium mb-3" role="alert">
+                  Для розрахунку анімації оберіть також візуалізацію та сцену.
+                </p>
+              )}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                 <p className="text-xl font-bold text-black tabular-nums">
                   Разом: <span className="font-press-start">{total.toLocaleString('uk-UA')} грн</span>
