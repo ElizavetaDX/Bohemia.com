@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Wrapper } from '@/components/Wrapper'
 import { MobileMenu } from '@/components/MobileMenu'
+import { PriceCalculator } from '@/components/PriceCalculator'
 
 function SearchIcon() {
   return (
@@ -293,6 +294,8 @@ export default function PricePage() {
           </h1>
         </div>
       </section>
+
+      <PriceCalculator />
 
       {/* Price list */}
       <section className="content-above-dots px-4 sm:px-6 md:px-12 py-12 md:py-10">
