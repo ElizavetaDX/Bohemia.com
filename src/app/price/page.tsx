@@ -282,7 +282,7 @@ export default function PricePage() {
       <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
       {/* Top row + Title: 2025 | BOHEMIQA STUDIO | 009 */}
-      <section id="hero" className="content-above-dots px-4 sm:px-6 md:px-12 pt-2.5 pb-4">
+      <section id="hero" className="content-above-dots px-4 sm:px-6 md:px-12 pt-2.5 pb-[5px] h-[95px]">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-[1fr_auto_1fr] gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
             <div className="text-left w-[40px] tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">2025</div>

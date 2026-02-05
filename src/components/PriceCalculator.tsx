@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 
 const ANIMATION_OPTIONS = [
   { id: 'frame_revival', label: 'Оживлення кадру (до 3х кадрів)', price: 4000 },
@@ -22,6 +22,13 @@ const SCENE_OPTIONS = [
   { id: 'large', label: 'Масштабна', price: 10000, items: 'сцена з великою кількістю об\'єктів' },
 ] as const
 
+const STATIC_AI_OPTIONS = [
+  { id: 'realistic_image', label: 'Реалістичне або концептуальне зображення з продуктом/логотипом бренду', price: 2000 },
+  { id: 'extra_frame_concept', label: 'Додатковий кадр в єдиній концепції', price: 1000 },
+  { id: 'extra_frame_angle', label: 'Додатковий кадр (ракурс)', price: 500 },
+  { id: 'ai_avatar_snaps', label: 'Снепи AI-аватару за ТЗ (макіяж + зачіска + одяг)', price: 3500 },
+] as const
+
 const CG_OPTIONS = [
   { id: '5-7', label: '5–7 сек', price: 9600 },
   { id: '8-12', label: '8–12 сек', price: 14400 },
@@ -40,14 +47,47 @@ type SceneId = (typeof SCENE_OPTIONS)[number]['id']
 type CgId = (typeof CG_OPTIONS)[number]['id'] | ''
 type VfxId = (typeof VFX_OPTIONS)[number]['id'] | ''
 
+const cardBase = 'border border-black rounded-lg p-3 min-h-[44px] flex flex-col justify-center text-left transition-colors cursor-pointer '
+const cardActive = 'bg-black text-white'
+const cardInactive = 'bg-white text-black hover:bg-black/5'
+
 export function PriceCalculator() {
+  const [open, setOpen] = useState(false)
   const [animation, setAnimation] = useState<AnimationId | null>(null)
   const [visualization, setVisualization] = useState<VizId | null>(null)
   const [scene, setScene] = useState<SceneId | null>(null)
+  const [staticAi, setStaticAi] = useState<Set<string>>(new Set())
   const [cg, setCg] = useState<CgId>('')
   const [vfx, setVfx] = useState<VfxId>('')
+  const [name, setName] = useState('')
+  const [telegram, setTelegram] = useState('')
+  const [phone, setPhone] = useState('')
+  const [comment, setComment] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
+    }
+  }, [open])
+
+  const toggleStaticAi = useCallback((id: string) => {
+    setStaticAi((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }, [])
 
   const mainTotal = useMemo(() => {
     const a = animation ? ANIMATION_OPTIONS.find((o) => o.id === animation)?.price ?? 0 : 0
@@ -56,23 +96,37 @@ export function PriceCalculator() {
     return a + v + s
   }, [animation, visualization, scene])
 
+  const staticAiTotal = useMemo(
+    () => STATIC_AI_OPTIONS.filter((o) => staticAi.has(o.id)).reduce((sum, o) => sum + o.price, 0),
+    [staticAi]
+  )
   const cgPrice = useMemo(() => (cg ? CG_OPTIONS.find((o) => o.id === cg)?.price ?? 0 : 0), [cg])
   const vfxPrice = useMemo(() => (vfx ? VFX_OPTIONS.find((o) => o.id === vfx)?.price ?? 0 : 0), [vfx])
-  const total = mainTotal + cgPrice + vfxPrice
+  const total = mainTotal + staticAiTotal + cgPrice + vfxPrice
 
-  const buildMessage = () => {
-    const lines: string[] = ['<b>Розрахунок вартості</b>', '']
+  const buildMessage = useCallback(() => {
+    const lines: string[] = [
+      '👤 <b>Дані клієнта:</b>',
+      '',
+      `Ім'я: ${name.trim()}`,
+      `Telegram: @${telegram.trim().replace(/^@/, '')}`,
+      `Номер телефону: ${phone.trim() ? phone.trim() : 'не вказано'}`,
+      `Коментар: ${comment.trim() ? comment.trim() : 'не вказано'}`,
+      '',
+      '📊 <b>Основні послуги (Анімація / Візуалізація):</b>',
+      '',
+    ]
     if (animation) {
       const o = ANIMATION_OPTIONS.find((x) => x.id === animation)!
       lines.push(`Анімація: ${o.label} — ${o.price} грн`)
     }
     if (visualization) {
       const t = VISUALIZATION_TIERS.find((x) => x.id === visualization)!
-      lines.push(`Візуалізація: ${t.label} (${t.price} грн) — ${t.items}`)
+      lines.push(`Візуалізація: ${t.label} — ${t.price} грн`)
     }
     if (scene) {
       const o = SCENE_OPTIONS.find((x) => x.id === scene)!
-      lines.push(`Сцена: ${o.label} (${o.price} грн) — ${o.items}`)
+      lines.push(`Сцена: ${o.label} — ${o.price} грн`)
     }
     if (cg) {
       const o = CG_OPTIONS.find((x) => x.id === cg)!
@@ -82,12 +136,20 @@ export function PriceCalculator() {
       const o = VFX_OPTIONS.find((x) => x.id === vfx)!
       lines.push(`VFX симуляція: ${o.label} — ${o.price} грн`)
     }
-    lines.push('', `<b>Разом: ${total} грн</b>`)
+    if (staticAi.size > 0) {
+      lines.push('', '📸 <b>Static & AI:</b>', '')
+      STATIC_AI_OPTIONS.filter((o) => staticAi.has(o.id)).forEach((o) => {
+        lines.push(`${o.label} — ${o.price} грн`)
+      })
+    }
+    lines.push('', `<b>РАЗОМ: ${total} грн</b>`)
     return lines.join('\n')
-  }
+  }, [name, telegram, phone, comment, animation, visualization, scene, cg, vfx, staticAi, total])
+
+  const canSend = total > 0 && name.trim().length > 0 && telegram.trim().replace(/^@/, '').length > 0
 
   const handleSend = async () => {
-    if (total === 0) return
+    if (!canSend) return
     setSending(true)
     setSent(false)
     try {
@@ -96,132 +158,249 @@ export function PriceCalculator() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: buildMessage() }),
       })
-      if (res.ok) setSent(true)
+      if (res.ok) {
+        setSent(true)
+        setTimeout(() => {
+          setOpen(false)
+          document.body.style.overflow = ''
+          document.documentElement.style.overflow = ''
+        }, 1500)
+      }
     } finally {
       setSending(false)
     }
   }
 
-  const cardBase = 'border-2 border-black rounded-lg p-4 min-h-[48px] flex flex-col justify-center text-left transition-colors cursor-pointer '
-  const cardActive = 'bg-black text-white'
-  const cardInactive = 'bg-white text-black hover:bg-black/5'
+  const handleClose = useCallback(() => {
+    setOpen(false)
+    document.body.style.overflow = ''
+    document.documentElement.style.overflow = ''
+  }, [])
 
   return (
-    <section id="calculator" className="content-above-dots px-4 sm:px-6 md:px-12 py-12 md:py-16 bg-white">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="font-press-start text-2xl sm:text-3xl md:text-4xl tracking-tight uppercase mb-8 md:mb-10 text-black">
-          Калькулятор вартості
-        </h2>
-
-        {/* Анімація */}
-        <div className="mb-10">
-          <h3 className="text-sm font-semibold uppercase tracking-widest text-black/70 mb-4">Анімація</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {ANIMATION_OPTIONS.map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setAnimation(opt.id)}
-                className={`${cardBase} ${animation === opt.id ? cardActive : cardInactive}`}
-              >
-                <span className="font-medium">{opt.label}</span>
-                <span className="text-sm opacity-80 mt-1">{opt.price} грн</span>
-              </button>
-            ))}
-          </div>
+    <>
+      <section id="calculator" className="content-above-dots px-4 sm:px-6 md:px-12 py-4 md:py-6">
+        <div className="max-w-6xl mx-auto flex justify-center">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="min-h-[52px] px-8 py-4 bg-black text-white font-medium uppercase tracking-widest rounded-lg border border-black transition-colors hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/30"
+          >
+            Розрахувати вартість проекту
+          </button>
         </div>
+      </section>
 
-        {/* Візуалізація */}
-        <div className="mb-10">
-          <h3 className="text-sm font-semibold uppercase tracking-widest text-black/70 mb-4">Візуалізація</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {VISUALIZATION_TIERS.map((tier) => (
+      {open && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4 bg-black/20 md:bg-black/30"
+          onClick={handleClose}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="calc-modal-title"
+        >
+          <div
+            className="w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white border border-black md:rounded-lg shadow-xl flex flex-col overflow-hidden overscroll-contain"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between flex-shrink-0 border-b border-black px-4 py-3">
+              <h2 id="calc-modal-title" className="font-press-start text-lg uppercase tracking-tight text-black">
+                Калькулятор вартості
+              </h2>
               <button
-                key={tier.id}
                 type="button"
-                onClick={() => setVisualization(tier.id)}
-                className={`${cardBase} ${visualization === tier.id ? cardActive : cardInactive}`}
+                onClick={handleClose}
+                className="p-2 -m-2 text-black hover:bg-black/5 rounded focus:outline-none focus:ring-2 focus:ring-black/20"
+                aria-label="Закрити"
               >
-                <span className="font-medium">{tier.label} — {tier.price} грн</span>
-                <span className="text-sm opacity-80 mt-1 line-clamp-2">{tier.items}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        {/* Сцена */}
-        <div className="mb-10">
-          <h3 className="text-sm font-semibold uppercase tracking-widest text-black/70 mb-4">Сцена</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {SCENE_OPTIONS.map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setScene(opt.id)}
-                className={`${cardBase} ${scene === opt.id ? cardActive : cardInactive}`}
-              >
-                <span className="font-medium">{opt.label} {opt.price > 0 ? `— ${opt.price} грн` : '(0 грн)'}</span>
-                <span className="text-sm opacity-80 mt-1 line-clamp-2">{opt.items}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+            <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-6 space-y-8">
+              {/* Анімація */}
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Анімація</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {ANIMATION_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setAnimation(opt.id)}
+                      className={`${cardBase} ${animation === opt.id ? cardActive : cardInactive}`}
+                    >
+                      <span className="font-medium text-sm">{opt.label}</span>
+                      <span className="text-xs opacity-80 mt-0.5">{opt.price} грн</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-        {/* CG анімація та VFX */}
-        <div className="mb-12 md:mb-16">
-          <h3 className="text-sm font-semibold uppercase tracking-widest text-black/70 mb-4">CG анімація та VFX</h3>
-          <p className="text-sm text-black/60 mb-4">Окремо від основної формули</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-black/60 mb-2">CG анімація</p>
-              <div className="flex flex-wrap gap-2">
-                {CG_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    onClick={() => setCg(cg === opt.id ? '' : opt.id)}
-                    className={`min-h-[48px] px-4 rounded-lg border-2 border-black text-sm font-medium transition-colors ${cg === opt.id ? cardActive : cardInactive}`}
-                  >
-                    {opt.label} — {opt.price} грн
-                  </button>
-                ))}
+              {/* Візуалізація */}
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Візуалізація</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {VISUALIZATION_TIERS.map((tier) => (
+                    <button
+                      key={tier.id}
+                      type="button"
+                      onClick={() => setVisualization(tier.id)}
+                      className={`${cardBase} ${visualization === tier.id ? cardActive : cardInactive}`}
+                    >
+                      <span className="font-medium text-sm">{tier.label} — {tier.price} грн</span>
+                      <span className="text-xs opacity-80 mt-0.5 line-clamp-2">{tier.items}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Сцена */}
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Сцена</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {SCENE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setScene(opt.id)}
+                      className={`${cardBase} ${scene === opt.id ? cardActive : cardInactive}`}
+                    >
+                      <span className="font-medium text-sm">{opt.label} {opt.price > 0 ? `— ${opt.price} грн` : '(0 грн)'}</span>
+                      <span className="text-xs opacity-80 mt-0.5 line-clamp-2">{opt.items}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Static & AI */}
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Static & AI</h3>
+                <div className="space-y-2">
+                  {STATIC_AI_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => toggleStaticAi(opt.id)}
+                      className={`w-full ${cardBase} ${staticAi.has(opt.id) ? cardActive : cardInactive}`}
+                    >
+                      <span className="font-medium text-sm">{opt.label}</span>
+                      <span className="text-xs opacity-80 mt-0.5">{opt.price} грн</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* CG та VFX */}
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">CG анімація та VFX</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-black/50 mb-1">CG анімація</p>
+                    <div className="flex flex-wrap gap-1">
+                      {CG_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => setCg(cg === opt.id ? '' : opt.id)}
+                          className={`min-h-[40px] px-3 rounded border border-black text-xs font-medium transition-colors ${cg === opt.id ? cardActive : cardInactive}`}
+                        >
+                          {opt.label} — {opt.price}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs text-black/50 mb-1">VFX симуляція</p>
+                    <div className="flex flex-wrap gap-1">
+                      {VFX_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => setVfx(vfx === opt.id ? '' : opt.id)}
+                          className={`min-h-[40px] px-3 rounded border border-black text-xs font-medium transition-colors ${vfx === opt.id ? cardActive : cardInactive}`}
+                        >
+                          {opt.label} — {opt.price}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Контактні дані */}
+              <div className="space-y-4">
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60">Контактні дані</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="calc-name" className="block text-xs font-medium text-black mb-1">Ім&apos;я <span className="text-black/50">(обов&apos;язково)</span></label>
+                    <input
+                      id="calc-name"
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Введіть ваше ім'я"
+                      className="w-full min-h-[44px] px-3 rounded border border-black bg-white text-black text-sm placeholder:text-black/40 focus:outline-none focus:ring-1 focus:ring-black"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="calc-telegram" className="block text-xs font-medium text-black mb-1">Telegram <span className="text-black/50">(обов&apos;язково)</span></label>
+                    <input
+                      id="calc-telegram"
+                      type="text"
+                      value={telegram}
+                      onChange={(e) => setTelegram(e.target.value.replace(/[^@a-zA-Z0-9_]/g, ''))}
+                      placeholder="@username"
+                      className="w-full min-h-[44px] px-3 rounded border border-black bg-white text-black text-sm placeholder:text-black/40 focus:outline-none focus:ring-1 focus:ring-black"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="calc-phone" className="block text-xs font-medium text-black mb-1">Номер телефону <span className="text-black/50">(необов&apos;язково)</span></label>
+                    <input
+                      id="calc-phone"
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+38 (0__) ___-__-__"
+                      className="w-full min-h-[44px] px-3 rounded border border-black bg-white text-black text-sm placeholder:text-black/40 focus:outline-none focus:ring-1 focus:ring-black"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="calc-comment" className="block text-xs font-medium text-black mb-1">Коментар <span className="text-black/50">(необов&apos;язково)</span></label>
+                    <textarea
+                      id="calc-comment"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="Додаткова інформація до замовлення"
+                      rows={2}
+                      className="w-full min-h-[72px] px-3 py-2 rounded border border-black bg-white text-black text-sm placeholder:text-black/40 focus:outline-none focus:ring-1 focus:ring-black resize-y"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-            <div>
-              <p className="text-xs uppercase tracking-wider text-black/60 mb-2">VFX симуляція</p>
-              <div className="flex flex-wrap gap-2">
-                {VFX_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    onClick={() => setVfx(vfx === opt.id ? '' : opt.id)}
-                    className={`min-h-[48px] px-4 rounded-lg border-2 border-black text-sm font-medium transition-colors ${vfx === opt.id ? cardActive : cardInactive}`}
-                  >
-                    {opt.label} — {opt.price} грн
-                  </button>
-                ))}
+
+            {/* Фіксований блок з сумою та кнопкою */}
+            <div className="flex-shrink-0 border-t border-black px-4 py-4 bg-white">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <p className="text-xl font-bold text-black tabular-nums">
+                  Разом: <span className="font-press-start">{total.toLocaleString('uk-UA')} грн</span>
+                </p>
+                <button
+                  type="button"
+                  onClick={handleSend}
+                  disabled={!canSend || sending}
+                  className="min-h-[48px] px-6 py-3 bg-black text-white text-sm font-medium uppercase tracking-widest rounded-lg border border-black transition-colors hover:bg-black/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {sending ? 'Відправка…' : sent ? 'Відправлено' : 'Надіслати'}
+                </button>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Итог + кнопка — живой счётчик и липкий блок на мобайле */}
-        <div className="sticky bottom-0 left-0 right-0 z-40 md:static bg-white border-t border-black/10 md:border-0 pt-4 pb-6 md:pb-0 -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] md:shadow-none">
-          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-            <p className="text-2xl md:text-3xl font-bold text-black tabular-nums">
-              Разом: <span className="font-press-start">{total.toLocaleString('uk-UA')} грн</span>
-            </p>
-            <button
-              type="button"
-              onClick={handleSend}
-              disabled={total === 0 || sending}
-              className="min-h-[52px] px-8 py-3 bg-black text-white font-medium uppercase tracking-widest rounded-lg transition-colors hover:bg-black/85 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {sending ? 'Відправка…' : sent ? 'Відправлено' : 'Надіслати розрахунок'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
+      )}
+    </>
   )
 }
