@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 
 const ANIMATION_OPTIONS = [
   { id: 'frame_revival', label: 'Оживлення кадру (до 3х кадрів)', price: 4000 },
@@ -23,10 +23,10 @@ const SCENE_OPTIONS = [
 ] as const
 
 const STATIC_AI_OPTIONS = [
-  { id: 'realistic_image', label: 'Реалістичне або концептуальне зображення з продуктом/логотипом бренду', price: 2000 },
-  { id: 'extra_frame_concept', label: 'Додатковий кадр в єдиній концепції', price: 1000 },
-  { id: 'extra_frame_angle', label: 'Додатковий кадр (ракурс)', price: 500 },
-  { id: 'ai_avatar_snaps', label: 'Снепи AI-аватару за ТЗ (макіяж + зачіска + одяг)', price: 3500 },
+  { id: 'realistic_image', label: 'Концептуальне зображення', price: 2000 },
+  { id: 'extra_frame_concept', label: 'Додатковий кадр концепт', price: 1000 },
+  { id: 'extra_frame_angle', label: 'Додатковий кадр ракурс', price: 500 },
+  { id: 'ai_avatar_snaps', label: 'Снепи ai-аватару', price: 3500 },
 ] as const
 
 const CG_OPTIONS = [
@@ -65,20 +65,7 @@ export function PriceCalculator() {
   const [comment, setComment] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
-
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden'
-      document.documentElement.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-      document.documentElement.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-      document.documentElement.style.overflow = ''
-    }
-  }, [open])
+  const [showImportant, setShowImportant] = useState(false)
 
   const toggleStaticAi = useCallback((id: string) => {
     setStaticAi((prev) => {
@@ -160,67 +147,71 @@ export function PriceCalculator() {
       })
       if (res.ok) {
         setSent(true)
-        setTimeout(() => {
-          setOpen(false)
-          document.body.style.overflow = ''
-          document.documentElement.style.overflow = ''
-        }, 1500)
+        setTimeout(() => setOpen(false), 1500)
       }
     } finally {
       setSending(false)
     }
   }
 
-  const handleClose = useCallback(() => {
-    setOpen(false)
-    document.body.style.overflow = ''
-    document.documentElement.style.overflow = ''
-  }, [])
+  const handleClose = useCallback(() => setOpen(false), [])
 
   return (
-    <>
-      <section id="calculator" className="content-above-dots px-4 sm:px-6 md:px-12 py-4 md:py-6">
-        <div className="max-w-6xl mx-auto flex justify-center">
+    <section id="calculator" className="content-above-dots px-4 sm:px-6 md:px-12 py-4 md:py-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-wrap justify-center items-stretch gap-3">
           <button
             type="button"
-            onClick={() => setOpen(true)}
-            className="min-h-[52px] px-8 py-4 bg-black text-white font-medium uppercase tracking-widest rounded-lg border border-black transition-colors hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/30"
+            onClick={() => setOpen((prev) => !prev)}
+            className="min-h-[52px] px-8 py-4 bg-black text-white font-medium uppercase tracking-widest rounded-lg border-2 border-black transition-colors hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/30"
           >
             Розрахувати вартість проекту
           </button>
-        </div>
-      </section>
-
-      {open && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4 bg-black/20 md:bg-black/30"
-          onClick={handleClose}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="calc-modal-title"
-        >
-          <div
-            className="w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white border border-black md:rounded-lg shadow-xl flex flex-col overflow-hidden overscroll-contain"
-            onClick={(e) => e.stopPropagation()}
+          <button
+            type="button"
+            onClick={() => setShowImportant((prev) => !prev)}
+            className="min-h-[52px] px-6 py-4 bg-red-600 text-white font-bold uppercase tracking-widest rounded-lg border border-black transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+            aria-expanded={showImportant}
           >
-            <div className="flex items-center justify-between flex-shrink-0 border-b border-black px-4 py-3">
-              <h2 id="calc-modal-title" className="font-press-start text-lg uppercase tracking-tight text-black">
+            Важливо
+          </button>
+        </div>
+
+        {showImportant && (
+          <div className="mt-4 max-w-2xl mx-auto text-center border border-black rounded-lg px-4 py-3 bg-white">
+            <p className="text-sm md:text-base text-black leading-relaxed">
+              Щоб порахувати вартість проекту з 3D анімацією скористайтеся, будь ласка, формулою:{' '}
+              <span className="font-bold underline">Анімація + Візуалізація + Сцена</span>.
+            </p>
+          </div>
+        )}
+
+        {open && (
+          <div
+            className="mt-6 w-full max-w-2xl mx-auto flex flex-col rounded-xl border border-black/10 bg-white/80 shadow-2xl backdrop-blur-md overflow-hidden max-h-[85vh] min-h-0"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="calc-modal-title"
+          >
+            <div className="flex items-center justify-between flex-shrink-0 border-b border-black/20 px-4 py-3 bg-white/90">
+              <h2 id="calc-modal-title" className="font-press-start text-sm md:text-lg uppercase tracking-tight text-black">
                 Калькулятор вартості
               </h2>
               <button
                 type="button"
                 onClick={handleClose}
-                className="p-2 -m-2 text-black hover:bg-black/5 rounded focus:outline-none focus:ring-2 focus:ring-black/20"
+                className="flex items-center gap-1.5 p-2 -m-2 text-black hover:bg-black/5 rounded focus:outline-none focus:ring-2 focus:ring-black/20"
                 aria-label="Закрити"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <span className="text-xs font-medium uppercase tracking-wider">Закрити</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-6 space-y-8">
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 py-6 space-y-8">
               {/* Анімація */}
               <div>
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-black/60 mb-3">Анімація</h3>
@@ -383,7 +374,7 @@ export function PriceCalculator() {
             </div>
 
             {/* Фіксований блок з сумою та кнопкою */}
-            <div className="flex-shrink-0 border-t border-black px-4 py-4 bg-white">
+            <div className="flex-shrink-0 border-t border-black/20 px-4 py-4 bg-white/90">
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                 <p className="text-xl font-bold text-black tabular-nums">
                   Разом: <span className="font-press-start">{total.toLocaleString('uk-UA')} грн</span>
@@ -399,8 +390,8 @@ export function PriceCalculator() {
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </div>
+    </section>
   )
 }

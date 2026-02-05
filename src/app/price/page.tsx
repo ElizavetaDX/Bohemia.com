@@ -181,9 +181,16 @@ export default function PricePage() {
   }, [])
 
   useEffect(() => {
-    if (mobileMenuOpen) document.body.style.overflow = 'hidden'
-    else document.body.style.overflow = ''
-    return () => { document.body.style.overflow = '' }
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.removeProperty('overflow')
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.removeProperty('overflow')
+      document.body.style.overflow = 'unset'
+    }
   }, [mobileMenuOpen])
 
   const linkClass = (active?: boolean) =>
