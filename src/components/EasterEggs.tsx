@@ -1,14 +1,65 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
-const symbols = [
-  { id: 'star-1', x: '4%', y: '10%', icon: 'star' },
-  { id: 'moon-1', x: '96%', y: '8%', icon: 'moon' },
-  { id: 'star-2', x: '6%', y: '88%', icon: 'star' },
-  { id: 'moon-2', x: '94%', y: '82%', icon: 'moon' },
-  { id: 'line-1', x: '12%', y: '48%', icon: 'line' },
-  { id: 'star-3', x: '90%', y: '52%', icon: 'star' },
+type SymbolConfig = { id: string; x: string; y: string; icon: 'star' | 'moon' | 'line' }
+
+const PAGE_SYMBOLS: Record<string, SymbolConfig[]> = {
+  '/': [
+    { id: 'star-1', x: '4%', y: '10%', icon: 'star' },
+    { id: 'moon-1', x: '96%', y: '8%', icon: 'moon' },
+    { id: 'star-2', x: '6%', y: '88%', icon: 'star' },
+    { id: 'line-1', x: '12%', y: '48%', icon: 'line' },
+    { id: 'star-3', x: '90%', y: '52%', icon: 'star' },
+  ],
+  '/important': [
+    { id: 'star-1', x: '8%', y: '15%', icon: 'star' },
+    { id: 'moon-1', x: '92%', y: '20%', icon: 'moon' },
+    { id: 'line-1', x: '15%', y: '60%', icon: 'line' },
+    { id: 'star-2', x: '85%', y: '75%', icon: 'star' },
+    { id: 'moon-2', x: '50%', y: '5%', icon: 'moon' },
+    { id: 'star-3', x: '5%', y: '45%', icon: 'star' },
+  ],
+  '/learn': [
+    { id: 'moon-1', x: '95%', y: '12%', icon: 'moon' },
+    { id: 'star-1', x: '5%', y: '25%', icon: 'star' },
+    { id: 'line-1', x: '88%', y: '50%', icon: 'line' },
+    { id: 'star-2', x: '10%', y: '80%', icon: 'star' },
+    { id: 'moon-2', x: '92%', y: '88%', icon: 'moon' },
+    { id: 'star-3', x: '45%', y: '92%', icon: 'star' },
+  ],
+  '/price': [
+    { id: 'star-1', x: '3%', y: '30%', icon: 'star' },
+    { id: 'line-1', x: '97%', y: '35%', icon: 'line' },
+    { id: 'moon-1', x: '7%', y: '70%', icon: 'moon' },
+    { id: 'star-2', x: '93%', y: '65%', icon: 'star' },
+    { id: 'moon-2', x: '50%', y: '15%', icon: 'moon' },
+    { id: 'star-3', x: '50%', y: '85%', icon: 'star' },
+  ],
+  '/series': [
+    { id: 'moon-1', x: '6%', y: '12%', icon: 'moon' },
+    { id: 'star-1', x: '94%', y: '18%', icon: 'star' },
+    { id: 'line-1', x: '20%', y: '55%', icon: 'line' },
+    { id: 'star-2', x: '80%', y: '60%', icon: 'star' },
+    { id: 'moon-2', x: '95%', y: '90%', icon: 'moon' },
+    { id: 'star-3', x: '8%', y: '78%', icon: 'star' },
+  ],
+  '/services': [
+    { id: 'star-1', x: '90%', y: '8%', icon: 'star' },
+    { id: 'moon-1', x: '10%', y: '85%', icon: 'moon' },
+    { id: 'line-1', x: '85%', y: '45%', icon: 'line' },
+    { id: 'star-2', x: '15%', y: '40%', icon: 'star' },
+    { id: 'moon-2', x: '92%', y: '78%', icon: 'moon' },
+    { id: 'star-3', x: '5%', y: '22%', icon: 'star' },
+  ],
+}
+
+const DEFAULT_SYMBOLS: SymbolConfig[] = [
+  { id: 'star-1', x: '8%', y: '15%', icon: 'star' },
+  { id: 'moon-1', x: '92%', y: '15%', icon: 'moon' },
+  { id: 'star-2', x: '8%', y: '85%', icon: 'star' },
+  { id: 'moon-2', x: '92%', y: '85%', icon: 'moon' },
 ]
 
 function SymbolIcon({ icon, className }: { icon: string; className?: string }) {
@@ -37,6 +88,7 @@ function SymbolIcon({ icon, className }: { icon: string; className?: string }) {
 }
 
 export function EasterEggs() {
+  const pathname = usePathname()
   const [show, setShow] = useState(false)
 
   useEffect(() => {
@@ -45,13 +97,15 @@ export function EasterEggs() {
     setShow(!isTouch && !reducedMotion)
   }, [])
 
-  if (!show) return null
+  const symbols = PAGE_SYMBOLS[pathname] ?? DEFAULT_SYMBOLS
+
+  if (!show || symbols.length === 0) return null
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[1]" aria-hidden>
       {symbols.map((s) => (
         <div
-          key={s.id}
+          key={`${pathname}-${s.id}`}
           className="pointer-events-auto absolute w-10 h-10 opacity-[0.2] hover:opacity-[0.7] hover:scale-110 transition-all duration-500 ease-out cursor-default"
           style={{ left: s.x, top: s.y, transform: 'translate(-50%, -50%)' }}
         >

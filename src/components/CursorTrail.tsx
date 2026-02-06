@@ -67,8 +67,8 @@ export function CursorTrail() {
           width: ${size}px;
           height: ${size}px;
           border-radius: 50%;
-          background: radial-gradient(circle at 30% 30%, rgba(245,241,235,0.3), rgba(44,44,44,0.15));
-          box-shadow: 0 0 ${size}px rgba(44,44,44,0.2);
+          background: radial-gradient(circle at 30% 30%, rgba(245,241,235,0.45), rgba(44,44,44,0.25));
+          box-shadow: 0 0 ${size * 1.5}px rgba(44,44,44,0.45), 0 0 ${size}px rgba(44,44,44,0.3);
           filter: blur(${BLUR}px);
           pointer-events: none;
           transform: translate(-50%, -50%) scale(1);
@@ -96,7 +96,7 @@ export function CursorTrail() {
         }
         const t = age / FADE_DURATION
         const easeOut = 1 - Math.pow(1 - t, 2)
-        const opacity = Math.max(0, 0.25 * (1 - easeOut))
+        const opacity = Math.max(0, 0.4 * (1 - easeOut))
         const scale = 1 - 0.5 * easeOut
         p.el.style.opacity = String(opacity)
         p.el.style.transform = `translate(-50%, -50%) scale(${scale})`
