@@ -196,7 +196,7 @@ export default function SeriesPage() {
     setTimeout(() => setToast(null), 2500)
   }
 
-  const handlePaidClick = (ep: { id: number }) => {
+  const handlePaidClick = (ep: { id: number; title: string }) => {
     if (!isAuthorized) {
       handleAddToCart(ep)
       return
@@ -377,7 +377,7 @@ export default function SeriesPage() {
             {EPISODES.map((ep) => (
               <div
                 key={ep.id}
-                className={`relative rounded-xl overflow-hidden border transition-all bg-white ${
+                className={`relative overflow-hidden border transition-all bg-white ${
                   ep.status === 'SOON'
                     ? 'border-black/10 grayscale opacity-70'
                     : 'border-black/20 hover:border-red-500/50'

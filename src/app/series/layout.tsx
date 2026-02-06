@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import * as React from 'react'
-import { Manrope, Press_Start_2P } from 'next/font/google'
+import { JetBrains_Mono, Press_Start_2P } from 'next/font/google'
 import '../brutalism.css'
 
-const manrope = Manrope({
+const fontMono = JetBrains_Mono({
   subsets: ['latin', 'cyrillic'],
-  variable: '--font-brutalism',
+  variable: '--font-content-mono',
   display: 'swap',
 })
 
@@ -27,7 +27,7 @@ export default function SeriesLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className={`${manrope.variable} ${pressStart2P.variable} ${manrope.className} min-h-screen bg-white text-black antialiased`}>
+    <div className={`${fontMono.variable} ${pressStart2P.variable} ${fontMono.className} min-h-screen bg-white text-black antialiased`}>
       {children}
     </div>
   )

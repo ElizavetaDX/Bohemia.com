@@ -3,6 +3,8 @@ import { Playfair_Display, DM_Sans, Manrope, Press_Start_2P, JetBrains_Mono } fr
 import './globals.css'
 import './brutalism.css'
 import { AnalyticsPixels } from '@/components/AnalyticsPixels'
+import { CursorTrail } from '@/components/CursorTrail'
+import { EasterEggs } from '@/components/EasterEggs'
 
 const playfair = Playfair_Display({
   subsets: ['latin', 'cyrillic'],
@@ -56,6 +58,8 @@ export default function RootLayout({
     <html lang="uk" className={`${playfair.variable} ${dmSans.variable} ${manrope.variable} ${pressStart2P.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans antialiased min-h-screen">
         <AnalyticsPixels />
+        <CursorTrail />
+        <EasterEggs />
         {children}
       </body>
     </html>
