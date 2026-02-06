@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, DM_Sans, Manrope, Press_Start_2P, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import './brutalism.css'
+import { AnalyticsPixels } from '@/components/AnalyticsPixels'
 
 const playfair = Playfair_Display({
   subsets: ['latin', 'cyrillic'],
@@ -54,6 +55,7 @@ export default function RootLayout({
   return (
     <html lang="uk" className={`${playfair.variable} ${dmSans.variable} ${manrope.variable} ${pressStart2P.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans antialiased min-h-screen">
+        <AnalyticsPixels />
         {children}
       </body>
     </html>

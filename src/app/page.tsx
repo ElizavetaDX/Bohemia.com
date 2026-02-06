@@ -264,6 +264,22 @@ export default function Home() {
               </Link>
             </li>
             <li>
+              <Link
+                href="/series"
+                className={`relative group text-[9px] md:text-[10px] tracking-[0.15em] uppercase transition-colors whitespace-nowrap ${
+                  scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
+                }`}
+              >
+                <span>хх</span>
+                <span
+                  className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 ${
+                    scrolled ? 'bg-white' : 'bg-black'
+                  }`}
+                  aria-hidden
+                />
+              </Link>
+            </li>
+            <li>
               <button
                 type="button"
                 className={`p-1 transition-colors ${

@@ -109,6 +109,12 @@ export default function ServicesPage() {
               </Link>
             </li>
             <li>
+              <Link href="/series" className={linkClass()}>
+                <span>хх</span>
+                <span className={underlineClass(false)} aria-hidden />
+              </Link>
+            </li>
+            <li>
               <button type="button" className={`p-1 transition-colors ${scrolled ? 'text-white/60 hover:text-white' : 'text-black/60 hover:text-black'}`} aria-label="Пошук">
                 <SearchIcon />
               </button>

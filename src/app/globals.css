@@ -67,9 +67,19 @@ body {
   animation: hero-ticker 15s linear infinite;
 }
 
+@keyframes watermark-move {
+  0% { left: -30%; }
+  100% { left: 100%; }
+}
+
+.animate-watermark {
+  animation: watermark-move 25s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-carousel,
-  .animate-hero-ticker {
+  .animate-hero-ticker,
+  .animate-watermark {
     animation: none;
   }
 }

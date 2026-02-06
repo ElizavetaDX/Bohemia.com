@@ -262,6 +262,12 @@ export default function PricePage() {
               </Link>
             </li>
             <li>
+              <Link href="/series" className={linkClass()}>
+                <span>хх</span>
+                <span className={underlineClass(false)} aria-hidden />
+              </Link>
+            </li>
+            <li>
               <button
                 type="button"
                 className={`p-1 transition-colors ${

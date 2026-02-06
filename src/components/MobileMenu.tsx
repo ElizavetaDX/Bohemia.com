@@ -10,6 +10,7 @@ const navLinks = [
   { href: '/important', label: 'нам важливо' },
   { href: '/price', label: 'прайс' },
   { href: '/learn', label: 'навчатися' },
+  { href: '/series', label: 'хх' },
 ]
 
 const socialLinks = [

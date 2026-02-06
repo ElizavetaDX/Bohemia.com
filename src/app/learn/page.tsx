@@ -168,6 +168,7 @@ export default function LearnPage() {
             <li><Link href="/important" className={linkClass()}><span>нам важливо</span><span className={underlineClass()} aria-hidden /></Link></li>
             <li><Link href="/price" className={linkClass()}><span>прайс</span><span className={underlineClass()} aria-hidden /></Link></li>
             <li><Link href="/learn" className={linkClass(true)}><span>навчатися</span><span className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full scale-x-100 origin-left ${scrolled ? 'bg-white' : 'bg-black'}`} aria-hidden /></Link></li>
+            <li><Link href="/series" className={linkClass()}><span>хх</span><span className={underlineClass()} aria-hidden /></Link></li>
             <li><button type="button" className={`p-1 transition-colors ${scrolled ? 'text-white/60 hover:text-white' : 'text-black/60 hover:text-black'}`} aria-label="Пошук"><SearchIcon /></button></li>
           </ul>
           <button type="button" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className={`md:hidden p-2 min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px] flex items-center justify-center flex-shrink-0 transition-colors ${scrolled ? 'text-white' : 'text-black'}`} aria-label="Меню" aria-expanded={mobileMenuOpen}>
