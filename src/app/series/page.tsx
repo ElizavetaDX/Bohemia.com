@@ -3,10 +3,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { MobileMenu } from '@/components/MobileMenu'
 import { trackViewContent, trackLead, trackPurchase } from '@/components/AnalyticsPixels'
 import { EPISODES } from '@/data/seriesData'
+
+const TEST_CODE = '1234'
 
 function BurgerIcon({ isOpen }: { isOpen: boolean }) {
   return (
@@ -20,15 +22,43 @@ function BurgerIcon({ isOpen }: { isOpen: boolean }) {
   )
 }
 
+function CartIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="21" r="1" />
+      <circle cx="20" cy="21" r="1" />
+      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+    </svg>
+  )
+}
+
+const SERIES_STORAGE_KEY = 'series_phone'
+const GAS_WEBHOOK_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL ?? 'https://script.google.com/macros/s/AKfycbyzseseX6QceafpvnpLvPcLv-xqLGmTH1CK1CLONvS9iOnbhTloKoAvmUh1WYiuQ8bKvQ/exec'
+
 const formatPhone = (value: string) => {
-  let digits = value.replace(/\D/g, '')
-  if (digits.startsWith('0') && digits.length === 10) digits = '380' + digits
-  else if (!digits.startsWith('380') && digits.length >= 9) digits = '380' + digits.slice(-9)
-  digits = digits.slice(0, 12)
-  if (digits.length <= 3) return digits ? `+${digits}` : ''
-  if (digits.length <= 6) return `+${digits.slice(0, 3)} (${digits.slice(3)}`
-  if (digits.length <= 8) return `+${digits.slice(0, 3)} (${digits.slice(3, 6)}) ${digits.slice(6)}`
-  return `+${digits.slice(0, 3)} (${digits.slice(3, 6)}) ${digits.slice(6, 8)}-${digits.slice(8, 10)}-${digits.slice(10, 12)}`
+  const digits = value.replace(/\D/g, '').slice(0, 15)
+  if (!digits) return ''
+  if (digits.startsWith('7') && digits.length <= 11) {
+    if (digits.length <= 1) return `+${digits}`
+    if (digits.length <= 4) return `+${digits.slice(0, 1)} (${digits.slice(1)}`
+    return `+7 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 9)}-${digits.slice(9, 11)}`
+  }
+  let d = digits
+  if (d.startsWith('0') && d.length === 10) d = '380' + d
+  if (d.startsWith('380')) {
+    if (d.length <= 3) return `+${d}`
+    if (d.length <= 6) return `+${d.slice(0, 3)} (${d.slice(3)}`
+    if (d.length <= 8) return `+${d.slice(0, 3)} (${d.slice(3, 6)}) ${d.slice(6)}`
+    return `+${d.slice(0, 3)} (${d.slice(3, 6)}) ${d.slice(6, 8)}-${d.slice(8, 10)}-${d.slice(10, 12)}`
+  }
+  if (d.length <= 4) return `+${d}`
+  if (d.length <= 7) return `+${d.slice(0, 3)} ${d.slice(3)}`
+  return `+${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6, 9)} ${d.slice(9)}`
+}
+
+const isPhoneBlocked = (phone: string) => {
+  const digits = phone.replace(/\D/g, '')
+  return digits.startsWith('7') && digits.length >= 10
 }
 
 export default function SeriesPage() {
@@ -39,6 +69,13 @@ export default function SeriesPage() {
   const [paymentFormOpen, setPaymentFormOpen] = useState(false)
   const [selectedPaid, setSelectedPaid] = useState<Set<number>>(new Set())
   const [accessPhones, setAccessPhones] = useState<Set<string>>(new Set())
+  const [loggedPhoneDisplay, setLoggedPhoneDisplay] = useState<string | null>(null)
+  const [loginPhone, setLoginPhone] = useState('')
+  const [authStep, setAuthStep] = useState<'phone' | 'code'>('phone')
+  const [authCode, setAuthCode] = useState('')
+  const [loginChecking, setLoginChecking] = useState(false)
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
+  const [toast, setToast] = useState<{ msg: string } | null>(null)
   const [userEmail, setUserEmail] = useState('')
   const [paymentSending, setPaymentSending] = useState(false)
   const watermarkRef = useRef<HTMLDivElement>(null)
@@ -47,8 +84,6 @@ export default function SeriesPage() {
   const [formPhone, setFormPhone] = useState('')
   const [formTelegram, setFormTelegram] = useState('')
   const [formEmail, setFormEmail] = useState('')
-  const [formBirth, setFormBirth] = useState('')
-  const [formCity, setFormCity] = useState('')
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)
@@ -63,6 +98,18 @@ export default function SeriesPage() {
     return () => { document.body.style.overflow = '' }
   }, [mobileMenuOpen])
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(SERIES_STORAGE_KEY)
+      if (saved && saved.replace(/\D/g, '').length >= 10) {
+        setAccessPhones((p) => new Set(p).add(saved.replace(/\D/g, '')))
+        setLoggedPhoneDisplay(saved)
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [])
+
   const checkAccess = useCallback(async (phone: string): Promise<boolean> => {
     const normalized = phone.replace(/\D/g, '')
     if (normalized.length < 10) return false
@@ -73,15 +120,63 @@ export default function SeriesPage() {
         body: JSON.stringify({ phone: normalized }),
       })
       const data = await res.json()
-      if (data?.allowed) {
-        setAccessPhones((p) => new Set(p).add(normalized))
-        return true
-      }
+      return !!data?.allowed
+    } catch {
+      return false
+    }
+  }, [])
+
+  const isAuthorized = accessPhones.size > 0
+  const [hasAccessCache, setHasAccessCache] = useState<boolean>(false)
+  useEffect(() => {
+    if (!isAuthorized || !loggedPhoneDisplay) {
+      setHasAccessCache(false)
+      return
+    }
+    checkAccess(loggedPhoneDisplay).then(setHasAccessCache)
+  }, [isAuthorized, loggedPhoneDisplay, checkAccess])
+
+  const handleRequestCode = useCallback(async () => {
+    const normalized = loginPhone.replace(/\D/g, '')
+    if (normalized.length < 10) return
+    setLoginChecking(true)
+    try {
+      const res = await fetch('/api/series/send-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: loginPhone }),
+      })
+      if (res.ok) setAuthStep('code')
+    } finally {
+      setLoginChecking(false)
+    }
+  }, [loginPhone])
+
+  const handleVerifyCode = useCallback(() => {
+    if (authCode.trim() !== TEST_CODE) return
+    const normalized = loginPhone.replace(/\D/g, '')
+    setAccessPhones((p) => new Set(p).add(normalized))
+    setLoggedPhoneDisplay(loginPhone)
+    try {
+      localStorage.setItem(SERIES_STORAGE_KEY, loginPhone)
     } catch {
       /* ignore */
     }
-    return false
-  }, [])
+    setAuthStep('phone')
+    setAuthCode('')
+    setLoginPhone('')
+    checkAccess(loginPhone).then(setHasAccessCache)
+  }, [authCode, loginPhone, checkAccess])
+
+  const handleLogout = () => {
+    setAccessPhones(new Set())
+    setLoggedPhoneDisplay(null)
+    try {
+      localStorage.removeItem(SERIES_STORAGE_KEY)
+    } catch {
+      /* ignore */
+    }
+  }
 
   const handleOpenPlayer = (episodeId: number) => {
     const ep = EPISODES.find((e) => e.id === episodeId)
@@ -91,38 +186,59 @@ export default function SeriesPage() {
     setPlayerOpen(true)
   }
 
+  const handleAddToCart = (ep: { id: number; title: string }) => {
+    if (selectedPaid.has(ep.id)) return
+    setSelectedPaid((p) => new Set(p).add(ep.id))
+    setToast({ msg: `Серія ${ep.id} додана до кошика` })
+    setTimeout(() => setToast(null), 2500)
+  }
+
+  const handlePaidClick = (ep: { id: number }) => {
+    if (!isAuthorized) {
+      handleAddToCart(ep)
+      return
+    }
+    if (!hasAccessCache) {
+      handleAddToCart(ep)
+      return
+    }
+    const email = userEmail && userEmail !== 'guest' ? userEmail : undefined
+    setUserEmail(email ?? (prompt('Email або нік для водяного знаку:') || (loggedPhoneDisplay ?? 'user')))
+    setPlayerEpisode(ep.id)
+    setPlayerOpen(true)
+  }
+
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault()
     if (selectedPaid.size === 0) return
+    if (isPhoneBlocked(formPhone)) return
     setPaymentSending(true)
     try {
-      const res = await fetch('/api/series/create-payment', {
+      const totalPrice = Array.from(selectedPaid).reduce((s, id) => s + (EPISODES.find((e) => e.id === id)?.price ?? 0), 0)
+      await fetch(GAS_WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
+          action: 'create_lead',
           name: formName,
           phone: formPhone.replace(/\D/g, ''),
           telegram: formTelegram,
           email: formEmail,
-          birth: formBirth,
-          city: formCity,
-          episodeIds: Array.from(selectedPaid),
+          seriesId: Array.from(selectedPaid),
+          amount: totalPrice,
         }),
       })
-      const data = await res.json()
-      if (data?.pageUrl) window.location.href = data.pageUrl
+      setToast({ msg: 'Заявка прийнята' })
+      setTimeout(() => setToast(null), 4000)
+      setPaymentFormOpen(false)
+      setSelectedPaid(new Set())
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      if (typeof window !== 'undefined') alert(`Помилка:\n\n${msg}`)
     } finally {
       setPaymentSending(false)
     }
-  }
-
-  const togglePaid = (id: number) => {
-    setSelectedPaid((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
   }
 
   const linkClass = () =>
@@ -189,7 +305,70 @@ export default function SeriesPage() {
 
       <section className="px-4 sm:px-6 md:px-12 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
-          <h1 className="font-press-start text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight mb-8">ХХ — Мультсеріал</h1>
+          <h1 className="font-press-start text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight mb-6">ХХ — Мультсеріал</h1>
+
+          <div className="mb-6 flex flex-wrap items-center gap-3">
+            {isAuthorized ? (
+              <>
+                <span className="text-sm text-black/70">Увійшов: {loggedPhoneDisplay ?? '+380…'}</span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-xs uppercase tracking-wider text-black/60 hover:text-black transition-colors"
+                >
+                  Вийти
+                </button>
+              </>
+            ) : authStep === 'code' ? (
+              <>
+                <p className="text-sm text-black/70 w-full">Код відправлено в Telegram</p>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={authCode}
+                  onChange={(e) => setAuthCode(e.target.value.replace(/\D/g, ''))}
+                  placeholder="Код"
+                  className="min-h-[36px] w-24 px-3 rounded border border-black/20 bg-white text-black text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
+                />
+                <button
+                  type="button"
+                  onClick={handleVerifyCode}
+                  disabled={authCode.length < 4}
+                  className="min-h-[36px] px-4 rounded bg-black text-white text-xs font-medium uppercase tracking-wider hover:bg-black/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Підтвердити
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setAuthStep('phone'); setAuthCode('') }}
+                  className="text-xs text-black/50 hover:text-black"
+                >
+                  Змінити номер
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-black/70 w-full">Вже купили серію? Введіть номер телефону для доступу</p>
+                <input
+                  type="tel"
+                  value={loginPhone}
+                  onChange={(e) => setLoginPhone(formatPhone(e.target.value))}
+                  placeholder="+380 (__) ___-__-__"
+                  className="min-h-[36px] w-full max-w-xs sm:w-72 px-3 rounded border border-black/20 bg-white text-black placeholder:text-black/40 text-sm focus:outline-none focus:ring-1 focus:ring-red-500"
+                />
+                <button
+                  type="button"
+                  onClick={handleRequestCode}
+                  disabled={loginChecking || loginPhone.replace(/\D/g, '').length < 10}
+                  className="min-h-[36px] px-4 rounded bg-black text-white text-xs font-medium uppercase tracking-wider hover:bg-black/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {loginChecking ? 'Відправка…' : 'Отримати код'}
+                </button>
+              </>
+            )}
+          </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6">
             {EPISODES.map((ep) => (
               <div
@@ -212,17 +391,6 @@ export default function SeriesPage() {
                     {ep.status === 'SOON' && (
                       <span className="text-[10px] uppercase tracking-wider text-black/50">SOON</span>
                     )}
-                    {ep.status === 'PAID' && (
-                      <label className="flex items-center gap-1 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectedPaid.has(ep.id)}
-                          onChange={() => togglePaid(ep.id)}
-                          className="rounded border-black/30"
-                        />
-                        <span className="text-[10px]">Обрати</span>
-                      </label>
-                    )}
                   </div>
                   {ep.status === 'FREE' && (
                     <button
@@ -236,23 +404,18 @@ export default function SeriesPage() {
                   {ep.status === 'PAID' && (
                     <button
                       type="button"
-                      onClick={async () => {
-                        const phone = prompt('Введіть номер телефону для перевірки доступу:')
-                        if (!phone) return
-                        const allowed = await checkAccess(phone)
-                        if (allowed) {
-                          const email = prompt('Email або нік для водяного знаку:') || 'user'
-                          setUserEmail(email)
-                          setPlayerEpisode(ep.id)
-                          setPlayerOpen(true)
-                        } else {
-                          setSelectedPaid((p) => new Set(p).add(ep.id))
-                          setPaymentFormOpen(true)
-                        }
-                      }}
-                      className="mt-2 w-full py-2 px-3 border border-red-600 text-red-500 hover:bg-red-600 hover:text-white text-xs font-medium uppercase tracking-wider rounded-lg transition-colors"
+                      onClick={() =>
+                        isAuthorized && hasAccessCache
+                          ? handlePaidClick(ep)
+                          : handleAddToCart(ep)
+                      }
+                      className={`mt-2 w-full py-2 px-3 text-xs font-medium uppercase tracking-wider rounded-lg transition-colors ${
+                        isAuthorized && hasAccessCache
+                          ? 'bg-red-600 hover:bg-red-700 text-white'
+                          : 'border border-black/20 text-black/80 hover:border-red-500 hover:text-red-600'
+                      }`}
                     >
-                      Дивитись
+                      {isAuthorized && hasAccessCache ? 'ДИВИТИСЬ' : 'ДОДАТИ ДО КОШИКА'}
                     </button>
                   )}
                   {ep.status === 'SOON' && (
@@ -269,22 +432,107 @@ export default function SeriesPage() {
             ))}
           </div>
 
-          {selectedPaid.size > 0 && (
-            <div className="mt-8 flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl bg-black/5 border border-black/10">
-              <span className="text-black/90">
-                Обрано серій: {selectedPaid.size} · Разом: <strong>{totalPrice} грн</strong>
-              </span>
-              <button
-                type="button"
-                onClick={() => setPaymentFormOpen(true)}
-                className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium uppercase tracking-widest rounded-lg transition-colors"
-              >
-                Оплатити
-              </button>
-            </div>
-          )}
-        </div>
+          </div>
       </section>
+
+      {/* Floating Cart */}
+      <button
+        type="button"
+        onClick={() => setCartDrawerOpen(true)}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-black text-white shadow-lg flex items-center justify-center hover:bg-black/90 transition-colors"
+        aria-label="Кошик"
+      >
+        <CartIcon />
+        {selectedPaid.size > 0 && (
+          <span className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">
+            {selectedPaid.size}
+          </span>
+        )}
+      </button>
+
+      {/* Cart Side Drawer */}
+      <AnimatePresence>
+        {cartDrawerOpen && (
+          <>
+            <motion.div
+              className="fixed inset-0 z-[55] bg-black/40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setCartDrawerOpen(false)}
+            />
+            <motion.div
+              className="fixed top-0 right-0 bottom-0 z-[56] w-full max-w-md bg-white shadow-xl flex flex-col"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'tween', duration: 0.25 }}
+            >
+              <div className="px-5 py-4 border-b border-black/10 flex items-center justify-between">
+                <h2 className="font-press-start text-sm uppercase">Кошик</h2>
+                <button type="button" onClick={() => setCartDrawerOpen(false)} className="p-2 text-black/60 hover:text-black" aria-label="Закрити">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-5">
+                {selectedPaid.size === 0 ? (
+                  <p className="text-black/50 text-sm">Кошик порожній</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {Array.from(selectedPaid).map((id) => {
+                      const ep = EPISODES.find((e) => e.id === id)
+                      return (
+                        <li key={id} className="flex items-center justify-between py-2 border-b border-black/5">
+                          <span className="text-sm">{ep?.title ?? `Серія ${id}`}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium">{ep?.price ?? 0} грн</span>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedPaid((p) => { const n = new Set(p); n.delete(id); return n })}
+                              className="text-black/40 hover:text-red-600 text-xs"
+                            >
+                              Видалити
+                            </button>
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                )}
+              </div>
+              {selectedPaid.size > 0 && (
+                <div className="p-5 border-t border-black/10">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-black/70">Разом:</span>
+                    <span className="text-lg font-bold">{totalPrice} грн</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setCartDrawerOpen(false); setPaymentFormOpen(true) }}
+                    className="w-full min-h-[52px] px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium uppercase tracking-widest rounded-lg transition-colors"
+                  >
+                    ОФОРМИТИ ЗАМОВЛЕННЯ
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            className="fixed bottom-24 right-6 z-[60] px-4 py-3 rounded-lg bg-black text-white text-sm shadow-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+          >
+            {toast.msg}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Player Modal */}
       {playerOpen && playerEpisode && (
@@ -303,9 +551,17 @@ export default function SeriesPage() {
               <p className="absolute text-sm text-white/40">Підключіть Vdocipher або Wistia</p>
             </div>
             <div ref={watermarkRef} className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden>
-              <div className="absolute top-1/2 -translate-y-1/2 text-white/20 text-2xl font-mono whitespace-nowrap animate-watermark">
-                {userEmail}
-              </div>
+              {(() => {
+                const w = loggedPhoneDisplay || userEmail || 'guest'
+                return (
+                  <>
+                    <div className="absolute top-[15%] left-[10%] text-white/15 text-xl font-mono whitespace-nowrap animate-watermark-chaos-1">{w}</div>
+                    <div className="absolute top-[60%] right-[15%] text-white/12 text-lg font-mono whitespace-nowrap animate-watermark-chaos-2">{w}</div>
+                    <div className="absolute top-[35%] left-[40%] text-white/10 text-2xl font-mono whitespace-nowrap animate-watermark-chaos-3">{w}</div>
+                    <div className="absolute bottom-[25%] left-[20%] text-white/12 text-base font-mono whitespace-nowrap animate-watermark-chaos-1" style={{ animationDelay: '-2s' }}>{w}</div>
+                  </>
+                )
+              })()}
             </div>
           </div>
         </div>
@@ -338,7 +594,10 @@ export default function SeriesPage() {
               </div>
               <div>
                 <label htmlFor="pay-phone" className="block text-xs font-medium text-black/80 mb-1">Телефон *</label>
-                <input id="pay-phone" type="tel" value={formPhone} onChange={(e) => setFormPhone(formatPhone(e.target.value))} required placeholder="+380 (__) ___-__-__" className="w-full min-h-[44px] px-3 rounded border border-black/20 bg-white text-black placeholder:text-black/40 text-sm focus:outline-none focus:ring-1 focus:ring-red-500" />
+                <input id="pay-phone" type="tel" value={formPhone} onChange={(e) => setFormPhone(formatPhone(e.target.value))} required placeholder="+380 або інший код країни" className={`w-full min-h-[44px] px-3 rounded border text-sm focus:outline-none focus:ring-1 focus:ring-red-500 ${isPhoneBlocked(formPhone) ? 'border-red-500 bg-red-50/50' : 'border-black/20 bg-white text-black placeholder:text-black/40'}`} />
+                {isPhoneBlocked(formPhone) && (
+                  <p className="mt-1 text-xs text-red-600">Реєстрація з цього регіону неможлива</p>
+                )}
               </div>
               <div>
                 <label htmlFor="pay-telegram" className="block text-xs font-medium text-black/80 mb-1">Telegram *</label>
@@ -348,18 +607,10 @@ export default function SeriesPage() {
                 <label htmlFor="pay-email" className="block text-xs font-medium text-black/80 mb-1">Email *</label>
                 <input id="pay-email" type="email" value={formEmail} onChange={(e) => setFormEmail(e.target.value)} required placeholder="email@example.com" className="w-full min-h-[44px] px-3 rounded border border-black/20 bg-white text-black placeholder:text-black/40 text-sm focus:outline-none focus:ring-1 focus:ring-red-500" />
               </div>
-              <div>
-                <label htmlFor="pay-birth" className="block text-xs font-medium text-black/80 mb-1">Дата народження *</label>
-                <input id="pay-birth" type="date" value={formBirth} onChange={(e) => setFormBirth(e.target.value)} required className="w-full min-h-[44px] px-3 rounded border border-black/20 bg-white text-black text-sm focus:outline-none focus:ring-1 focus:ring-red-500" />
-              </div>
-              <div>
-                <label htmlFor="pay-city" className="block text-xs font-medium text-black/80 mb-1">Місто *</label>
-                <input id="pay-city" type="text" value={formCity} onChange={(e) => setFormCity(e.target.value)} required placeholder="Київ" className="w-full min-h-[44px] px-3 rounded border border-black/20 bg-white text-black placeholder:text-black/40 text-sm focus:outline-none focus:ring-1 focus:ring-red-500" />
-              </div>
               <p className="text-xs text-black/50">Разом: {totalPrice} грн · Серії: {Array.from(selectedPaid).join(', ')}</p>
               <button
                 type="submit"
-                disabled={paymentSending}
+                disabled={paymentSending || isPhoneBlocked(formPhone)}
                 className="w-full min-h-[52px] px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium uppercase tracking-widest rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {paymentSending ? 'Обробка…' : 'Перейти до оплати (Monobank)'}

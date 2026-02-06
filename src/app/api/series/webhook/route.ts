@@ -4,14 +4,14 @@ const BOT_TOKEN = process.env.TELEGRAM_CALC_BOT_TOKEN
 const SERIES_TELEGRAM_CHAT_ID = process.env.SERIES_TELEGRAM_CHAT_ID ?? '8420828581'
 const GOOGLE_SHEET_WEBHOOK_URL = process.env.GOOGLE_SHEET_WEBHOOK_URL
 
-async function sendToGoogleSheet(reference: string) {
-  if (!GOOGLE_SHEET_WEBHOOK_URL) return
+async function updateSheetStatus(phone: string) {
+  if (!GOOGLE_SHEET_WEBHOOK_URL || !phone) return
   await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      action: 'confirm',
-      reference,
+      action: 'update_status',
+      phone: String(phone).replace(/\D/g, ''),
     }),
   }).catch(() => {})
 }
@@ -49,7 +49,8 @@ export async function POST(request: Request) {
       })
     }
 
-    await sendToGoogleSheet(reference)
+    const phone = clientInfo?.phone ?? ''
+    await updateSheetStatus(phone)
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 })
   }

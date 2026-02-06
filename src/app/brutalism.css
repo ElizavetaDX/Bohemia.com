@@ -102,3 +102,23 @@
 .font-content-mono {
   font-family: var(--font-content-mono), monospace;
 }
+
+/* Chaotic watermark for video player */
+@keyframes watermark-chaos-1 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(20%, -15%) rotate(5deg); }
+  50% { transform: translate(-10%, 20%) rotate(-3deg); }
+  75% { transform: translate(15%, 10%) rotate(2deg); }
+}
+@keyframes watermark-chaos-2 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(-25%, 10%) rotate(-4deg); }
+  66% { transform: translate(10%, -20%) rotate(6deg); }
+}
+@keyframes watermark-chaos-3 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-15%, -25%) rotate(3deg); }
+}
+.animate-watermark-chaos-1 { animation: watermark-chaos-1 8s ease-in-out infinite; }
+.animate-watermark-chaos-2 { animation: watermark-chaos-2 10s ease-in-out infinite; }
+.animate-watermark-chaos-3 { animation: watermark-chaos-3 12s ease-in-out infinite; }
