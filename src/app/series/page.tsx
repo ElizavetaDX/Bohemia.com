@@ -75,6 +75,7 @@ export default function SeriesPage() {
   const [authCode, setAuthCode] = useState('')
   const [loginChecking, setLoginChecking] = useState(false)
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
+  const [cartBounce, setCartBounce] = useState(false)
   const [toast, setToast] = useState<{ msg: string } | null>(null)
   const [userEmail, setUserEmail] = useState('')
   const [paymentSending, setPaymentSending] = useState(false)
@@ -189,6 +190,8 @@ export default function SeriesPage() {
   const handleAddToCart = (ep: { id: number; title: string }) => {
     if (selectedPaid.has(ep.id)) return
     setSelectedPaid((p) => new Set(p).add(ep.id))
+    setCartBounce(true)
+    setTimeout(() => setCartBounce(false), 300)
     setToast({ msg: `Серія ${ep.id} додана до кошика` })
     setTimeout(() => setToast(null), 2500)
   }
@@ -265,7 +268,8 @@ export default function SeriesPage() {
   }, [paymentFormOpen])
 
   return (
-    <main className="min-h-screen bg-white text-black">
+    <>
+    <main className="min-h-screen bg-white text-black bg-dots-pattern">
       <motion.header
         className={`sticky top-0 z-[50] w-full transition-all duration-300 ease-out ${scrolled ? 'bg-white/95 backdrop-blur-md border-b border-black/10' : 'bg-transparent'}`}
         initial={{ y: -40, opacity: 0 }}
@@ -373,10 +377,10 @@ export default function SeriesPage() {
             {EPISODES.map((ep) => (
               <div
                 key={ep.id}
-                className={`relative rounded-xl overflow-hidden border transition-all ${
+                className={`relative rounded-xl overflow-hidden border transition-all bg-white ${
                   ep.status === 'SOON'
-                    ? 'bg-black/5 border-black/10 grayscale opacity-70'
-                    : 'bg-black/5 border-black/20 hover:border-red-500/50'
+                    ? 'border-black/10 grayscale opacity-70'
+                    : 'border-black/20 hover:border-red-500/50'
                 }`}
               >
                 <div className="aspect-video bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
@@ -432,15 +436,33 @@ export default function SeriesPage() {
             ))}
           </div>
 
+          {selectedPaid.size > 0 && (
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-white border border-black/10 shadow-sm">
+              <span className="text-black/90">
+                Обрано серій: {selectedPaid.size} · Разом: <strong>{totalPrice} грн</strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => setCartDrawerOpen(true)}
+                className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium uppercase tracking-widest rounded-lg transition-colors"
+              >
+                ОФОРМИТИ ЗАМОВЛЕННЯ
+              </button>
+            </div>
+          )}
           </div>
       </section>
 
-      {/* Floating Cart */}
-      <button
+      </main>
+
+      {/* Floating Cart - outside main to avoid position override from bg-dots-pattern */}
+      <motion.button
         type="button"
         onClick={() => setCartDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-black text-white shadow-lg flex items-center justify-center hover:bg-black/90 transition-colors"
+        className="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-black/80 backdrop-blur-md text-white shadow-lg flex items-center justify-center hover:bg-black/90 transition-colors border border-white/10"
         aria-label="Кошик"
+        animate={{ scale: cartBounce ? 1.15 : 1 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 15 }}
       >
         <CartIcon />
         {selectedPaid.size > 0 && (
@@ -448,21 +470,21 @@ export default function SeriesPage() {
             {selectedPaid.size}
           </span>
         )}
-      </button>
+      </motion.button>
 
       {/* Cart Side Drawer */}
       <AnimatePresence>
         {cartDrawerOpen && (
           <>
             <motion.div
-              className="fixed inset-0 z-[55] bg-black/40"
+              className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setCartDrawerOpen(false)}
             />
             <motion.div
-              className="fixed top-0 right-0 bottom-0 z-[56] w-full max-w-md bg-white shadow-xl flex flex-col"
+              className="fixed top-0 right-0 bottom-0 z-[95] w-full max-w-md bg-white shadow-xl flex flex-col"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
@@ -476,7 +498,7 @@ export default function SeriesPage() {
               </div>
               <div className="flex-1 overflow-y-auto p-5">
                 {selectedPaid.size === 0 ? (
-                  <p className="text-black/50 text-sm">Кошик порожній</p>
+                  <p className="text-black/50 text-sm">Ваш кошик порожній</p>
                 ) : (
                   <ul className="space-y-3">
                     {Array.from(selectedPaid).map((id) => {
@@ -620,6 +642,6 @@ export default function SeriesPage() {
         </div>
       )}
 
-    </main>
+    </>
   )
 }
