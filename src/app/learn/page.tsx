@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
@@ -62,6 +62,7 @@ export default function LearnPage() {
   const [formPhone, setFormPhone] = useState('')
   const [formEmail, setFormEmail] = useState('')
   const [formTelegram, setFormTelegram] = useState('')
+  const applicationModalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)
@@ -77,9 +78,11 @@ export default function LearnPage() {
   }, [mobileMenuOpen])
 
   useEffect(() => {
-    if (applicationOpen) document.body.style.overflow = 'hidden'
-    else document.body.style.overflow = ''
-    return () => { document.body.style.overflow = '' }
+    if (applicationOpen) {
+      const ctaSection = document.getElementById('cta-application')
+      ctaSection?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      setTimeout(() => applicationModalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100)
+    }
   }, [applicationOpen])
 
   const linkClass = (active?: boolean) =>
@@ -261,12 +264,12 @@ export default function LearnPage() {
       </section>
 
       {/* CTA */}
-      <section className="content-above-dots px-4 sm:px-6 md:px-12 py-5 relative z-10">
+      <section id="cta-application" className="content-above-dots px-4 sm:px-6 md:px-12 py-5 relative z-10">
         <div className="max-w-6xl mx-auto flex flex-col items-center">
           <div className="flex flex-col items-center gap-6">
             <button
               type="button"
-              onClick={() => setApplicationOpen(true)}
+              onClick={() => setApplicationOpen((prev) => !prev)}
               className="min-h-[104px] px-16 py-8 text-lg md:text-xl font-medium uppercase tracking-widest rounded-lg border-2 border-red-600 bg-red-600 text-white transition-colors hover:bg-red-700 hover:border-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer"
             >
               ЗАСТОЛБИТИ МІСЦЕ
@@ -280,17 +283,6 @@ export default function LearnPage() {
         </div>
       </section>
 
-      {/* Точки */}
-      <div className="w-full px-4 sm:px-6 md:px-12 py-6 md:py-8">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="grid grid-cols-[repeat(21,minmax(0,1fr))] grid-rows-4 gap-x-5 gap-y-8 w-full">
-            {Array.from({ length: 21 * 4 }).map((_, i) => (
-              <div key={i} className="w-1.5 h-1.5 md:w-[9px] md:h-[9px] bg-black/60 rounded-full" />
-            ))}
-          </div>
-        </div>
-      </div>
-
       <footer className="px-4 sm:px-6 md:px-12 py-8 bg-white">
         <div className="max-w-6xl mx-auto flex items-center justify-end">
           <span className="text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-black/50">студія анімації Богеміка</span>
@@ -299,9 +291,17 @@ export default function LearnPage() {
 
       {/* Модалка заявки на навчання */}
       {applicationOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="application-title">
+        <div
+          ref={applicationModalRef}
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-md overflow-y-auto py-8"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="application-title"
+          onClick={(e) => { if (e.target === e.currentTarget && !applicationSent) setApplicationOpen(false) }}
+        >
           <motion.div
-            className="w-full max-w-md rounded-xl border border-black/10 bg-white/80 backdrop-blur-md shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-xl border border-black/10 bg-white/80 backdrop-blur-md shadow-2xl overflow-hidden flex-shrink-0"
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
