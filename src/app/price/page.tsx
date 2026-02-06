@@ -7,6 +7,17 @@ import { motion } from 'framer-motion'
 import { Wrapper } from '@/components/Wrapper'
 import { MobileMenu } from '@/components/MobileMenu'
 import { PriceCalculator } from '@/components/PriceCalculator'
+import {
+  SHI_STAGE1,
+  SHI_STAGE2,
+  SHI_STAGE2_3D_ANIMATION,
+  VISUALIZATION,
+  SCENE,
+  CG,
+  VFX,
+  ROTATION_360_PRICE,
+  formatPriceDisplay,
+} from '@/data/priceData'
 
 function SearchIcon() {
   return (
@@ -71,18 +82,13 @@ const priceItems = [
       priceLine(''),
       priceLine('аi-фото (кадр)'),
       priceLine(''),
-      priceLine('реалістичне або концептуальне зображення з вашим продуктом, логотипом або впізнаваними елементами бренду', '2000'),
-      priceLine('додатковий кадр в єдиній концепції', '1000'),
-      priceLine('додатковий кадр ракурс', '500'),
-      priceLine('снепи ai-аватару за ТЗ [макіяж+зачіска+одяг]', '3500'),
+      ...SHI_STAGE1.map((o) => priceLine(o.label, formatPriceDisplay(o.price))),
       priceLine(''),
       priceLine('етап 2', undefined, true),
       priceLine(''),
       priceLine('анімація, монтаж та озвучка аі-кадрів'),
       priceLine(''),
-      priceLine('1-3 кадри', '4000'),
-      priceLine('4-9 кадрів', '7000'),
-      priceLine('10-16 кадрів', '10000'),
+      ...SHI_STAGE2.map((o) => priceLine(o.label, formatPriceDisplay(o.price))),
       priceLine(''),
       priceLine('креативи створюються за допомогою нейромереж, проте кожен кадр проходить детальну ручну обробку в Photoshop для досягнення високої якості'),
     ],
@@ -97,15 +103,13 @@ const priceItems = [
       priceLine('різновиди анімації — ціна, грн', undefined, true),
       priceLine(''),
       priceLine(''),
-      priceLine('обертання 360 градусів', '2 500'),
+      priceLine('обертання 360 градусів', formatPriceDisplay(ROTATION_360_PRICE)),
       priceLine(''),
       priceLine('етап 2', undefined, true),
       priceLine(''),
       priceLine('анімація, монтаж та озвучка аі-кадрів'),
       priceLine(''),
-      priceLine('1-3 кадри', '8000'),
-      priceLine('4-9 кадрів', '12000'),
-      priceLine('10-16 кадрів', '16000'),
+      ...SHI_STAGE2_3D_ANIMATION.map((o) => priceLine(o.label, formatPriceDisplay(o.price))),
       priceLine(''),
     ],
     price: 'від 200$',
@@ -119,13 +123,10 @@ const priceItems = [
     price: 'від 400$',
     src: '/gallery-04.png',
     alt: 'Візуалізація',
-    tiers: [
-      { text: '3D лого, пакет, коробка, простий топ, футболка, легінси, трусики, лонгслів', price: '2 500' },
-      { text: 'сукня, спідниця, кобінезон, боді, сорочка, брюки, купальник, білизна без кісточок, джогери, світшот, худі, жилет, обручки, панчохи, перчатки', price: '4 000' },
-      { text: 'флакон, косметика, капелюх, пальто, жакет, косуха, тренч, вечірня сукня, білизна з корсетними кісточками, пуховик, корсет, ремінь, простий посуд, домашній текстиль', price: '6 000' },
-      { text: 'окуляри, проста сумочка, складні принти та текстури, не складні ювелірні вироби, простий анімований персонаж, меблі, їжа, складний посуд', price: '12 000' },
-      { text: "складна сумочка, рюкзак, взуття, хутро, одяг з пір'ям, складні ювелірні вироби, годинник, одяг з оздобленням із каміння/перлин, вишивка, анімований персонаж", price: '20 000+' },
-    ],
+    tiers: VISUALIZATION.map((t) => ({
+      text: t.label,
+      price: formatPriceDisplay(t.price, 'displayPlus' in t && t.displayPlus),
+    })),
     notes: {
       title: 'Умови та примітки',
       items: [
@@ -143,12 +144,10 @@ const priceItems = [
     price: 'від 150$',
     src: '/gallery-05.png',
     alt: 'Сцена',
-    tiers: [
-      { text: 'однотонний фон, фон-картинка, тінь на підлозі, без фону, земля-небо, пуста кімната, простий подіум', price: '0 000' },
-      { text: 'статичні рослини, стандартний аватар в позі, торт, новорічна ялинка, кульки, візок, двері, побутові предмети, телефон, телевізор', price: '2 000' },
-      { text: 'мебльована кімната, місто, галявина, ліс, сад, дощ, вулиця, вогонь, анімовані рослини, рідини, туман, водойми, транспорт (авто, літак і тп), анімований парашут', price: '4 000' },
-      { text: "сцена з великою кількістю об'єктів", price: '10 000+' },
-    ],
+    tiers: SCENE.map((s) => ({
+      text: s.label,
+      price: formatPriceDisplay(s.price, 'displayPlus' in s && s.displayPlus),
+    })),
   },
   {
     id: 6,
@@ -161,14 +160,10 @@ const priceItems = [
       priceLine('різновиди анімації / ціна, грн', undefined, true),
       priceLine(''),
       priceLine('CG анімація з фізичною симуляцією:'),
-      priceLine('5-7 сек', '9 600'),
-      priceLine('8-12 сек', '14 400'),
-      priceLine('13-20 сек', '19 200'),
+      ...CG.map((o) => priceLine(o.label, formatPriceDisplay(o.price))),
       priceLine(''),
       priceLine('VFX з фізичною симуляцією:'),
-      priceLine('5-7 сек', '12 000'),
-      priceLine('8-12 сек', '17 280'),
-      priceLine('13-20 сек', '23 000'),
+      ...VFX.map((o) => priceLine(o.label, formatPriceDisplay(o.price))),
     ],
   },
 ]

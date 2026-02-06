@@ -174,7 +174,7 @@ export default function ServicesPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl mx-auto pt-4 pb-6">
             {rotation360Reels.map((embedUrl, i) => (
-              <div key={i} className="relative w-full h-[320px] md:h-[340px] rounded-lg overflow-hidden bg-neutral-100">
+              <div key={i} className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-neutral-100">
                 {!rotation360Loaded[i] && (
                   <div className="absolute inset-0 bg-neutral-200 animate-pulse rounded-lg" aria-hidden />
                 )}
@@ -218,10 +218,8 @@ export default function ServicesPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl mx-auto pt-4 pb-6">
             {reelsItems.map((src, i) => (
-              <div key={i} className="w-full overflow-hidden bg-black rounded-lg">
-                <div className="relative w-full" style={{ paddingBottom: '125%' }}>
-                  <iframe className="absolute top-0 left-0 w-full h-full rounded-lg" src={src} title={`Reels ${i + 1}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                </div>
+              <div key={i} className="relative w-full aspect-[3/4] overflow-hidden bg-black rounded-lg">
+                <iframe className="absolute top-0 left-0 w-full h-full rounded-lg" src={src} title={`Reels ${i + 1}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
               </div>
             ))}
           </div>
