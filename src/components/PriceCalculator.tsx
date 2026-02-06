@@ -90,6 +90,8 @@ export function PriceCalculator() {
 
   const buildMessage = useCallback(() => {
     const lines: string[] = [
+      '📊 <b>ЗАЯВКА З РОЗРАХУНКУ ВАРТОСТІ</b>',
+      '',
       '👤 <b>Дані клієнта:</b>',
       '',
       `Ім'я: ${name.trim()}`,

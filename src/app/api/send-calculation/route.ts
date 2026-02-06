@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server'
 
-const BOT_TOKEN = process.env.TELEGRAM_CALC_BOT_TOKEN ?? '8420828581:AAFBhs_MUXUBko-hJvXrXnf7pz-c5v3QFJM'
-const CHAT_ID = process.env.TELEGRAM_CALC_CHAT_ID ?? '394324901'
+const BOT_TOKEN = process.env.TELEGRAM_CALC_BOT_TOKEN
+const CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
 export async function POST(request: Request) {
+  if (!BOT_TOKEN || !CHAT_ID) {
+    return NextResponse.json(
+      { error: 'TELEGRAM_CALC_BOT_TOKEN or TELEGRAM_CHAT_ID not configured' },
+      { status: 500 }
+    )
+  }
   try {
     const body = await request.json()
     const { text } = body as { text?: string }
