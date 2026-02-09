@@ -167,6 +167,12 @@ export default function ImportantPage() {
               </Link>
             </li>
             <li>
+              <Link href="/polytsia" className={linkClass()}>
+                <span>полиця</span>
+                <span className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ${scrolled ? 'bg-white' : 'bg-black'}`} aria-hidden />
+              </Link>
+            </li>
+            <li>
               <Link href="/series" className={linkClass()}>
                 <span>хх</span>
                 <span className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ${scrolled ? 'bg-white' : 'bg-black'}`} aria-hidden />
@@ -245,13 +251,6 @@ export default function ImportantPage() {
       </section>
 
       {/* Footer */}
-      <footer className="px-4 sm:px-6 md:px-12 py-8 bg-white border-t border-black/10">
-        <div className="max-w-6xl mx-auto flex items-center justify-end">
-          <span className="text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-black/50">
-            студія анімації Богеміка
-          </span>
-        </div>
-      </footer>
     </main>
   )
 }

@@ -10,6 +10,7 @@ const navLinks = [
   { href: '/important', label: 'нам важливо' },
   { href: '/price', label: 'прайс' },
   { href: '/learn', label: 'навчатися' },
+  { href: '/polytsia', label: 'полиця' },
   { href: '/series', label: 'хх' },
 ]
 

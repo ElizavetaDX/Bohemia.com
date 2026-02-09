@@ -53,6 +53,14 @@ const PAGE_SYMBOLS: Record<string, SymbolConfig[]> = {
     { id: 'moon-2', x: '92%', y: '78%', icon: 'moon' },
     { id: 'star-3', x: '5%', y: '22%', icon: 'star' },
   ],
+  '/polytsia': [
+    { id: 'star-1', x: '8%', y: '12%', icon: 'star' },
+    { id: 'moon-1', x: '92%', y: '15%', icon: 'moon' },
+    { id: 'line-1', x: '15%', y: '55%', icon: 'line' },
+    { id: 'star-2', x: '88%', y: '70%', icon: 'star' },
+    { id: 'moon-2', x: '6%', y: '82%', icon: 'moon' },
+    { id: 'star-3', x: '90%', y: '88%', icon: 'star' },
+  ],
 }
 
 const DEFAULT_SYMBOLS: SymbolConfig[] = [
@@ -97,7 +105,7 @@ export function EasterEggs() {
     setShow(!isTouch && !reducedMotion)
   }, [])
 
-  const symbols = PAGE_SYMBOLS[pathname] ?? DEFAULT_SYMBOLS
+  const symbols = PAGE_SYMBOLS[pathname] ?? (pathname.startsWith('/polytsia') ? PAGE_SYMBOLS['/polytsia'] : null) ?? DEFAULT_SYMBOLS
 
   if (!show || symbols.length === 0) return null
 

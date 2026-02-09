@@ -265,6 +265,22 @@ export default function Home() {
             </li>
             <li>
               <Link
+                href="/polytsia"
+                className={`relative group text-[9px] md:text-[10px] tracking-[0.15em] uppercase transition-colors whitespace-nowrap ${
+                  scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
+                }`}
+              >
+                <span>полиця</span>
+                <span
+                  className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 ${
+                    scrolled ? 'bg-white' : 'bg-black'
+                  }`}
+                  aria-hidden
+                />
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/series"
                 className={`relative group text-[9px] md:text-[10px] tracking-[0.15em] uppercase transition-colors whitespace-nowrap ${
                   scrolled ? 'text-white/60 hover:text-white' : 'text-black/50 hover:text-black'
@@ -447,14 +463,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="px-4 sm:px-6 md:px-12 py-8 bg-white">
-        <div className="max-w-6xl mx-auto flex items-center justify-end">
-          <span className="text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-black/50">
-            студія анімації Богеміка
-          </span>
-        </div>
-      </footer>
     </main>
   )
 }

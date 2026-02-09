@@ -291,6 +291,7 @@ export default function SeriesPage() {
             <li><Link href="/important" className={linkClass()}><span>нам важливо</span></Link></li>
             <li><Link href="/price" className={linkClass()}><span>прайс</span></Link></li>
             <li><Link href="/learn" className={linkClass()}><span>навчатися</span></Link></li>
+            <li><Link href="/polytsia" className={linkClass()}><span>полиця</span></Link></li>
             <li><Link href="/series" className="text-black"><span>хх</span></Link></li>
           </ul>
           <button

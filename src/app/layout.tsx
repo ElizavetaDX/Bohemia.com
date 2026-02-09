@@ -5,6 +5,7 @@ import './brutalism.css'
 import { AnalyticsPixels } from '@/components/AnalyticsPixels'
 import { CursorTrail } from '@/components/CursorTrail'
 import { EasterEggs } from '@/components/EasterEggs'
+import { Footer } from '@/components/Footer'
 
 const playfair = Playfair_Display({
   subsets: ['latin', 'cyrillic'],
@@ -56,11 +57,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="uk" className={`${playfair.variable} ${dmSans.variable} ${manrope.variable} ${pressStart2P.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-sans antialiased min-h-screen">
+      <body className="font-sans antialiased min-h-screen flex flex-col">
         <AnalyticsPixels />
         <CursorTrail />
         <EasterEggs />
-        {children}
+        <div className="flex-1">{children}</div>
+        <Footer />
       </body>
     </html>
   )

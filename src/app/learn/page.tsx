@@ -168,6 +168,7 @@ export default function LearnPage() {
             <li><Link href="/important" className={linkClass()}><span>нам важливо</span><span className={underlineClass()} aria-hidden /></Link></li>
             <li><Link href="/price" className={linkClass()}><span>прайс</span><span className={underlineClass()} aria-hidden /></Link></li>
             <li><Link href="/learn" className={linkClass(true)}><span>навчатися</span><span className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full scale-x-100 origin-left ${scrolled ? 'bg-white' : 'bg-black'}`} aria-hidden /></Link></li>
+            <li><Link href="/polytsia" className={linkClass()}><span>полиця</span><span className={underlineClass()} aria-hidden /></Link></li>
             <li><Link href="/series" className={linkClass()}><span>хх</span><span className={underlineClass()} aria-hidden /></Link></li>
             <li><button type="button" className={`p-1 transition-colors ${scrolled ? 'text-white/60 hover:text-white' : 'text-black/60 hover:text-black'}`} aria-label="Пошук"><SearchIcon /></button></li>
           </ul>
@@ -203,13 +204,13 @@ export default function LearnPage() {
       {/* Типографический блок */}
       <section className="content-above-dots px-4 sm:px-6 md:px-12 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 md:gap-16 bg-white p-6 md:p-8 lg:p-10 rounded-lg">
-            <div className="space-y-6 text-base md:text-lg leading-[1.7] tracking-[0.02em] text-black/90 text-justify min-w-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 md:gap-16">
+            <div className="space-y-6 text-base md:text-lg leading-[1.7] tracking-[0.02em] text-black/90 text-justify min-w-0 bg-white p-6 md:p-8 rounded-lg">
               <p>Скоро ми запускаємо серію навчань для творчої богеми — тих, хто хоче робити смачно, глибоко й нарешті вийти в комерцію.</p>
               <p>Буде про візуал та сенси, які чіпляють, і про процес, який живе. Без прогрівів, для своїх. Без космосу в ціні.</p>
               <p>Тебе буде вести <strong className="font-semibold text-black">практикуючий арт-директор</strong> успішної української студії, яка щодня створює візуал та сенси для брендів в умовах реального ринку. Тут буде все, чим ми користуємось самі.</p>
             </div>
-            <div className="space-y-6 text-base md:text-lg leading-[1.7] tracking-[0.02em] text-black/90 text-justify min-w-0">
+            <div className="space-y-6 text-base md:text-lg leading-[1.7] tracking-[0.02em] text-black/90 text-justify min-w-0 bg-white p-6 md:p-8 rounded-lg">
               <p>Це навчання для тих, хто втомився від попси, для тих, хто не хоче бути голодним художником, а відчуває в собі потенціал.</p>
               <p className="text-black/80">Скоро буде момент. Твій.</p>
             </div>
@@ -218,7 +219,7 @@ export default function LearnPage() {
       </section>
 
       {/* Напрямки — карточки */}
-      <section className="content-above-dots px-4 sm:px-6 md:px-12 py-12 md:py-16">
+      <section className="content-above-dots px-4 sm:px-6 md:px-12 py-5">
         <div className="max-w-6xl mx-auto">
           <div className="border-l-8 border-black pl-4 mb-8 md:mb-10">
             <h2 className="font-press-start font-normal text-4xl sm:text-5xl md:text-6xl lg:text-[70px] leading-[0.8] tracking-tight text-black">напрямки</h2>
@@ -283,12 +284,6 @@ export default function LearnPage() {
           </div>
         </div>
       </section>
-
-      <footer className="px-4 sm:px-6 md:px-12 py-8 bg-white">
-        <div className="max-w-6xl mx-auto flex items-center justify-end">
-          <span className="text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-black/50">студія анімації Богеміка</span>
-        </div>
-      </footer>
 
       {/* Модалка заявки на навчання */}
       {applicationOpen && (
