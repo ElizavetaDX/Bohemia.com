@@ -173,6 +173,7 @@ export default function PolytsiaSlugPage() {
                     placeholder="Ваше ім'я"
                     className="w-full min-h-[48px] px-4 border border-black/20 bg-white text-black placeholder:text-black/40 text-sm focus:outline-none focus:ring-2 focus:ring-black/20"
                     disabled={submitStatus === 'sending'}
+                    required
                   />
                 </div>
                 <div>
@@ -187,6 +188,7 @@ export default function PolytsiaSlugPage() {
                     placeholder="email@example.com"
                     className="w-full min-h-[48px] px-4 border border-black/20 bg-white text-black placeholder:text-black/40 text-sm focus:outline-none focus:ring-2 focus:ring-black/20"
                     disabled={submitStatus === 'sending'}
+                    required
                   />
                 </div>
                 {errorMessage && (

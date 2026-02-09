@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 
+const LEARN_GOOGLE_URL = process.env.LEARN_GOOGLE_SHEET_WEBHOOK_URL
 const BOT_TOKEN = process.env.TELEGRAM_LEARN_BOT_TOKEN
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
@@ -26,14 +27,37 @@ export async function POST(request: Request) {
       )
     }
 
+    const formData = {
+      course: course.trim(),
+      name: name.trim(),
+      phone: phone.trim(),
+      email: email.trim(),
+      telegram: telegram.trim().replace(/^@/, ''),
+    }
+
+    if (LEARN_GOOGLE_URL) {
+      const sheetRes = await fetch(LEARN_GOOGLE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      if (!sheetRes.ok) {
+        const errText = await sheetRes.text()
+        return NextResponse.json(
+          { error: `Таблиця: ${sheetRes.status}. ${errText.slice(0, 200)}` },
+          { status: 502 }
+        )
+      }
+    }
+
     const text = [
       '🎓 НОВА ЗАЯВКА НА НАВЧАННЯ 📍',
       '',
-      `Напрямок: ${course.trim()}`,
-      `👤 Ім'я: ${name.trim()}`,
-      `📞 Телефон: ${phone.trim()}`,
-      `📧 Email: ${email.trim()}`,
-      `✈️ Telegram: @${telegram.trim().replace(/^@/, '')}`,
+      `Напрямок: ${formData.course}`,
+      `👤 Ім'я: ${formData.name}`,
+      `📞 Телефон: ${formData.phone}`,
+      `📧 Email: ${formData.email}`,
+      `✈️ Telegram: @${formData.telegram}`,
     ].join('\n')
 
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`
