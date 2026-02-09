@@ -4,7 +4,8 @@ import path from 'path'
 import { Resend } from 'resend'
 import { getGuideBySlug } from '@/data/guidesData'
 
-const POLYTSIA_WEBHOOK = process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL
+const POLYTSIA_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4tykOXen-Ft-pCxTVHHPNggn7BgyKyhhAwhlYBYraE61lo7xfC5uQIMJ-5W8D_UYEIQ/exec'
+const POLYTSIA_WEBHOOK = process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL || POLYTSIA_SCRIPT_URL
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const FROM_EMAIL = process.env.POLYTSIA_FROM_EMAIL ?? 'onboarding@resend.dev'
 
@@ -16,11 +17,8 @@ function isRuEmail(email: string): boolean {
 const SUBJECT = 'Твій гайд від BOHEMIQA STUDIO'
 
 export async function POST(request: Request) {
-  if (!POLYTSIA_WEBHOOK) {
-    return NextResponse.json(
-      { error: 'POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL не налаштовано' },
-      { status: 500 }
-    )
+  if (!process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL) {
+    console.error('[send-guide] POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL не задано у Vercel/env. Додайте змінну в Settings → Environment Variables.')
   }
   if (!RESEND_API_KEY) {
     return NextResponse.json(
@@ -63,37 +61,34 @@ export async function POST(request: Request) {
   }
 
   const pdfFileName = `${guide.slug}.pdf`
-  let rowIndex: number
+  let rowIndex: number | null = null
 
   try {
     const appendRes = await fetch(POLYTSIA_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'append',
-        name,
-        email,
-        guideSlug: guideId,
-      }),
+      body: JSON.stringify({ name, email }),
     })
     if (!appendRes.ok) {
       const text = await appendRes.text()
+      console.error('[send-guide] Таблиця відповіла:', appendRes.status, text.slice(0, 300))
       return NextResponse.json(
-        { error: `Таблиця: ${appendRes.status}. ${text.slice(0, 200)}` },
+        { error: `Таблиця відповіла ${appendRes.status}. Перевірте URL скрипта та логи Vercel.` },
         { status: 502 }
       )
     }
-    const appendData = await appendRes.json()
-    rowIndex = appendData?.rowIndex
-    if (typeof rowIndex !== 'number' || rowIndex < 2) {
-      return NextResponse.json(
-        { error: 'Таблиця не повернула rowIndex' },
-        { status: 502 }
-      )
+    try {
+      const appendData = await appendRes.json()
+      if (typeof appendData?.rowIndex === 'number' && appendData.rowIndex >= 2) {
+        rowIndex = appendData.rowIndex
+      }
+    } catch {
+      // Скрипт міг повернути не JSON — рядок у таблицю вже додано
     }
-  } catch {
+  } catch (e) {
+    console.error('[send-guide] Помилка запису в таблицю:', e)
     return NextResponse.json(
-      { error: 'Помилка запису в таблицю' },
+      { error: 'Помилка запису в таблицю. Перевірте POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL та логи.' },
       { status: 502 }
     )
   }
@@ -130,18 +125,20 @@ export async function POST(request: Request) {
     )
   }
 
-  try {
-    await fetch(POLYTSIA_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'update_status',
-        rowIndex,
-        status: 'відправлено',
-      }),
-    })
-  } catch {
-    // Запис у таблицю вже є, лист відправлено
+  if (rowIndex != null) {
+    try {
+      await fetch(POLYTSIA_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_status',
+          rowIndex,
+          status: 'відправлено',
+        }),
+      })
+    } catch {
+      // Запис у таблицю вже є, лист відправлено
+    }
   }
 
   const polytsiaBotToken = process.env.TELEGRAM_BOT_POLYTSIA
