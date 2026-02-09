@@ -3,8 +3,6 @@ import { readFile } from 'fs/promises'
 import path from 'path'
 import { Resend } from 'resend'
 
-const POLYTSIA_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4tykOXen-Ft-pCxTVHHPNggn7BgyKyhhAwhlYBYraE61lo7xfC5uQIMJ-5W8D_UYEIQ/exec'
-const POLYTSIA_WEBHOOK = process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL || POLYTSIA_SCRIPT_URL
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const FROM_EMAIL = process.env.POLYTSIA_FROM_EMAIL ?? 'onboarding@resend.dev'
 
@@ -14,8 +12,13 @@ function isRuEmail(email: string): boolean {
 }
 
 export async function POST(request: Request) {
-  if (!process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL) {
-    console.error('[request-guide] POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL не задано. Додайте змінну в Vercel Environment Variables.')
+  const POLYTSIA_WEBHOOK = process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL
+  if (!POLYTSIA_WEBHOOK || POLYTSIA_WEBHOOK.trim() === '') {
+    console.error('[request-guide] POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL пуста або не задана. Задайте змінну в Vercel → Environment Variables.')
+    return NextResponse.json(
+      { error: 'POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL не налаштовано.' },
+      { status: 500 }
+    )
   }
   if (!RESEND_API_KEY) {
     return NextResponse.json(

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 const BOT_TOKEN = process.env.TELEGRAM_CALC_BOT_TOKEN
 const SERIES_TELEGRAM_CHAT_ID = process.env.SERIES_TELEGRAM_CHAT_ID ?? '8420828581'
-const GOOGLE_SHEET_WEBHOOK_URL = process.env.GOOGLE_SHEET_WEBHOOK_URL
+const GOOGLE_SHEET_WEBHOOK_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL
 
 async function updateSheetStatus(phone: string) {
   if (!GOOGLE_SHEET_WEBHOOK_URL || !phone) return

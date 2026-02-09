@@ -16,8 +16,8 @@ const SUBJECT = 'Твій гайд від BOHEMIQA STUDIO'
 
 export async function POST(request: Request) {
   const POLYTSIA_WEBHOOK = process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL
-  if (!POLYTSIA_WEBHOOK) {
-    console.error('[send-guide] POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL не задано. Додайте змінну в Vercel → Settings → Environment Variables.')
+  if (!POLYTSIA_WEBHOOK || POLYTSIA_WEBHOOK.trim() === '') {
+    console.error('[send-guide] POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL пуста або не задана. Задайте змінну в Vercel → Settings → Environment Variables.')
     return NextResponse.json(
       { error: 'POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL не налаштовано. Налаштуйте змінну у Vercel.' },
       { status: 500 }

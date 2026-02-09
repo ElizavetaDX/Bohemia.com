@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server'
 
 const MONOBANK_TOKEN = process.env.MONOBANK_TOKEN
 const FRONTEND_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
-const GOOGLE_SHEET_WEBHOOK_URL = process.env.GOOGLE_SHEET_WEBHOOK_URL
+const GOOGLE_SHEET_WEBHOOK_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL
 
 async function createLeadInSheet(data: { name: string; phone: string; telegram: string; email: string; seriesId: number[]; amount: number }): Promise<{ ok: boolean; error?: string }> {
   if (!GOOGLE_SHEET_WEBHOOK_URL) {
-    return { ok: false, error: 'GOOGLE_SHEET_WEBHOOK_URL не налаштовано. Додайте URL скрипта в .env.local' }
+    return { ok: false, error: 'NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL не налаштовано. Додайте URL скрипта у Vercel.' }
   }
   try {
     const res = await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
