@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server'
 
 const LEARN_GOOGLE_URL = process.env.LEARN_GOOGLE_SHEET_WEBHOOK_URL
-const BOT_TOKEN = process.env.TELEGRAM_LEARN_BOT_TOKEN
+const BOT_TOKEN = process.env.TELEGRAM_BOT_MAIN
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID
 
 export async function POST(request: Request) {
   if (!BOT_TOKEN || !CHAT_ID) {
     return NextResponse.json(
-      { error: 'TELEGRAM_LEARN_BOT_TOKEN or TELEGRAM_CHAT_ID not configured' },
+      { error: 'TELEGRAM_BOT_MAIN or TELEGRAM_CHAT_ID not configured' },
+      { status: 500 }
+    )
+  }
+  if (!LEARN_GOOGLE_URL) {
+    return NextResponse.json(
+      { error: 'LEARN_GOOGLE_SHEET_WEBHOOK_URL not configured' },
       { status: 500 }
     )
   }
@@ -28,26 +34,24 @@ export async function POST(request: Request) {
     }
 
     const formData = {
-      course: course.trim(),
       name: name.trim(),
       phone: phone.trim(),
-      email: email.trim(),
       telegram: telegram.trim().replace(/^@/, ''),
+      email: email.trim(),
+      course: course.trim(),
     }
 
-    if (LEARN_GOOGLE_URL) {
-      const sheetRes = await fetch(LEARN_GOOGLE_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      })
-      if (!sheetRes.ok) {
-        const errText = await sheetRes.text()
-        return NextResponse.json(
-          { error: `Таблиця: ${sheetRes.status}. ${errText.slice(0, 200)}` },
-          { status: 502 }
-        )
-      }
+    const sheetRes = await fetch(LEARN_GOOGLE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    })
+    if (!sheetRes.ok) {
+      const errText = await sheetRes.text()
+      return NextResponse.json(
+        { error: `Таблиця: ${sheetRes.status}. ${errText.slice(0, 200)}` },
+        { status: 502 }
+      )
     }
 
     const text = [

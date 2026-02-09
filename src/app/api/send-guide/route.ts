@@ -134,7 +134,7 @@ export async function POST(request: Request) {
     // Запис у таблицю вже є, лист відправлено
   }
 
-  const polytsiaBotToken = process.env.TELEGRAM_CALC_BOT_TOKEN
+  const polytsiaBotToken = process.env.TELEGRAM_BOT_POLYTSIA
   const polytsiaChatId = process.env.TELEGRAM_CHAT_ID
   if (polytsiaBotToken && polytsiaChatId) {
     const telegramText = [
