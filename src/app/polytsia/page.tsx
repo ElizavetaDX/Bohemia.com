@@ -90,7 +90,7 @@ export default function PolytsiaPage() {
           <div className="max-w-6xl mx-auto">
             <div className="relative mb-8">
               <span className="absolute top-0 right-0 text-[10px] sm:text-xs text-black/50 font-mono tracking-wider" aria-hidden>(01)</span>
-              <div className="flex items-center gap-3 sm:gap-4 w-full bg-black text-white py-3 sm:py-4 px-4 sm:px-5 md:px-6">
+              <div className="flex items-end gap-3 sm:gap-4 w-full text-black pt-3 sm:pt-4 pb-0 px-4 sm:px-5 md:px-6 border-b-4 border-black">
                 <BooksIcon />
                 <h1 className="font-press-start text-xl sm:text-2xl md:text-3xl lg:text-4xl uppercase tracking-tight flex-1">
                   Полиця
