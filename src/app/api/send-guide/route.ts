@@ -4,8 +4,6 @@ import path from 'path'
 import { Resend } from 'resend'
 import { getGuideBySlug } from '@/data/guidesData'
 
-const POLYTSIA_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4tykOXen-Ft-pCxTVHHPNggn7BgyKyhhAwhlYBYraE61lo7xfC5uQIMJ-5W8D_UYEIQ/exec'
-const POLYTSIA_WEBHOOK = process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL || POLYTSIA_SCRIPT_URL
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const FROM_EMAIL = process.env.POLYTSIA_FROM_EMAIL ?? 'onboarding@resend.dev'
 
@@ -17,8 +15,13 @@ function isRuEmail(email: string): boolean {
 const SUBJECT = 'Твій гайд від BOHEMIQA STUDIO'
 
 export async function POST(request: Request) {
-  if (!process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL) {
-    console.error('[send-guide] POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL не задано у Vercel/env. Додайте змінну в Settings → Environment Variables.')
+  const POLYTSIA_WEBHOOK = process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL
+  if (!POLYTSIA_WEBHOOK) {
+    console.error('[send-guide] POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL не задано. Додайте змінну в Vercel → Settings → Environment Variables.')
+    return NextResponse.json(
+      { error: 'POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL не налаштовано. Налаштуйте змінну у Vercel.' },
+      { status: 500 }
+    )
   }
   if (!RESEND_API_KEY) {
     return NextResponse.json(
@@ -141,9 +144,9 @@ export async function POST(request: Request) {
     }
   }
 
-  const polytsiaBotToken = process.env.TELEGRAM_BOT_POLYTSIA
-  const polytsiaChatId = process.env.TELEGRAM_CHAT_ID
-  if (polytsiaBotToken && polytsiaChatId) {
+  const telegramBotToken = process.env.TELEGRAM_LEARN_BOT_TOKEN
+  const telegramChatId = process.env.TELEGRAM_CHAT_ID
+  if (telegramBotToken && telegramChatId) {
     const telegramText = [
       '📚 ПОЛИЦЯ — заявка на гайд',
       '',
@@ -153,10 +156,10 @@ export async function POST(request: Request) {
       'Лист з PDF відправлено.',
     ].join('\n')
     try {
-      await fetch(`https://api.telegram.org/bot${polytsiaBotToken}/sendMessage`, {
+      await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: polytsiaChatId, text: telegramText }),
+        body: JSON.stringify({ chat_id: telegramChatId, text: telegramText }),
       })
     } catch {
       // Уведомление не критично
