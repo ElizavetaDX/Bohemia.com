@@ -15,8 +15,7 @@ function isRuEmail(email: string): boolean {
 const SUBJECT = 'Твій гайд від BOHEMIQA STUDIO'
 
 export async function POST(request: Request) {
-  const POLYTSIA_WEBHOOK = process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL
-  if (!POLYTSIA_WEBHOOK || POLYTSIA_WEBHOOK.trim() === '') {
+  if (!process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL || process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL.trim() === '') {
     console.error('[send-guide] POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL пуста або не задана. Задайте змінну в Vercel → Settings → Environment Variables.')
     return NextResponse.json(
       { error: 'POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL не налаштовано. Налаштуйте змінну у Vercel.' },
@@ -67,14 +66,15 @@ export async function POST(request: Request) {
   let rowIndex: number | null = null
 
   try {
-    const appendRes = await fetch(POLYTSIA_WEBHOOK, {
+    console.log('DEBUG: Sending to URL:', process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL)
+    const appendRes = await fetch(process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email }),
     })
     if (!appendRes.ok) {
       const text = await appendRes.text()
-      console.error('[send-guide] Таблиця відповіла:', appendRes.status, text.slice(0, 300))
+      console.error('[send-guide] Таблиця відповіла помилкою. URL:', process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL, 'Статус:', appendRes.status, 'Тіло:', text.slice(0, 300))
       return NextResponse.json(
         { error: `Таблиця відповіла ${appendRes.status}. Перевірте URL скрипта та логи Vercel.` },
         { status: 502 }
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
       // Скрипт міг повернути не JSON — рядок у таблицю вже додано
     }
   } catch (e) {
-    console.error('[send-guide] Помилка запису в таблицю:', e)
+    console.error('[send-guide] Помилка запису в таблицю. URL:', process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL, e)
     return NextResponse.json(
       { error: 'Помилка запису в таблицю. Перевірте POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL та логи.' },
       { status: 502 }
@@ -130,7 +130,7 @@ export async function POST(request: Request) {
 
   if (rowIndex != null) {
     try {
-      await fetch(POLYTSIA_WEBHOOK, {
+      await fetch(process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL!, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
