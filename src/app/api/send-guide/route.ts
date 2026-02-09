@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   let rowIndex: number | null = null
 
   try {
-    console.log('DEBUG: Sending to URL:', process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL)
+    console.log('Таблица Полки:', process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL)
     const appendRes = await fetch(process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -75,25 +75,18 @@ export async function POST(request: Request) {
     if (!appendRes.ok) {
       const text = await appendRes.text()
       console.error('[send-guide] Таблиця відповіла помилкою. URL:', process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL, 'Статус:', appendRes.status, 'Тіло:', text.slice(0, 300))
-      return NextResponse.json(
-        { error: `Таблиця відповіла ${appendRes.status}. Перевірте URL скрипта та логи Vercel.` },
-        { status: 502 }
-      )
-    }
-    try {
-      const appendData = await appendRes.json()
-      if (typeof appendData?.rowIndex === 'number' && appendData.rowIndex >= 2) {
-        rowIndex = appendData.rowIndex
+    } else {
+      try {
+        const appendData = await appendRes.json()
+        if (typeof appendData?.rowIndex === 'number' && appendData.rowIndex >= 2) {
+          rowIndex = appendData.rowIndex
+        }
+      } catch {
+        // Скрипт міг повернути не JSON — рядок у таблицю вже додано
       }
-    } catch {
-      // Скрипт міг повернути не JSON — рядок у таблицю вже додано
     }
   } catch (e) {
     console.error('[send-guide] Помилка запису в таблицю. URL:', process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL, e)
-    return NextResponse.json(
-      { error: 'Помилка запису в таблицю. Перевірте POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL та логи.' },
-      { status: 502 }
-    )
   }
 
   const pdfPath = path.join(process.cwd(), 'public', 'guides', pdfFileName)
