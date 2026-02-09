@@ -156,8 +156,8 @@ export default function PolytsiaSlugPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="border border-black/20 bg-white p-6"
               >
-                <p className="font-press-start text-sm uppercase text-black mb-2">Готово! Гайд уже на пошті</p>
-                <p className="text-sm text-black/70">Перевір пошту (і папку «Спам»). Якщо листа немає — напиши нам.</p>
+                <p className="font-press-start text-sm uppercase text-black mb-2">Дякуємо! Гайд уже летить на твою пошту.</p>
+                <p className="text-sm text-black/70">Перевір папку &quot;Спам&quot;, якщо лист не прийшов протягом 2-х хвилин.</p>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="border border-black/20 bg-white p-6 space-y-4">

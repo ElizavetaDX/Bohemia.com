@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { readFile } from 'fs/promises'
 import path from 'path'
 import { Resend } from 'resend'
+import { getGuideBySlug } from '@/data/guidesData'
 
 const POLYTSIA_WEBHOOK = process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL
 const RESEND_API_KEY = process.env.RESEND_API_KEY
@@ -53,6 +54,15 @@ export async function POST(request: Request) {
     )
   }
 
+  const guide = getGuideBySlug(guideId)
+  if (!guide) {
+    return NextResponse.json(
+      { error: 'Невідомий гайд. Дозволені тільки гайди з Полки.' },
+      { status: 400 }
+    )
+  }
+
+  const pdfFileName = `${guide.slug}.pdf`
   let rowIndex: number
 
   try {
@@ -88,13 +98,13 @@ export async function POST(request: Request) {
     )
   }
 
-  const pdfPath = path.join(process.cwd(), 'public', 'guides', `${guideId}.pdf`)
+  const pdfPath = path.join(process.cwd(), 'public', 'guides', pdfFileName)
   let pdfBuffer: Buffer
   try {
     pdfBuffer = await readFile(pdfPath)
   } catch {
     return NextResponse.json(
-      { error: 'PDF-файл для цього гайду відсутній' },
+      { error: `PDF для гайду «${guide.title}» відсутній (очікується public/guides/${pdfFileName})` },
       { status: 404 }
     )
   }
@@ -107,7 +117,7 @@ export async function POST(request: Request) {
     html: `<p>Привіт, ${name}!</p><p>Ось твій гайд у додатку. Якщо листа не бачиш — перевір папку «Спам».</p><p>BOHEMIQA STUDIO</p>`,
     attachments: [
       {
-        filename: `${guideId}.pdf`,
+        filename: pdfFileName,
         content: pdfBuffer,
       },
     ],
