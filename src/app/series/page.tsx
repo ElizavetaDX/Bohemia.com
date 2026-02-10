@@ -111,6 +111,7 @@ export default function SeriesPage() {
   const [userEmail, setUserEmail] = useState('')
   const [paymentSending, setPaymentSending] = useState(false)
   const watermarkRef = useRef<HTMLDivElement>(null)
+  const phoneInputRef = useRef<HTMLInputElement>(null)
 
   const [formName, setFormName] = useState('')
   const [formPhone, setFormPhone] = useState('')
@@ -690,7 +691,72 @@ export default function SeriesPage() {
               </div>
               <div>
                 <label htmlFor="pay-phone" className="block text-xs font-medium text-black/80 mb-1">Телефон *</label>
-                <input id="pay-phone" type="tel" value={formPhone} onChange={(e) => setFormPhone(formatPhone(e.target.value))} required placeholder="+380 або інший код країни" className={`w-full min-h-[44px] px-3 rounded border text-sm focus:outline-none focus:ring-1 focus:ring-red-500 ${isPhoneBlocked(formPhone) ? 'border-red-500 bg-red-50/50' : 'border-black/20 bg-white text-black placeholder:text-black/40'}`} />
+                <input
+                  id="pay-phone"
+                  ref={phoneInputRef}
+                  type="tel"
+                  value={formPhone}
+                  onChange={(e) => {
+                    const input = e.target
+                    const cursorPos = input.selectionStart ?? 0
+                    const oldValue = formPhone
+                    const newValue = formatPhone(e.target.value)
+                    setFormPhone(newValue)
+                    // Відновлюємо позицію курсора після форматування
+                    setTimeout(() => {
+                      if (phoneInputRef.current) {
+                        const digitsBefore = oldValue.slice(0, cursorPos).replace(/\D/g, '').length
+                        let newCursorPos = 0
+                        let digitCount = 0
+                        for (let i = 0; i < newValue.length; i++) {
+                          if (/\d/.test(newValue[i])) {
+                            digitCount++
+                            if (digitCount === digitsBefore) {
+                              newCursorPos = i + 1
+                              break
+                            }
+                          }
+                        }
+                        phoneInputRef.current.setSelectionRange(newCursorPos, newCursorPos)
+                      }
+                    }, 0)
+                  }}
+                  onKeyDown={(e) => {
+                    // Дозволяємо Backspace та Delete працювати нормально
+                    if (e.key === 'Backspace' || e.key === 'Delete') {
+                      const input = e.target as HTMLInputElement
+                      const cursorPos = input.selectionStart ?? 0
+                      const digitsBefore = formPhone.slice(0, cursorPos).replace(/\D/g, '').length
+                      if (e.key === 'Backspace' && digitsBefore > 0) {
+                        const digits = formPhone.replace(/\D/g, '')
+                        const newDigits = digits.slice(0, digitsBefore - 1) + digits.slice(digitsBefore)
+                        const newValue = formatPhone(newDigits)
+                        setFormPhone(newValue)
+                        e.preventDefault()
+                        setTimeout(() => {
+                          if (phoneInputRef.current) {
+                            const newCursorPos = Math.max(0, cursorPos - 1)
+                            phoneInputRef.current.setSelectionRange(newCursorPos, newCursorPos)
+                          }
+                        }, 0)
+                      } else if (e.key === 'Delete') {
+                        const digits = formPhone.replace(/\D/g, '')
+                        const newDigits = digits.slice(0, digitsBefore) + digits.slice(digitsBefore + 1)
+                        const newValue = formatPhone(newDigits)
+                        setFormPhone(newValue)
+                        e.preventDefault()
+                        setTimeout(() => {
+                          if (phoneInputRef.current) {
+                            phoneInputRef.current.setSelectionRange(cursorPos, cursorPos)
+                          }
+                        }, 0)
+                      }
+                    }
+                  }}
+                  required
+                  placeholder="+380 (99) 999-99-99"
+                  className={`w-full min-h-[44px] px-3 rounded border text-sm focus:outline-none focus:ring-1 focus:ring-red-500 ${isPhoneBlocked(formPhone) ? 'border-red-500 bg-red-50/50' : 'border-black/20 bg-white text-black placeholder:text-black/40'}`}
+                />
                 {isPhoneBlocked(formPhone) && (
                   <p className="mt-1 text-xs text-red-600">Реєстрація з цього регіону неможлива</p>
                 )}
