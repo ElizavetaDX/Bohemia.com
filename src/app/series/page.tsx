@@ -306,8 +306,10 @@ export default function SeriesPage() {
   const handleLogout = () => {
     setAccessPhones(new Set())
     setLoggedPhoneDisplay(null)
+    setUserAccess([])
     try {
       localStorage.removeItem(SERIES_STORAGE_KEY)
+      localStorage.removeItem('userAccess')
     } catch {
       /* ignore */
     }
