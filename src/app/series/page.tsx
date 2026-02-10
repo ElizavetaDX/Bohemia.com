@@ -274,21 +274,36 @@ export default function SeriesPage() {
     setPaymentSending(true)
     try {
       const totalPrice = Array.from(selectedPaid).reduce((s, id) => s + (EPISODES.find((e) => e.id === id)?.price ?? 0), 0)
+
+      // Беремо productId / productName з останньо обраної серії або з першої у кошику
+      let meta = selectedProduct
+      if (!meta) {
+        const firstId = Array.from(selectedPaid)[0]
+        const fallback = SERIES_PRODUCT_META[firstId]
+        if (fallback) {
+          meta = { productId: fallback.productId, productName: fallback.productName }
+        }
+      }
+
+      const payload = {
+        action: 'create_lead',
+        name: formName,
+        phone: formPhone.replace(/\D/g, ''),
+        telegram: formTelegram,
+        email: formEmail,
+        seriesId: Array.from(selectedPaid),
+        amount: totalPrice,
+        productId: meta?.productId ?? null,
+        productName: meta?.productName ?? null,
+      }
+
+      console.log('PayData:', { productId: payload.productId, productName: payload.productName })
+
       await fetch(GAS_WEBHOOK_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          action: 'create_lead',
-          name: formName,
-          phone: formPhone.replace(/\D/g, ''),
-          telegram: formTelegram,
-          email: formEmail,
-          seriesId: Array.from(selectedPaid),
-          amount: totalPrice,
-          productId: selectedProduct?.productId ?? null,
-          productName: selectedProduct?.productName ?? null,
-        }),
+        body: JSON.stringify(payload),
       })
       setToast({ msg: 'Заявка прийнята' })
       setTimeout(() => setToast(null), 4000)
