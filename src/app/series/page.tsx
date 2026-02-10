@@ -35,11 +35,11 @@ function CartIcon() {
 const SERIES_STORAGE_KEY = 'series_phone'
 const GAS_WEBHOOK_URL =
   process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL ??
-  'https://script.google.com/macros/s/AKfycbwd0iWpkXY3Ycvg-eUXeCbs1w9iM040o-U53BDqLqChzci8JrVAg7iLm5p3WTZwvCPKtg/exec'
+  'https://script.google.com/macros/s/AKfycbzpicOhT1Ov42nJ3wYAjXzcHM_-Vn41MLLpcHmK7GuGW8VCvMTm_4o2lyHqksA0S5-Fjw/exec'
 
 // doGet: перевірка доступу по телефону (авторизація після коду 1234)
 const SERIES_ACCESS_TABLE_URL =
-  'https://script.google.com/macros/s/AKfycbwd0iWpkXY3Ycvg-eUXeCbs1w9iM040o-U53BDqLqChzci8JrVAg7iLm5p3WTZwvCPKtg/exec'
+  'https://script.google.com/macros/s/AKfycbzpicOhT1Ov42nJ3wYAjXzcHM_-Vn41MLLpcHmK7GuGW8VCvMTm_4o2lyHqksA0S5-Fjw/exec'
 
 // Вебхук для логування productId (H) та productName (I)
 const SERIES_PRODUCT_WEBHOOK_URL =
