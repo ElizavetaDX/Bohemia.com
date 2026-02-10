@@ -74,6 +74,7 @@ export default function PolytsiaSlugPage() {
           name: trimmedName,
           email: trimmedEmail,
           guideId: slug,
+          documentName: guide.title,
         }),
       })
       const data = await res.json()

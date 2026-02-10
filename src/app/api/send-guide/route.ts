@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     )
   }
 
-  let body: { name?: string; email?: string; guideId?: string; guideSlug?: string }
+  let body: { name?: string; email?: string; guideId?: string; guideSlug?: string; documentName?: string }
   try {
     body = await request.json()
   } catch {
@@ -63,6 +63,7 @@ export async function POST(request: Request) {
   }
 
   const pdfFileName = `${guide.slug}.pdf`
+  const documentName = String(body.documentName ?? guide.title).trim()
   let rowIndex: number | null = null
 
   try {
@@ -70,7 +71,7 @@ export async function POST(request: Request) {
     const appendRes = await fetch(process.env.POLYTSIA_GOOGLE_SHEET_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email }),
+      body: JSON.stringify({ name, email, documentName }),
     })
     if (!appendRes.ok) {
       const text = await appendRes.text()
