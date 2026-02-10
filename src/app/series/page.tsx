@@ -35,7 +35,11 @@ function CartIcon() {
 const SERIES_STORAGE_KEY = 'series_phone'
 const GAS_WEBHOOK_URL =
   process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL ??
-  'https://script.google.com/macros/s/AKfycbyzseseX6QceafpvnpLvPcLv-xqLGmTH1CK1CLONvS9iOnbhTloKoAvmUh1WYiuQ8bKvQ/exec'
+  'https://script.google.com/macros/s/AKfycbwd0iWpkXY3Ycvg-eUXeCbs1w9iM040o-U53BDqLqChzci8JrVAg7iLm5p3WTZwvCPKtg/exec'
+
+// doGet: перевірка доступу по телефону (авторизація після коду 1234)
+const SERIES_ACCESS_TABLE_URL =
+  'https://script.google.com/macros/s/AKfycbwd0iWpkXY3Ycvg-eUXeCbs1w9iM040o-U53BDqLqChzci8JrVAg7iLm5p3WTZwvCPKtg/exec'
 
 // Вебхук для логування productId (H) та productName (I)
 const SERIES_PRODUCT_WEBHOOK_URL =
@@ -61,6 +65,32 @@ const SERIES_PRODUCT_META: Record<
   10: { productId: 'series_10', productName: 'Серія 10' },
   11: { productId: 'series_11', productName: 'Серія 11' },
   12: { productId: 'series_12', productName: 'Серія 12' },
+}
+
+/** Нормалізує accessList з таблиці (масив/рядок, series_N або число) у number[] для порівняння з ep.id */
+function normalizeAccessList(raw: unknown): number[] {
+  if (Array.isArray(raw)) {
+    return raw
+      .map((x: unknown) => {
+        if (typeof x === 'number' && x >= 1 && x <= 12) return x
+        if (typeof x === 'string') {
+          const n = parseInt(x.replace(/^series_/i, ''), 10)
+          return n >= 1 && n <= 12 ? n : NaN
+        }
+        return NaN
+      })
+      .filter((n): n is number => !Number.isNaN(n))
+  }
+  if (typeof raw === 'string') {
+    return raw
+      .split(/[\s,]+/)
+      .map((s) => {
+        const n = parseInt(s.replace(/^series_/i, ''), 10)
+        return n >= 1 && n <= 12 ? n : NaN
+      })
+      .filter((n): n is number => !Number.isNaN(n))
+  }
+  return []
 }
 
 const formatPhone = (value: string) => {
@@ -102,9 +132,15 @@ export default function SeriesPage() {
   const [accessPhones, setAccessPhones] = useState<Set<string>>(new Set())
   const [loggedPhoneDisplay, setLoggedPhoneDisplay] = useState<string | null>(null)
   const [loginPhone, setLoginPhone] = useState('')
-  const [authStep, setAuthStep] = useState<'phone' | 'code'>('phone')
+  const [step, setStep] = useState<'phone' | 'code'>('phone')
   const [authCode, setAuthCode] = useState('')
   const [loginChecking, setLoginChecking] = useState(false)
+  const [userAccess, setUserAccess] = useState<number[]>([])
+  
+  // Отладочный лог для проверки состояния step
+  useEffect(() => {
+    console.log('Current step:', step)
+  }, [step])
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
   const [cartBounce, setCartBounce] = useState(false)
   const [toast, setToast] = useState<{ msg: string } | null>(null)
@@ -131,15 +167,50 @@ export default function SeriesPage() {
   }, [mobileMenuOpen])
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(SERIES_STORAGE_KEY)
-      if (saved && saved.replace(/\D/g, '').length >= 10) {
-        setAccessPhones((p) => new Set(p).add(saved.replace(/\D/g, '')))
-        setLoggedPhoneDisplay(saved)
+    const loadSavedData = async () => {
+      try {
+        const saved = localStorage.getItem(SERIES_STORAGE_KEY)
+        if (saved && saved.replace(/\D/g, '').length >= 10) {
+          const normalized = saved.replace(/\D/g, '')
+          setAccessPhones((p) => new Set(p).add(normalized))
+          setLoggedPhoneDisplay(saved)
+          
+          // Загружаем userAccess из localStorage
+          const savedAccess = localStorage.getItem('userAccess')
+          if (savedAccess) {
+            try {
+              const raw = JSON.parse(savedAccess)
+              setUserAccess(normalizeAccessList(raw))
+            } catch {
+              /* ignore */
+            }
+          }
+          
+          // Оновлюємо доступ з таблиці при завантаженні сторінки (GET з параметром phone)
+          try {
+            const tableUrl = `${SERIES_ACCESS_TABLE_URL}?phone=${encodeURIComponent(normalized)}`
+            const res = await fetch(tableUrl, { method: 'GET', mode: 'cors' })
+            const data = await res.json()
+            console.log('Access from Table (on load):', data)
+            if (data?.status === 'success' && data.accessList != null) {
+              const list = normalizeAccessList(data.accessList)
+              setUserAccess(list)
+              try {
+                localStorage.setItem('userAccess', JSON.stringify(list))
+              } catch {
+                /* ignore */
+              }
+              console.log('Access from Table:', data.accessList, '-> normalized:', list)
+            }
+          } catch (error) {
+            console.error('Error fetching access from table on load:', error)
+          }
+        }
+      } catch {
+        /* ignore */
       }
-    } catch {
-      /* ignore */
     }
+    loadSavedData()
   }, [])
 
   const checkAccess = useCallback(async (phone: string): Promise<boolean> => {
@@ -172,19 +243,25 @@ export default function SeriesPage() {
     const normalized = loginPhone.replace(/\D/g, '')
     if (normalized.length < 10) return
     setLoginChecking(true)
+    // Сразу переключаемся на ввод кода
+    setStep('code')
+    console.log('Current step:', 'code')
     try {
       const res = await fetch('/api/series/send-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: loginPhone }),
       })
-      if (res.ok) setAuthStep('code')
+      // Логируем результат для отладки
+      console.log('Code sent response:', res.ok)
+    } catch (error) {
+      console.error('Error sending code:', error)
     } finally {
       setLoginChecking(false)
     }
   }, [loginPhone])
 
-  const handleVerifyCode = useCallback(() => {
+  const handleVerifyCode = useCallback(async () => {
     if (authCode.trim() !== TEST_CODE) {
       setToast({ msg: 'Невірний код. Спробуйте ще раз (тест: 1234)' })
       setTimeout(() => setToast(null), 3000)
@@ -198,7 +275,29 @@ export default function SeriesPage() {
     } catch {
       /* ignore */
     }
-    setAuthStep('phone')
+    
+    // Запит до Google Таблиці для отримання accessList (GET з параметром phone)
+    try {
+      const tableUrl = `${SERIES_ACCESS_TABLE_URL}?phone=${encodeURIComponent(normalized)}`
+      console.log('Fetching access from table:', tableUrl)
+      const res = await fetch(tableUrl, { method: 'GET', mode: 'cors' })
+      const data = await res.json()
+      console.log('Access from Table:', data)
+      if (data?.status === 'success' && data.accessList != null) {
+        const list = normalizeAccessList(data.accessList)
+        setUserAccess(list)
+        try {
+          localStorage.setItem('userAccess', JSON.stringify(list))
+        } catch {
+          /* ignore */
+        }
+        console.log('Access from Table:', data.accessList, '-> normalized:', list)
+      }
+    } catch (error) {
+      console.error('Error fetching access from table:', error)
+    }
+    
+    setStep('phone')
     setAuthCode('')
     setLoginPhone('')
     checkAccess(loginPhone).then(setHasAccessCache)
@@ -409,10 +508,10 @@ export default function SeriesPage() {
                   Вийти
                 </button>
               </>
-            ) : authStep === 'code' ? (
+            ) : step === 'code' ? (
               <>
-                <p className="text-sm text-black/70 w-full mb-2">Код відправлено на ваш номер (тест: 1234)</p>
-                <div className="flex items-center gap-2 w-full">
+                <p className="text-sm text-black/70 w-full mb-3">Код відправлено на ваш номер (тест: 1234)</p>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
                   <input
                     type="text"
                     inputMode="numeric"
@@ -421,21 +520,21 @@ export default function SeriesPage() {
                     onChange={(e) => setAuthCode(e.target.value.replace(/\D/g, ''))}
                     placeholder="1234"
                     dir="ltr"
-                    className="min-h-[44px] w-32 px-3 rounded border border-black/20 bg-white text-black text-left text-sm focus:outline-none focus:ring-1 focus:ring-red-500 placeholder:text-black/40"
+                    className="min-h-[52px] w-full sm:w-40 px-4 rounded-lg border-2 border-black/30 bg-white text-black text-left text-lg font-medium tracking-wider focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 placeholder:text-black/40"
                   />
                   <button
                     type="button"
                     onClick={handleVerifyCode}
                     disabled={authCode.length < 4}
-                    className="min-h-[44px] px-4 rounded bg-black text-white text-xs font-medium uppercase tracking-wider hover:bg-black/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="min-h-[52px] px-6 rounded-lg bg-black text-white text-sm font-bold uppercase tracking-wider hover:bg-black/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-2 border-black"
                   >
                     Підтвердити
                   </button>
                 </div>
                 <button
                   type="button"
-                  onClick={() => { setAuthStep('phone'); setAuthCode('') }}
-                  className="text-xs text-black/50 hover:text-black mt-2"
+                  onClick={() => { setStep('phone'); setAuthCode('') }}
+                  className="text-xs text-black/50 hover:text-black mt-3"
                 >
                   Змінити номер
                 </button>
@@ -497,17 +596,17 @@ export default function SeriesPage() {
                     <button
                       type="button"
                       onClick={() =>
-                        isAuthorized && hasAccessCache
+                        userAccess.includes(ep.id)
                           ? handlePaidClick(ep)
                           : handleAddToCart(ep)
                       }
                       className={`mt-2 w-full py-2 px-3 text-xs font-medium uppercase tracking-wider rounded-lg transition-colors ${
-                        isAuthorized && hasAccessCache
+                        userAccess.includes(ep.id)
                           ? 'bg-red-600 hover:bg-red-700 text-white'
                           : 'border border-black/20 text-black/80 hover:border-red-500 hover:text-red-600'
                       }`}
                     >
-                      {isAuthorized && hasAccessCache ? 'ДИВИТИСЬ' : 'ДОДАТИ ДО КОШИКА'}
+                      {userAccess.includes(ep.id) ? 'ДИВИТИСЬ' : 'ДОДАТИ ДО КОШИКА'}
                     </button>
                   )}
                   {ep.status === 'SOON' && (
