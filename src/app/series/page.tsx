@@ -96,8 +96,8 @@ export default function SeriesPage() {
   const [playerEpisode, setPlayerEpisode] = useState<number | null>(null)
   const [paymentFormOpen, setPaymentFormOpen] = useState(false)
   const [selectedPaid, setSelectedPaid] = useState<Set<number>>(new Set())
-  const [selectedProduct, setSelectedProduct] = useState<{ productId: string; productName: string } | null>(
-    null
+  const [selectedProducts, setSelectedProducts] = useState<Array<{ productId: string; productName: string }>>(
+    []
   )
   const [accessPhones, setAccessPhones] = useState<Set<string>>(new Set())
   const [loggedPhoneDisplay, setLoggedPhoneDisplay] = useState<string | null>(null)
@@ -218,7 +218,6 @@ export default function SeriesPage() {
       return
     }
     const data = { productId: meta.productId, productName: meta.productName }
-    setSelectedProduct(data)
     console.log('SENDING TO SHEET:', data)
     fetch(SERIES_PRODUCT_WEBHOOK_URL, {
       method: 'POST',
@@ -246,6 +245,17 @@ export default function SeriesPage() {
   const handleAddToCart = (ep: { id: number; title: string }) => {
     if (selectedPaid.has(ep.id)) return
     logSelectedProduct(ep)
+    const meta = SERIES_PRODUCT_META[ep.id]
+    if (meta) {
+      setSelectedProducts((prev) => {
+        // Перевіряємо, чи вже є ця серія в масиві
+        const exists = prev.some((p) => p.productId === meta.productId)
+        if (!exists) {
+          return [...prev, { productId: meta.productId, productName: meta.productName }]
+        }
+        return prev
+      })
+    }
     setSelectedPaid((p) => new Set(p).add(ep.id))
     setCartBounce(true)
     setTimeout(() => setCartBounce(false), 300)
@@ -276,15 +286,9 @@ export default function SeriesPage() {
     try {
       const totalPrice = Array.from(selectedPaid).reduce((s, id) => s + (EPISODES.find((e) => e.id === id)?.price ?? 0), 0)
 
-      // Беремо productId / productName з останньо обраної серії або з першої у кошику
-      let meta = selectedProduct
-      if (!meta) {
-        const firstId = Array.from(selectedPaid)[0]
-        const fallback = SERIES_PRODUCT_META[firstId]
-        if (fallback) {
-          meta = { productId: fallback.productId, productName: fallback.productName }
-        }
-      }
+      // Об'єднуємо всі productId та productName через кому
+      const productIds = selectedProducts.map((p) => p.productId).join(', ')
+      const productNames = selectedProducts.map((p) => p.productName).join(', ')
 
       const payload = {
         action: 'create_lead',
@@ -294,8 +298,8 @@ export default function SeriesPage() {
         email: formEmail,
         seriesId: Array.from(selectedPaid),
         amount: totalPrice,
-        productId: meta?.productId ?? null,
-        productName: meta?.productName ?? null,
+        productId: productIds || null,
+        productName: productNames || null,
       }
 
       console.log('PayData:', { productId: payload.productId, productName: payload.productName })
@@ -306,10 +310,14 @@ export default function SeriesPage() {
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload),
       })
+      
+      // Очищаємо масив після успішної відправки
+      setSelectedProducts([])
       setToast({ msg: 'Заявка прийнята' })
       setTimeout(() => setToast(null), 4000)
       setPaymentFormOpen(false)
       setSelectedPaid(new Set())
+      setSelectedProducts([])
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e)
       if (typeof window !== 'undefined') alert(`Помилка:\n\n${msg}`)
@@ -585,7 +593,16 @@ export default function SeriesPage() {
                             <span className="text-sm font-medium">{ep?.price ?? 0} грн</span>
                             <button
                               type="button"
-                              onClick={() => setSelectedPaid((p) => { const n = new Set(p); n.delete(id); return n })}
+                              onClick={() => {
+                                setSelectedPaid((p) => { const n = new Set(p); n.delete(id); return n })
+                                setSelectedProducts((prev) => {
+                                  const meta = SERIES_PRODUCT_META[id]
+                                  if (meta) {
+                                    return prev.filter((p) => p.productId !== meta.productId)
+                                  }
+                                  return prev
+                                })
+                              }}
                               className="text-black/40 hover:text-red-600 text-xs"
                             >
                               Видалити
@@ -685,6 +702,30 @@ export default function SeriesPage() {
               </button>
             </div>
             <form onSubmit={handlePayment} className="p-5 space-y-4">
+              {selectedProducts.length > 0 && (
+                <div className="mb-4 pb-4 border-b border-black/10">
+                  <h3 className="text-xs font-medium text-black/80 mb-2">Вибрані серії:</h3>
+                  <ul className="space-y-1 mb-3">
+                    {Array.from(selectedPaid).map((epId) => {
+                      const ep = EPISODES.find((e) => e.id === epId)
+                      const meta = SERIES_PRODUCT_META[epId]
+                      const price = ep?.price ?? 0
+                      return (
+                        <li key={epId} className="text-xs text-black/70 flex justify-between">
+                          <span>{meta?.productName ?? ep?.title ?? `Серія ${epId}`}</span>
+                          <span className="font-medium">{price} грн</span>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                  <div className="flex justify-between items-center pt-2 border-t border-black/10">
+                    <span className="text-sm font-medium text-black">Всього:</span>
+                    <span className="text-sm font-bold text-black">
+                      {Array.from(selectedPaid).reduce((s, id) => s + (EPISODES.find((e) => e.id === id)?.price ?? 0), 0)} грн
+                    </span>
+                  </div>
+                </div>
+              )}
               <div>
                 <label htmlFor="pay-name" className="block text-xs font-medium text-black/80 mb-1">Ім&apos;я *</label>
                 <input id="pay-name" type="text" value={formName} onChange={(e) => setFormName(e.target.value)} required placeholder="Ваше ім'я" className="w-full min-h-[44px] px-3 rounded border border-black/20 bg-white text-black placeholder:text-black/40 text-sm focus:outline-none focus:ring-1 focus:ring-red-500" />
