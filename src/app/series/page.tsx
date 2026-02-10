@@ -33,7 +33,13 @@ function CartIcon() {
 }
 
 const SERIES_STORAGE_KEY = 'series_phone'
-const GAS_WEBHOOK_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL ?? 'https://script.google.com/macros/s/AKfycbyzseseX6QceafpvnpLvPcLv-xqLGmTH1CK1CLONvS9iOnbhTloKoAvmUh1WYiuQ8bKvQ/exec'
+const GAS_WEBHOOK_URL =
+  process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL ??
+  'https://script.google.com/macros/s/AKfycbyzseseX6QceafpvnpLvPcLv-xqLGmTH1CK1CLONvS9iOnbhTloKoAvmUh1WYiuQ8bKvQ/exec'
+
+// Вебхук для логування productId (H) та productName (I)
+const SERIES_PRODUCT_WEBHOOK_URL =
+  'https://script.google.com/macros/s/AKfycbzCbI4ounmEw-ISYl3G2oVu-W8d95gOlchd92lGw5w0Of_R1d5JzCpIblUOcG_hX58N_w/exec'
 
 const formatPhone = (value: string) => {
   const digits = value.replace(/\D/g, '').slice(0, 15)
@@ -179,9 +185,30 @@ export default function SeriesPage() {
     }
   }
 
+  const logSelectedProduct = (ep: { id: number; title: string }) => {
+    const data = {
+      productId: `series_${ep.id}`,
+      productName: ep.title,
+    }
+    console.log('SENDING TO SHEET:', data)
+    fetch(SERIES_PRODUCT_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    }).catch(() => {})
+  }
+
+  const handleSoonClick = (ep: { id: number; title: string }) => {
+    logSelectedProduct(ep)
+    if (typeof window !== 'undefined') {
+      window.alert("Дякуємо! Ця серія скоро з'явиться. Ми надішлемо вам повідомлення.")
+    }
+  }
+
   const handleOpenPlayer = (episodeId: number) => {
     const ep = EPISODES.find((e) => e.id === episodeId)
     if (!ep || ep.status !== 'FREE') return
+    logSelectedProduct(ep)
     setUserEmail('guest')
     setPlayerEpisode(episodeId)
     setPlayerOpen(true)
@@ -189,6 +216,7 @@ export default function SeriesPage() {
 
   const handleAddToCart = (ep: { id: number; title: string }) => {
     if (selectedPaid.has(ep.id)) return
+    logSelectedProduct(ep)
     setSelectedPaid((p) => new Set(p).add(ep.id))
     setCartBounce(true)
     setTimeout(() => setCartBounce(false), 300)
@@ -310,9 +338,10 @@ export default function SeriesPage() {
 
       <section className="px-4 sm:px-6 md:px-12 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
-          <h1 className="font-press-start text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight mb-6">ХХ — Мультсеріал</h1>
+          <h1 className="font-press-start text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight mb-6">ХХ — Відео уроки</h1>
 
           <div className="mb-6 flex flex-wrap items-center gap-3">
+            <p className="text-sm text-black/70 w-full">МІЙ ДОСТУП. АВТОРИЗУВАТИСЬ ЗА ТЕЛЕФОНОМ</p>
             {isAuthorized ? (
               <>
                 <span className="text-sm text-black/70">Увійшов: {loggedPhoneDisplay ?? '+380…'}</span>
@@ -354,7 +383,6 @@ export default function SeriesPage() {
               </>
             ) : (
               <>
-                <p className="text-sm text-black/70 w-full">Вже купили серію? Введіть номер телефону для доступу</p>
                 <input
                   type="tel"
                   value={loginPhone}
@@ -426,8 +454,8 @@ export default function SeriesPage() {
                   {ep.status === 'SOON' && (
                     <button
                       type="button"
-                      disabled
-                      className="mt-2 w-full py-2 px-3 bg-black/10 text-black/40 text-xs font-medium uppercase tracking-wider rounded-lg cursor-not-allowed"
+                      onClick={() => handleSoonClick(ep)}
+                      className="mt-2 w-full py-2 px-3 bg-black/10 text-black/60 hover:text-black text-xs font-medium uppercase tracking-wider rounded-lg"
                     >
                       Скоро
                     </button>

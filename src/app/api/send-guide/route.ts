@@ -137,27 +137,5 @@ export async function POST(request: Request) {
     }
   }
 
-  const telegramBotToken = process.env.TELEGRAM_LEARN_BOT_TOKEN
-  const telegramChatId = process.env.TELEGRAM_CHAT_ID
-  if (telegramBotToken && telegramChatId) {
-    const telegramText = [
-      '📚 ПОЛИЦЯ — заявка на гайд',
-      '',
-      `👤 Ім'я: ${name}`,
-      `📧 Email: ${email}`,
-      `📄 Гайд: ${guideId}`,
-      'Лист з PDF відправлено.',
-    ].join('\n')
-    try {
-      await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: telegramChatId, text: telegramText }),
-      })
-    } catch {
-      // Уведомление не критично
-    }
-  }
-
   return NextResponse.json({ ok: true })
 }

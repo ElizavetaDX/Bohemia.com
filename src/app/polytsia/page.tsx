@@ -15,16 +15,6 @@ function BurgerIcon({ isOpen }: { isOpen: boolean }) {
   )
 }
 
-function BooksIcon() {
-  return (
-    <div className="flex items-end gap-0.5 sm:gap-1 h-6 sm:h-7 flex-shrink-0" aria-hidden>
-      <div className="w-1.5 sm:w-2 h-5 sm:h-6 bg-current skew-x-[-8deg] rounded-sm" />
-      <div className="w-1.5 sm:w-2 h-5 sm:h-6 bg-current skew-x-[-8deg] rounded-sm" />
-      <div className="w-1.5 sm:w-2 h-5 sm:h-6 bg-current skew-x-[-8deg] rounded-sm" />
-    </div>
-  )
-}
-
 export default function PolytsiaPage() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -86,18 +76,22 @@ export default function PolytsiaPage() {
 
         <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
-        <section className="px-4 sm:px-6 md:px-12 py-8 md:py-12">
-          <div className="max-w-6xl mx-auto">
-            <div className="relative mb-8">
-              <span className="absolute top-0 right-0 text-[10px] sm:text-xs text-black/50 font-mono tracking-wider" aria-hidden>(01)</span>
-              <div className="flex items-end gap-3 sm:gap-4 w-full text-black pt-3 sm:pt-4 pb-0 px-4 sm:px-5 md:px-6 border-b-4 border-black">
-                <BooksIcon />
-                <h1 className="font-press-start text-xl sm:text-2xl md:text-3xl lg:text-4xl uppercase tracking-tight flex-1">
-                  Полиця
-                </h1>
-              </div>
+        <section id="hero" className="content-above-dots px-0 pt-2.5 overflow-hidden">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-12">
+            <div className="grid grid-cols-[1fr_auto_1fr] gap-2 sm:gap-4 text-xs md:text-sm tracking-[0.25em] uppercase mb-1 md:mb-2">
+              <div className="text-left w-[40px] tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">2025</div>
+              <div className="text-center w-[110px] sm:w-[130px] md:w-[280px] text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60 font-press-start whitespace-nowrap">BOHEMIQA STUDIO</div>
+              <div className="text-right tracking-tight text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold text-black/60">011</div>
             </div>
 
+            <h1 className="font-press-start pixel-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl uppercase text-center tracking-tight leading-tight mt-2 mb-4 md:mb-6 relative z-10">
+              Полиця
+            </h1>
+          </div>
+        </section>
+
+        <section className="px-4 sm:px-6 md:px-12 py-8 md:py-12">
+          <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {GUIDES.map((guide, i) => (
                 <motion.div
