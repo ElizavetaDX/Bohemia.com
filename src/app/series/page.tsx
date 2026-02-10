@@ -41,8 +41,30 @@ const GAS_WEBHOOK_URL =
 const SERIES_PRODUCT_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbzCbI4ounmEw-ISYl3G2oVu-W8d95gOlchd92lGw5w0Of_R1d5JzCpIblUOcG_hX58N_w/exec'
 
+// Жорстка прив'язка ID та назв серій до полів productId / productName
+const SERIES_PRODUCT_META: Record<
+  number,
+  {
+    productId: string
+    productName: string
+  }
+> = {
+  1: { productId: 'series_1', productName: 'Серія 1' },
+  2: { productId: 'series_2', productName: 'Серія 2' },
+  3: { productId: 'series_3', productName: 'Серія 3' },
+  4: { productId: 'series_4', productName: 'Серія 4' },
+  5: { productId: 'series_5', productName: 'Серія 5' },
+  6: { productId: 'series_6', productName: 'Серія 6' },
+  7: { productId: 'series_7', productName: 'Серія 7' },
+  8: { productId: 'series_8', productName: 'Серія 8' },
+  9: { productId: 'series_9', productName: 'Серія 9' },
+  10: { productId: 'series_10', productName: 'Серія 10' },
+  11: { productId: 'series_11', productName: 'Серія 11' },
+  12: { productId: 'series_12', productName: 'Серія 12' },
+}
+
 const formatPhone = (value: string) => {
-  const digits = value.replace(/\D/g, '').slice(0, 15)
+  const digits = value.replace(/\D/g, '')
   if (!digits) return ''
   if (digits.startsWith('7') && digits.length <= 11) {
     if (digits.length <= 1) return `+${digits}`
@@ -186,10 +208,12 @@ export default function SeriesPage() {
   }
 
   const logSelectedProduct = (ep: { id: number; title: string }) => {
-    const data = {
-      productId: `series_${ep.id}`,
-      productName: ep.title,
+    const meta = SERIES_PRODUCT_META[ep.id]
+    if (!meta) {
+      console.warn('SENDING TO SHEET: missing meta for episode id', ep.id)
+      return
     }
+    const data = { productId: meta.productId, productName: meta.productName }
     console.log('SENDING TO SHEET:', data)
     fetch(SERIES_PRODUCT_WEBHOOK_URL, {
       method: 'POST',
