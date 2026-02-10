@@ -48,6 +48,13 @@ export default function PolytsiaSlugPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!guide) {
+      setSubmitStatus('error')
+      setErrorMessage('Гайд не знайдено')
+      return
+    }
+    
     const trimmedName = name.trim()
     const trimmedEmail = email.trim().toLowerCase()
 
@@ -74,7 +81,7 @@ export default function PolytsiaSlugPage() {
           name: trimmedName,
           email: trimmedEmail,
           guideId: slug,
-          documentName: guide.title,
+          documentName: guide?.title || 'Файл не визначено',
         }),
       })
       const data = await res.json()
