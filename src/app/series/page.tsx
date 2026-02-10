@@ -96,6 +96,9 @@ export default function SeriesPage() {
   const [playerEpisode, setPlayerEpisode] = useState<number | null>(null)
   const [paymentFormOpen, setPaymentFormOpen] = useState(false)
   const [selectedPaid, setSelectedPaid] = useState<Set<number>>(new Set())
+  const [selectedProduct, setSelectedProduct] = useState<{ productId: string; productName: string } | null>(
+    null
+  )
   const [accessPhones, setAccessPhones] = useState<Set<string>>(new Set())
   const [loggedPhoneDisplay, setLoggedPhoneDisplay] = useState<string | null>(null)
   const [loginPhone, setLoginPhone] = useState('')
@@ -214,6 +217,7 @@ export default function SeriesPage() {
       return
     }
     const data = { productId: meta.productId, productName: meta.productName }
+    setSelectedProduct(data)
     console.log('SENDING TO SHEET:', data)
     fetch(SERIES_PRODUCT_WEBHOOK_URL, {
       method: 'POST',
@@ -282,6 +286,8 @@ export default function SeriesPage() {
           email: formEmail,
           seriesId: Array.from(selectedPaid),
           amount: totalPrice,
+          productId: selectedProduct?.productId ?? null,
+          productName: selectedProduct?.productName ?? null,
         }),
       })
       setToast({ msg: 'Заявка прийнята' })
