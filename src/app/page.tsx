@@ -450,7 +450,7 @@ export default function Home() {
             </span>
           </div>
           <div className="overflow-hidden">
-            <div className="flex w-full animate-carousel">
+            <div className="flex w-full animate-clients-carousel">
               {[1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8].map((i, index) => (
                 <div
                   key={`${i}-${index}`}

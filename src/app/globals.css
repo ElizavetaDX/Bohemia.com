@@ -54,6 +54,19 @@ body {
   animation: carousel-scroll 10s linear infinite;
 }
 
+@keyframes clients-carousel-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-clients-carousel {
+  animation: clients-carousel-scroll 20s linear infinite;
+}
+
 @keyframes hero-ticker {
   0% {
     transform: translateX(0);
@@ -78,6 +91,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-carousel,
+  .animate-clients-carousel,
   .animate-hero-ticker,
   .animate-watermark {
     animation: none;
