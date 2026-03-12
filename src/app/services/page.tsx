@@ -266,6 +266,20 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {/* Standalone CTA: Написати Даші */}
+      <div className="mt-4 px-4 sm:px-6 md:px-12 pb-10">
+        <div className="max-w-6xl mx-auto">
+          <a
+            href="https://t.me/dasha_dorsh"
+            target="_blank"
+            rel="noreferrer"
+            className="block w-full max-w-3xl mx-auto rounded-md bg-black text-white px-6 py-4 md:py-5 min-h-[48px] flex items-center justify-center text-center text-[10px] md:text-xs tracking-[0.25em] uppercase hover:bg-black/90 transition-colors"
+          >
+            НАПИСАТИ ДАШІ
+          </a>
+        </div>
+      </div>
+
       {/* Footer */}
     </main>
   )

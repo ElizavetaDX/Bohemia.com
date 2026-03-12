@@ -134,7 +134,6 @@ export default function Home() {
   const heroButtons: HeroButton[] = [
     { label: 'перейти до прайсу', href: '/price' },
     { label: 'креатив', href: '/services', external: false },
-    { label: 'написати Даші', href: 'https://t.me/dasha_dorsh', external: true },
     { label: 'навчатися', href: '/learn', external: false },
   ]
 
@@ -450,19 +449,32 @@ export default function Home() {
               (006)
             </span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="flex items-center justify-center min-h-[80px] border-2 border-black/20 rounded-md text-[10px] md:text-xs tracking-[0.2em] uppercase text-black/50 bg-white"
-              >
-                Client {i}
-              </div>
-            ))}
+          <div className="overflow-hidden">
+            <div className="flex w-full animate-carousel">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8].map((i, index) => (
+                <div
+                  key={`${i}-${index}`}
+                  className="relative flex-shrink-0 w-[140px] sm:w-[170px] md:w-[190px] px-2 sm:px-3 md:px-4"
+                >
+                  <div className="min-h-[80px] border-2 border-black/20 rounded-md bg-white p-3">
+                    <div className="flex h-full w-full items-center justify-center rounded-md bg-black">
+                      <div className="relative w-full h-10 sm:h-12 md:h-14">
+                        <Image
+                          src={`/images/clients/client-${i}.png`}
+                          alt={`Client ${i}`}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-    </main>
+      </main>
   )
 }
